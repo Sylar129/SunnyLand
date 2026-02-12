@@ -1,12 +1,12 @@
-// texture_manager.h
-#pragma once
-#include <SDL3/SDL_render.h>  // 用于 SDL_Texture 和 SDL_Renderer
+// Copyright Sylar129
 
-#include <glm/glm.hpp>
-#include <memory>         // 用于 std::unique_ptr
-#include <stdexcept>      // 用于 std::runtime_error
-#include <string>         // 用于 std::string
-#include <unordered_map>  // 用于 std::unordered_map
+#pragma once
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+#include "SDL3/SDL_render.h"
+#include "glm/glm.hpp"
 
 namespace engine::resource {
 

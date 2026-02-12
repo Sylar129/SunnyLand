@@ -1,9 +1,10 @@
-// font_manager.cpp
+// Copyright Sylar129
+
 #include "font_manager.h"
 
-#include <spdlog/spdlog.h>
-
 #include <stdexcept>
+
+#include "spdlog/spdlog.h"
 
 namespace engine::resource {
 

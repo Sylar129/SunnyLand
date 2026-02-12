@@ -1,11 +1,12 @@
-// audio_manager.cpp
-#include "audio_manager.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "audio_manager.h"
 
 #include <cassert>
 #include <stdexcept>
+
 #include "SDL3_mixer/SDL_mixer.h"
+#include "spdlog/spdlog.h"
 
 namespace engine::resource {
 

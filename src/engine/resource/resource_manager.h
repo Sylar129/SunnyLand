@@ -1,8 +1,11 @@
-// resource_manager.h
+// Copyright Sylar129
+
 #pragma once
-#include <glm/glm.hpp>
+
 #include <memory>  // 用于 std::unique_ptr
 #include <string>  // 用于 std::string
+
+#include "glm/glm.hpp"
 
 // 前向声明 SDL 类型
 struct SDL_Renderer;

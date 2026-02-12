@@ -1,13 +1,14 @@
-// font_manager.h
+// Copyright Sylar129
+
 #pragma once
-#include <SDL3_ttf/SDL_ttf.h>  // SDL_ttf 主头文件
 
 #include <functional>     // 用于 std::hash
 #include <memory>         // 用于 std::unique_ptr
-#include <stdexcept>      // 用于 std::runtime_error
 #include <string>         // 用于 std::string
 #include <unordered_map>  // 用于 std::unordered_map
 #include <utility>        // 用于 std::pair
+
+#include "SDL3_ttf/SDL_ttf.h"  // SDL_ttf 主头文件
 
 namespace engine::resource {
 

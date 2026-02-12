@@ -1,10 +1,12 @@
-// audio_manager.h
-#pragma once
-#include <SDL3_mixer/SDL_mixer.h>  // SDL_mixer 主头文件
+// Copyright Sylar129
 
-#include <memory>         // 用于 std::unique_ptr
-#include <string>         // 用于 std::string
-#include <unordered_map>  // 用于 std::unordered_map
+#pragma once
+
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+#include "SDL3_mixer/SDL_mixer.h"
 
 namespace engine::resource {
 

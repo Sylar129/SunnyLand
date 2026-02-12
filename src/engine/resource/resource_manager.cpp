@@ -1,14 +1,12 @@
-// resource_manager.cpp
+// Copyright Sylar129
+
 #include "resource_manager.h"
 
-#include <SDL3_mixer/SDL_mixer.h>
-#include <SDL3_ttf/SDL_ttf.h>
-#include <spdlog/spdlog.h>
-
-#include <glm/glm.hpp>
-
+#include "SDL3_mixer/SDL_mixer.h"
+#include "SDL3_ttf/SDL_ttf.h"
 #include "audio_manager.h"
 #include "font_manager.h"
+#include "spdlog/spdlog.h"
 #include "texture_manager.h"
 
 namespace engine::resource {

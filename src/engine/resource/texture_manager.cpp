@@ -1,10 +1,11 @@
-// texture_manager.cpp
+// Copyright Sylar129
+
 #include "texture_manager.h"
 
-#include <SDL3_image/SDL_image.h>  // 用于 IMG_LoadTexture, IMG_Init, IMG_Quit
-#include <spdlog/spdlog.h>
-
 #include <stdexcept>
+
+#include "SDL3_image/SDL_image.h"  // 用于 IMG_LoadTexture, IMG_Init, IMG_Quit
+#include "spdlog/spdlog.h"
 
 namespace engine::resource {
 TextureManager::TextureManager(SDL_Renderer* renderer) : renderer_(renderer) {
