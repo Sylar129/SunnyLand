@@ -14,27 +14,22 @@ namespace engine::resource {
 ResourceManager::~ResourceManager() = default;
 
 ResourceManager::ResourceManager(SDL_Renderer* renderer) {
-  // --- 初始化各个子系统 --- (如果出现错误会抛出异常，由上层捕获)
   texture_manager_ = std::make_unique<TextureManager>(renderer);
   audio_manager_ = std::make_unique<AudioManager>();
   font_manager_ = std::make_unique<FontManager>();
 
-  spdlog::trace("ResourceManager 构造成功。");
-  // RAII:
-  // 构造成功即代表资源管理器可以正常工作，无需再初始化，无需检查指针是否为空
+  SPDLOG_TRACE("ResourceManager 构造成功。");
 }
 
 void ResourceManager::clear() {
   font_manager_->clearFonts();
   audio_manager_->clearSounds();
   texture_manager_->clearTextures();
-  spdlog::trace("ResourceManager 中的资源通过 clear() 清空。");
+  SPDLOG_TRACE("ResourceManager 中的资源通过 clear() 清空。");
 }
 
 // --- 纹理接口实现 ---
 SDL_Texture* ResourceManager::loadTexture(const std::string& file_path) {
-  // 构造函数已经确保了 texture_manager_
-  // 不为空，因此不需要再进行if检查，以免性能浪费
   return texture_manager_->loadTexture(file_path);
 }
 

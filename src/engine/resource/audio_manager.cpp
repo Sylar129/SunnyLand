@@ -10,7 +10,6 @@
 
 namespace engine::resource {
 
-// 构造函数：初始化SDL_mixer
 AudioManager::AudioManager() {
   if (!MIX_Init()) {
     throw std::runtime_error("AudioManager 错误: Mix_Init 失败: " +
@@ -25,40 +24,35 @@ AudioManager::AudioManager() {
     throw std::runtime_error("AudioManager 错误: Mix_OpenAudio 失败: " +
                              std::string(SDL_GetError()));
   }
-  spdlog::trace("AudioManager 构造成功。");
+  SPDLOG_TRACE("AudioManager 构造成功。");
 }
 
 AudioManager::~AudioManager() {
-  // 清理资源映射（unique_ptrs会调用删除器）
   clearSounds();
 
   MIX_DestroyMixer(mixer_);
 
-  // 退出SDL_mixer子系统
   MIX_Quit();
-  spdlog::trace("AudioManager 析构成功。");
+  SPDLOG_TRACE("AudioManager 析构成功。");
 }
 
 // --- 音效管理 ---
 MIX_Audio* AudioManager::loadSound(const std::string& file_path) {
-  // 首先检查缓存
   auto it = sounds_.find(file_path);
   if (it != sounds_.end()) {
     return it->second.get();
   }
 
-  // 加载音效块
-  spdlog::debug("加载音效: {}", file_path);
+  SPDLOG_DEBUG("加载音效: {}", file_path);
   MIX_Audio* raw_chunk = MIX_LoadAudio(mixer_, file_path.c_str(), true);
   if (!raw_chunk) {
-    spdlog::error("加载音效失败: '{}': {}", file_path, SDL_GetError());
+    SPDLOG_ERROR("加载音效失败: '{}': {}", file_path, SDL_GetError());
     return nullptr;
   }
 
-  // 使用unique_ptr存储在缓存中
   sounds_.emplace(file_path,
                   std::unique_ptr<MIX_Audio, SDLMixAudioDeleter>(raw_chunk));
-  spdlog::debug("成功加载并缓存音效: {}", file_path);
+  SPDLOG_DEBUG("成功加载并缓存音效: {}", file_path);
   return raw_chunk;
 }
 
@@ -67,23 +61,23 @@ MIX_Audio* AudioManager::getSound(const std::string& file_path) {
   if (it != sounds_.end()) {
     return it->second.get();
   }
-  spdlog::warn("音效 '{}' 未找到缓存，尝试加载。", file_path);
+  SPDLOG_WARN("音效 '{}' 未找到缓存，尝试加载。", file_path);
   return loadSound(file_path);
 }
 
 void AudioManager::unloadSound(const std::string& file_path) {
   auto it = sounds_.find(file_path);
   if (it != sounds_.end()) {
-    spdlog::debug("卸载音效: {}", file_path);
-    sounds_.erase(it);  // unique_ptr处理Mix_FreeChunk
+    SPDLOG_DEBUG("卸载音效: {}", file_path);
+    sounds_.erase(it);
   } else {
-    spdlog::warn("尝试卸载不存在的音效: {}", file_path);
+    SPDLOG_WARN("尝试卸载不存在的音效: {}", file_path);
   }
 }
 
 void AudioManager::clearSounds() {
   if (!sounds_.empty()) {
-    spdlog::debug("正在清除所有 {} 个缓存的音效。", sounds_.size());
+    SPDLOG_DEBUG("正在清除所有 {} 个缓存的音效。", sounds_.size());
     sounds_.clear();  // unique_ptr处理删除
   }
 }

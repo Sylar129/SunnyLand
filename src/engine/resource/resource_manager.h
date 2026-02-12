@@ -2,12 +2,11 @@
 
 #pragma once
 
-#include <memory>  // 用于 std::unique_ptr
-#include <string>  // 用于 std::string
+#include <memory>
+#include <string>
 
 #include "glm/glm.hpp"
 
-// 前向声明 SDL 类型
 struct SDL_Renderer;
 struct SDL_Texture;
 struct MIX_Audio;
@@ -15,36 +14,22 @@ struct TTF_Font;
 
 namespace engine::resource {
 
-// 前向声明内部管理器
 class TextureManager;
 class AudioManager;
 class FontManager;
 
-/**
- * @brief 作为访问各种资源管理器的中央控制点（外观模式 Facade）。
- * 在构造时初始化其管理的子系统。构造失败会抛出异常。
- */
 class ResourceManager final {
- private:
-  // 使用 unique_ptr 确保所有权和自动清理
-  std::unique_ptr<TextureManager> texture_manager_;
-  std::unique_ptr<AudioManager> audio_manager_;
-  std::unique_ptr<FontManager> font_manager_;
-
  public:
   /**
    * @brief 构造函数，执行初始化。
    * @param renderer SDL_Renderer 的指针，传递给需要它的子管理器。不能为空。
    */
-  explicit ResourceManager(
-      SDL_Renderer* renderer);  // explicit 关键字用于防止隐式转换,
-                                // 对于单一参数的构造函数，通常考虑添加
+  explicit ResourceManager(SDL_Renderer* renderer);
 
-  ~ResourceManager();  // 显式声明析构函数，这是为了能让智能指针正确管理仅有前向声明的类
+  ~ResourceManager();
 
-  void clear();  ///< @brief 清空所有资源
+  void clear();
 
-  // 当前设计中，我们只需要一个ResourceManager，所有权不变，所以不需要拷贝、移动相关构造及赋值运算符
   ResourceManager(const ResourceManager&) = delete;
   ResourceManager& operator=(const ResourceManager&) = delete;
   ResourceManager(ResourceManager&&) = delete;
@@ -52,38 +37,28 @@ class ResourceManager final {
 
   // --- 统一资源访问接口 ---
   // -- Texture --
-  SDL_Texture* loadTexture(
-      const std::string& file_path);  ///< @brief 载入纹理资源
-  SDL_Texture* getTexture(
-      const std::string&
-          file_path);  ///< @brief
-                       ///< 尝试获取已加载纹理的指针，如果未加载则尝试加载
-  void unloadTexture(
-      const std::string& file_path);  ///< @brief 卸载指定的纹理资源
-  glm::vec2 getTextureSize(
-      const std::string& file_path);  ///< @brief 获取指定纹理的尺寸
-  void clearTextures();               ///< @brief 清空所有纹理资源
+  SDL_Texture* loadTexture(const std::string& file_path);
+  SDL_Texture* getTexture(const std::string& file_path);
+  void unloadTexture(const std::string& file_path);
+  glm::vec2 getTextureSize(const std::string& file_path);
+  void clearTextures();
 
   // -- Sound Effects (Chunks) --
-  MIX_Audio* loadSound(const std::string& file_path);  ///< @brief 载入音效资源
-  MIX_Audio* getSound(
-      const std::string&
-          file_path);  ///< @brief
-                       ///< 尝试获取已加载音效的指针，如果未加载则尝试加载
-  void unloadSound(
-      const std::string& file_path);  ///< @brief 卸载指定的音效资源
-  void clearSounds();                 ///< @brief 清空所有音效资源
+  MIX_Audio* loadSound(const std::string& file_path);
+  MIX_Audio* getSound(const std::string& file_path);
+  void unloadSound(const std::string& file_path);
+  void clearSounds();
 
   // -- Fonts --
-  TTF_Font* loadFont(const std::string& file_path,
-                     int point_size);  ///< @brief 载入字体资源
-  TTF_Font* getFont(
-      const std::string& file_path,
-      int point_size);  ///< @brief
-                        ///< 尝试获取已加载字体的指针，如果未加载则尝试加载
-  void unloadFont(const std::string& file_path,
-                  int point_size);  ///< @brief 卸载指定的字体资源
-  void clearFonts();                ///< @brief 清空所有字体资源
+  TTF_Font* loadFont(const std::string& file_path, int point_size);
+  TTF_Font* getFont(const std::string& file_path, int point_size);
+  void unloadFont(const std::string& file_path, int point_size);
+  void clearFonts();
+
+ private:
+  std::unique_ptr<TextureManager> texture_manager_;
+  std::unique_ptr<AudioManager> audio_manager_;
+  std::unique_ptr<FontManager> font_manager_;
 };
 
 }  // namespace engine::resource

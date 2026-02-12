@@ -11,7 +11,7 @@
 
 namespace engine::core {
 
-GameApp::GameApp() : time_(std::make_unique<Time>()) {}
+GameApp::GameApp() {}
 
 GameApp::~GameApp() {
   if (is_running_) {
