@@ -8,6 +8,10 @@
 struct SDL_Window;
 struct SDL_Renderer;
 
+namespace engine::resource {
+class ResourceManager;
+}
+
 namespace engine::core {
 
 class GameApp final {
@@ -24,6 +28,10 @@ class GameApp final {
 
  private:
   [[nodiscard]] bool Init();
+  bool initSDL();
+  bool initTime();
+  bool initResourceManager();
+
   void HandleEvents();
   void Update(float delta_time);
   void Render();
@@ -33,6 +41,7 @@ class GameApp final {
   SDL_Renderer* renderer_ = nullptr;
   bool is_running_ = false;
   std::unique_ptr<Time> time_;
+  std::unique_ptr<resource::ResourceManager> resource_manager_;
 };
 
 }  // namespace engine::core

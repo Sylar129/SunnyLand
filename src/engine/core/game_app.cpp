@@ -6,6 +6,7 @@
 
 #include "SDL3/SDL.h"
 #include "engine/core/time.h"
+#include "engine/resource/resource_manager.h"
 #include "spdlog/spdlog.h"
 
 namespace engine::core {
@@ -40,6 +41,15 @@ void GameApp::Run() {
 
 bool GameApp::Init() {
   spdlog::trace("Init GameApp ...");
+  if (!initSDL()) return false;
+  if (!initTime()) return false;
+  if (!initResourceManager()) return false;
+
+  is_running_ = true;
+  return true;
+}
+
+bool GameApp::initSDL() {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     SPDLOG_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
     return false;
@@ -56,8 +66,17 @@ bool GameApp::Init() {
     SPDLOG_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
     return false;
   }
+  return true;
+}
 
-  is_running_ = true;
+bool GameApp::initTime() {
+  time_ = std::make_unique<Time>();
+  return true;
+}
+
+bool GameApp::initResourceManager() {
+  resource_manager_ =
+      std::make_unique<engine::resource::ResourceManager>(renderer_);
   return true;
 }
 
@@ -78,6 +97,8 @@ void GameApp::Render() {
 
 void GameApp::Close() {
   SPDLOG_TRACE("Closing GameApp...");
+  resource_manager_.reset();
+
   if (renderer_ != nullptr) {
     SDL_DestroyRenderer(renderer_);
     renderer_ = nullptr;
