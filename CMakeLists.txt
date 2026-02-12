@@ -36,6 +36,8 @@ include_directories(src)
 add_executable(${TARGET}
                 src/engine/core/game_app.cpp
                 src/engine/core/game_app.h
+                src/engine/core/time.cpp
+                src/engine/core/time.h
                 src/main.cpp
 )
 

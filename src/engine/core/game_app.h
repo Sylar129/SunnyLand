@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include <memory>
+
+#include "engine/core/time.h"
 struct SDL_Window;
 struct SDL_Renderer;
 
@@ -29,6 +32,7 @@ class GameApp final {
   SDL_Window* window_ = nullptr;
   SDL_Renderer* renderer_ = nullptr;
   bool is_running_ = false;
+  std::unique_ptr<Time> time_;
 };
 
 }  // namespace engine::core

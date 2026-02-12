@@ -2,12 +2,15 @@
 
 #include "engine/core/game_app.h"
 
+#include <memory>
+
 #include "SDL3/SDL.h"
+#include "engine/core/time.h"
 #include "spdlog/spdlog.h"
 
 namespace engine::core {
 
-GameApp::GameApp() = default;
+GameApp::GameApp() : time_(std::make_unique<Time>()) {}
 
 GameApp::~GameApp() {
   if (is_running_) {
@@ -21,9 +24,12 @@ void GameApp::Run() {
     SPDLOG_ERROR("Failed to init game!");
     return;
   }
+  time_->SetTargetFps(144);
 
   while (is_running_) {
-    float delta_time = 0.01f;
+    time_->Update();
+    float delta_time = time_->GetDeltaTime();
+
     HandleEvents();
     Update(delta_time);
     Render();
