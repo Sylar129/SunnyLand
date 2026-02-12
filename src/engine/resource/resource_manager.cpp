@@ -55,11 +55,11 @@ void ResourceManager::unloadTexture(const std::string& file_path) {
 void ResourceManager::clearTextures() { texture_manager_->clearTextures(); }
 
 // --- 音频接口实现 ---
-Mix_Chunk* ResourceManager::loadSound(const std::string& file_path) {
+MIX_Audio* ResourceManager::loadSound(const std::string& file_path) {
   return audio_manager_->loadSound(file_path);
 }
 
-Mix_Chunk* ResourceManager::getSound(const std::string& file_path) {
+MIX_Audio* ResourceManager::getSound(const std::string& file_path) {
   return audio_manager_->getSound(file_path);
 }
 
@@ -68,20 +68,6 @@ void ResourceManager::unloadSound(const std::string& file_path) {
 }
 
 void ResourceManager::clearSounds() { audio_manager_->clearSounds(); }
-
-Mix_Music* ResourceManager::loadMusic(const std::string& file_path) {
-  return audio_manager_->loadMusic(file_path);
-}
-
-Mix_Music* ResourceManager::getMusic(const std::string& file_path) {
-  return audio_manager_->getMusic(file_path);
-}
-
-void ResourceManager::unloadMusic(const std::string& file_path) {
-  audio_manager_->unloadMusic(file_path);
-}
-
-void ResourceManager::clearMusic() { audio_manager_->clearMusic(); }
 
 // --- 字体接口实现 ---
 TTF_Font* ResourceManager::loadFont(const std::string& file_path,
