@@ -1,10 +1,9 @@
 // Copyright Sylar129
 
-#include "spdlog/spdlog.h"
+#include "engine/core/game_app.h"
 
-int main() {
-
-  SPDLOG_INFO("hello world");
-
+int main(int /* argc */, char** /* argv */) {
+  engine::core::GameApp app;
+  app.Run();
   return 0;
 }

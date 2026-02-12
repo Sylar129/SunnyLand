@@ -1,0 +1,34 @@
+// Copyright Sylar129
+
+#pragma once
+
+struct SDL_Window;
+struct SDL_Renderer;
+
+namespace engine::core {
+
+class GameApp final {
+ public:
+  GameApp();
+  ~GameApp();
+
+  GameApp(const GameApp&) = delete;
+  GameApp& operator=(const GameApp&) = delete;
+  GameApp(GameApp&&) = delete;
+  GameApp& operator=(GameApp&&) = delete;
+
+  void Run();
+
+ private:
+  [[nodiscard]] bool Init();
+  void HandleEvents();
+  void Update(float delta_time);
+  void Render();
+  void Close();
+
+  SDL_Window* window_ = nullptr;
+  SDL_Renderer* renderer_ = nullptr;
+  bool is_running_ = false;
+};
+
+}  // namespace engine::core
