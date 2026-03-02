@@ -64,4 +64,3 @@ class FontManager final {
 };
 
 }  // namespace engine::resource
-

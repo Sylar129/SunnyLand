@@ -89,11 +89,9 @@ void GameApp::HandleEvents() {
   }
 }
 
-void GameApp::Update(float delta_time) {
-}
+void GameApp::Update(float delta_time) {}
 
-void GameApp::Render() {
-}
+void GameApp::Render() {}
 
 void GameApp::Close() {
   SPDLOG_TRACE("Closing GameApp...");

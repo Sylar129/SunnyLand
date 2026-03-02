@@ -44,5 +44,3 @@ class AudioManager final {
 };
 
 }  // namespace engine::resource
-
-

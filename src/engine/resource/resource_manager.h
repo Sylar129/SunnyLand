@@ -62,5 +62,3 @@ class ResourceManager final {
 };
 
 }  // namespace engine::resource
-
-
