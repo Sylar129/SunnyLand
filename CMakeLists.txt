@@ -38,6 +38,8 @@ add_executable(${TARGET}
                 src/engine/core/game_app.h
                 src/engine/core/time.cpp
                 src/engine/core/time.h
+                src/log.cpp
+                src/log.h
                 src/main.cpp
 )
 
