@@ -46,6 +46,8 @@ add_executable(${TARGET}
                 src/engine/resource/resource_manager.h
                 src/engine/resource/texture_manager.cpp
                 src/engine/resource/texture_manager.h
+                src/log.cpp
+                src/log.h
                 src/main.cpp
 )
 
