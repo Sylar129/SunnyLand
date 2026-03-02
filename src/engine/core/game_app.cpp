@@ -7,7 +7,7 @@
 #include "SDL3/SDL.h"
 #include "engine/core/time.h"
 #include "engine/resource/resource_manager.h"
-#include "spdlog/spdlog.h"
+#include "log.h"
 
 namespace engine::core {
 
@@ -15,14 +15,14 @@ GameApp::GameApp() {}
 
 GameApp::~GameApp() {
   if (is_running_) {
-    SPDLOG_WARN("GameApp is still running when dtor!");
+    ENGINE_WARN("GameApp is still running when dtor!");
     Close();
   }
 }
 
 void GameApp::Run() {
   if (!Init()) {
-    SPDLOG_ERROR("Failed to init game!");
+    ENGINE_ERROR("Failed to init game!");
     return;
   }
   time_->SetTargetFps(144);
@@ -40,7 +40,7 @@ void GameApp::Run() {
 }
 
 bool GameApp::Init() {
-  spdlog::trace("Init GameApp ...");
+  ENGINE_TRACE("Init GameApp ...");
   if (!InitSDL()) return false;
   if (!InitTime()) return false;
   if (!InitResourceManager()) return false;
@@ -51,19 +51,19 @@ bool GameApp::Init() {
 
 bool GameApp::InitSDL() {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-    SPDLOG_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
+    ENGINE_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
     return false;
   }
 
   window_ = SDL_CreateWindow("SunnyLand", 1280, 720, SDL_WINDOW_RESIZABLE);
   if (window_ == nullptr) {
-    SPDLOG_ERROR("Failed to create window! Error: {}", SDL_GetError());
+    ENGINE_ERROR("Failed to create window! Error: {}", SDL_GetError());
     return false;
   }
 
   renderer_ = SDL_CreateRenderer(window_, nullptr);
   if (renderer_ == nullptr) {
-    SPDLOG_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
+    ENGINE_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
     return false;
   }
   return true;
@@ -94,7 +94,7 @@ void GameApp::Update(float delta_time) {}
 void GameApp::Render() {}
 
 void GameApp::Close() {
-  SPDLOG_TRACE("Closing GameApp...");
+  ENGINE_TRACE("Closing GameApp...");
   resource_manager_.reset();
 
   if (renderer_ != nullptr) {

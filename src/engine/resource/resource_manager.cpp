@@ -6,7 +6,7 @@
 #include "SDL3_ttf/SDL_ttf.h"
 #include "audio_manager.h"
 #include "font_manager.h"
-#include "spdlog/spdlog.h"
+#include "log.h"
 #include "texture_manager.h"
 
 namespace engine::resource {
@@ -18,14 +18,14 @@ ResourceManager::ResourceManager(SDL_Renderer* renderer) {
   audio_manager_ = std::make_unique<AudioManager>();
   font_manager_ = std::make_unique<FontManager>();
 
-  SPDLOG_TRACE("ResourceManager 构造成功。");
+  ENGINE_TRACE("ResourceManager 构造成功。");
 }
 
 void ResourceManager::Clear() {
   font_manager_->ClearFonts();
   audio_manager_->ClearSounds();
   texture_manager_->ClearTextures();
-  SPDLOG_TRACE("ResourceManager 中的资源通过 clear() 清空。");
+  ENGINE_TRACE("ResourceManager 中的资源通过 clear() 清空。");
 }
 
 // --- 纹理接口实现 ---

@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 #include "SDL3_mixer/SDL_mixer.h"
-#include "spdlog/spdlog.h"
+#include "log.h"
 
 namespace engine::resource {
 
@@ -24,7 +24,7 @@ AudioManager::AudioManager() {
     throw std::runtime_error("AudioManager 错误: Mix_OpenAudio 失败: " +
                              std::string(SDL_GetError()));
   }
-  SPDLOG_TRACE("AudioManager 构造成功。");
+  ENGINE_TRACE("AudioManager 构造成功。");
 }
 
 AudioManager::~AudioManager() {
@@ -33,7 +33,7 @@ AudioManager::~AudioManager() {
   MIX_DestroyMixer(mixer_);
 
   MIX_Quit();
-  SPDLOG_TRACE("AudioManager 析构成功。");
+  ENGINE_TRACE("AudioManager 析构成功。");
 }
 
 // --- 音效管理 ---
@@ -43,16 +43,16 @@ MIX_Audio* AudioManager::LoadSound(const std::string& file_path) {
     return it->second.get();
   }
 
-  SPDLOG_DEBUG("加载音效: {}", file_path);
+  ENGINE_DEBUG("加载音效: {}", file_path);
   MIX_Audio* raw_chunk = MIX_LoadAudio(mixer_, file_path.c_str(), true);
   if (!raw_chunk) {
-    SPDLOG_ERROR("加载音效失败: '{}': {}", file_path, SDL_GetError());
+    ENGINE_ERROR("加载音效失败: '{}': {}", file_path, SDL_GetError());
     return nullptr;
   }
 
   sounds_.emplace(file_path,
                   std::unique_ptr<MIX_Audio, SDLMixAudioDeleter>(raw_chunk));
-  SPDLOG_DEBUG("成功加载并缓存音效: {}", file_path);
+  ENGINE_DEBUG("成功加载并缓存音效: {}", file_path);
   return raw_chunk;
 }
 
@@ -61,23 +61,23 @@ MIX_Audio* AudioManager::GetSound(const std::string& file_path) {
   if (it != sounds_.end()) {
     return it->second.get();
   }
-  SPDLOG_WARN("音效 '{}' 未找到缓存，尝试加载。", file_path);
+  ENGINE_WARN("音效 '{}' 未找到缓存，尝试加载。", file_path);
   return LoadSound(file_path);
 }
 
 void AudioManager::UnloadSound(const std::string& file_path) {
   auto it = sounds_.find(file_path);
   if (it != sounds_.end()) {
-    SPDLOG_DEBUG("卸载音效: {}", file_path);
+    ENGINE_DEBUG("卸载音效: {}", file_path);
     sounds_.erase(it);
   } else {
-    SPDLOG_WARN("尝试卸载不存在的音效: {}", file_path);
+    ENGINE_WARN("尝试卸载不存在的音效: {}", file_path);
   }
 }
 
 void AudioManager::ClearSounds() {
   if (!sounds_.empty()) {
-    SPDLOG_DEBUG("正在清除所有 {} 个缓存的音效。", sounds_.size());
+    ENGINE_DEBUG("正在清除所有 {} 个缓存的音效。", sounds_.size());
     sounds_.clear();  // unique_ptr处理删除
   }
 }
