@@ -8,23 +8,17 @@
 #include <unordered_map>
 #include <utility>
 
-#include "SDL3_ttf/SDL_ttf.h"  // SDL_ttf 主头文件
+#include "SDL3_ttf/SDL_ttf.h"
 
 namespace engine::resource {
 
-// 定义字体键类型（路径 + 大小）
 using FontKey = std::pair<std::string, int>;
 
-// FontKey 的自定义哈希函数（std::pair<std::string, int>），用于
-// std::unordered_map
 struct FontKeyHash {
   std::size_t operator()(const FontKey& key) const {
     std::hash<std::string> string_hasher;
     std::hash<int> int_hasher;
-    return string_hasher(key.first) ^
-           int_hasher(
-               key.second);  // 异或运算符 ^
-                             // 按位计算，每一位的两个值不同为1，相同为0，这是合并两个哈希值的简单方法
+    return string_hasher(key.first) ^ int_hasher(key.second);
   }
 };
 
@@ -55,9 +49,6 @@ class FontManager final {
     }
   };
 
-  // 字体存储（FontKey -> TTF_Font）。
-  // unordered_map 的键需要能转换为哈希值，对于基础数据类型，系统会自动转换
-  // 但是对于对于自定义类型（系统无法自动转化），则需要提供自定义哈希函数（第三个模版参数）
   std::unordered_map<FontKey, std::unique_ptr<TTF_Font, SDLFontDeleter>,
                      FontKeyHash>
       fonts_;

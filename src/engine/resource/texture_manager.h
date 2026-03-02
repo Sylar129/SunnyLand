@@ -41,7 +41,7 @@ class TextureManager final {
                      std::unique_ptr<SDL_Texture, SDLTextureDeleter>>
       textures_;
 
-  SDL_Renderer* renderer_ = nullptr;  // 指向主渲染器的非拥有指针
+  SDL_Renderer* renderer_ = nullptr;
 };
 
 }  // namespace engine::resource

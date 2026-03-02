@@ -2,56 +2,51 @@
 
 #include "engine/resource/font_manager.h"
 
-#include <stdexcept>
-
 #include "log.h"
 
 namespace engine::resource {
 
 FontManager::FontManager() {
   if (!TTF_WasInit() && !TTF_Init()) {
-    throw std::runtime_error("FontManager 错误: TTF_Init 失败：" +
-                             std::string(SDL_GetError()));
+    ENGINE_CRITICAL("FontManager Error: TTF_Init failed: {}", SDL_GetError());
   }
-  ENGINE_TRACE("FontManager 构造成功。");
+  ENGINE_TRACE("Init FontManager Successfully");
 }
 
 FontManager::~FontManager() {
   if (!fonts_.empty()) {
-    ENGINE_DEBUG("FontManager 不为空，调用 clearFonts 处理清理逻辑。");
+    ENGINE_DEBUG("FontManager is not empty. ClearFonts first.");
     ClearFonts();
   }
   TTF_Quit();
-  ENGINE_TRACE("FontManager 析构成功。");
+  ENGINE_TRACE("Deinit FontManager Successfully");
 }
 
 TTF_Font* FontManager::LoadFont(const std::string& file_path, int point_size) {
   if (point_size <= 0) {
-    ENGINE_ERROR("无法加载字体 '{}'：无效的点大小 {}。", file_path, point_size);
+    ENGINE_ERROR("Falied to load font: {}. Invalid point size: {}", file_path,
+                 point_size);
     return nullptr;
   }
 
-  // 创建映射表的键
   FontKey key = {file_path, point_size};
 
-  // 首先检查缓存
   auto it = fonts_.find(key);
   if (it != fonts_.end()) {
     return it->second.get();
   }
 
-  // 缓存中不存在，则加载字体
-  ENGINE_DEBUG("正在加载字体：{} ({}pt)", file_path, point_size);
+  ENGINE_DEBUG("Loading font: {} ({}pt)", file_path, point_size);
   TTF_Font* raw_font = TTF_OpenFont(file_path.c_str(), point_size);
   if (!raw_font) {
-    ENGINE_ERROR("加载字体 '{}' ({}pt) 失败：{}", file_path, point_size,
+    ENGINE_ERROR("Loading font '{}' ({}pt) falied: {}", file_path, point_size,
                  SDL_GetError());
     return nullptr;
   }
 
-  // 使用 unique_ptr 存储到缓存中
   fonts_.emplace(key, std::unique_ptr<TTF_Font, SDLFontDeleter>(raw_font));
-  ENGINE_DEBUG("成功加载并缓存字体：{} ({}pt)", file_path, point_size);
+  ENGINE_DEBUG("Successfully load and cache font: {} ({}pt)", file_path,
+               point_size);
   return raw_font;
 }
 
@@ -62,7 +57,8 @@ TTF_Font* FontManager::GetFont(const std::string& file_path, int point_size) {
     return it->second.get();
   }
 
-  ENGINE_WARN("字体 '{}' ({}pt) 不在缓存中，尝试加载。", file_path, point_size);
+  ENGINE_WARN("Font '{}' ({}pt) is not in cache. Try loading", file_path,
+              point_size);
   return LoadFont(file_path, point_size);
 }
 
@@ -70,16 +66,17 @@ void FontManager::UnloadFont(const std::string& file_path, int point_size) {
   FontKey key = {file_path, point_size};
   auto it = fonts_.find(key);
   if (it != fonts_.end()) {
-    ENGINE_DEBUG("卸载字体：{} ({}pt)", file_path, point_size);
+    ENGINE_DEBUG("Unload font: {} ({}pt)", file_path, point_size);
     fonts_.erase(it);
   } else {
-    ENGINE_WARN("尝试卸载不存在的字体：{} ({}pt)", file_path, point_size);
+    ENGINE_WARN("Trying to unload non-existent font: {} ({}pt)", file_path,
+                point_size);
   }
 }
 
 void FontManager::ClearFonts() {
   if (!fonts_.empty()) {
-    ENGINE_DEBUG("正在清理所有 {} 个缓存的字体。", fonts_.size());
+    ENGINE_DEBUG("Clearing all {} cached fonts。", fonts_.size());
     fonts_.clear();
   }
 }

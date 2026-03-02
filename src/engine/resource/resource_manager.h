@@ -20,10 +20,6 @@ class FontManager;
 
 class ResourceManager final {
  public:
-  /**
-   * @brief 构造函数，执行初始化。
-   * @param renderer SDL_Renderer 的指针，传递给需要它的子管理器。不能为空。
-   */
   explicit ResourceManager(SDL_Renderer* renderer);
 
   ~ResourceManager();
@@ -35,21 +31,17 @@ class ResourceManager final {
   ResourceManager(ResourceManager&&) = delete;
   ResourceManager& operator=(ResourceManager&&) = delete;
 
-  // --- 统一资源访问接口 ---
-  // -- Texture --
   SDL_Texture* LoadTexture(const std::string& file_path);
   SDL_Texture* GetTexture(const std::string& file_path);
   void UnloadTexture(const std::string& file_path);
   glm::vec2 GetTextureSize(const std::string& file_path);
   void ClearTextures();
 
-  // -- Sound Effects (Chunks) --
   MIX_Audio* LoadSound(const std::string& file_path);
   MIX_Audio* GetSound(const std::string& file_path);
   void UnloadSound(const std::string& file_path);
   void ClearSounds();
 
-  // -- Fonts --
   TTF_Font* LoadFont(const std::string& file_path, int point_size);
   TTF_Font* GetFont(const std::string& file_path, int point_size);
   void UnloadFont(const std::string& file_path, int point_size);

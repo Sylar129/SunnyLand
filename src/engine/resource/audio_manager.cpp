@@ -16,7 +16,7 @@ AudioManager::AudioManager() {
 
   mixer_ = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
   if (!mixer_) {
-    MIX_Quit();  // 如果OpenAudio失败，先清理Mix_Init，再抛出异常
+    MIX_Quit();
     ENGINE_CRITICAL("AudioManager Error: MIX_CreateMixerDevice failed: {}",
                     SDL_GetError());
     return;
@@ -75,7 +75,7 @@ void AudioManager::UnloadSound(const std::string& file_path) {
 void AudioManager::ClearSounds() {
   if (!sounds_.empty()) {
     ENGINE_DEBUG("Clear all {} sounds.", sounds_.size());
-    sounds_.clear();  // unique_ptr处理删除
+    sounds_.clear();
   }
 }
 

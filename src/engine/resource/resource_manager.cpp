@@ -18,17 +18,16 @@ ResourceManager::ResourceManager(SDL_Renderer* renderer) {
   audio_manager_ = std::make_unique<AudioManager>();
   font_manager_ = std::make_unique<FontManager>();
 
-  ENGINE_TRACE("ResourceManager 构造成功。");
+  ENGINE_TRACE("Init ResourceManager successfully");
 }
 
 void ResourceManager::Clear() {
   font_manager_->ClearFonts();
   audio_manager_->ClearSounds();
   texture_manager_->ClearTextures();
-  ENGINE_TRACE("ResourceManager 中的资源通过 clear() 清空。");
+  ENGINE_TRACE("Clearing ResourceManager Assets");
 }
 
-// --- 纹理接口实现 ---
 SDL_Texture* ResourceManager::LoadTexture(const std::string& file_path) {
   return texture_manager_->LoadTexture(file_path);
 }
@@ -47,7 +46,6 @@ void ResourceManager::UnloadTexture(const std::string& file_path) {
 
 void ResourceManager::ClearTextures() { texture_manager_->ClearTextures(); }
 
-// --- 音频接口实现 ---
 MIX_Audio* ResourceManager::LoadSound(const std::string& file_path) {
   return audio_manager_->LoadSound(file_path);
 }
@@ -62,7 +60,6 @@ void ResourceManager::UnloadSound(const std::string& file_path) {
 
 void ResourceManager::ClearSounds() { audio_manager_->ClearSounds(); }
 
-// --- 字体接口实现 ---
 TTF_Font* ResourceManager::LoadFont(const std::string& file_path,
                                     int point_size) {
   return font_manager_->LoadFont(file_path, point_size);
