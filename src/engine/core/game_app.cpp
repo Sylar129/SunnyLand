@@ -41,15 +41,15 @@ void GameApp::Run() {
 
 bool GameApp::Init() {
   spdlog::trace("Init GameApp ...");
-  if (!initSDL()) return false;
-  if (!initTime()) return false;
-  if (!initResourceManager()) return false;
+  if (!InitSDL()) return false;
+  if (!InitTime()) return false;
+  if (!InitResourceManager()) return false;
 
   is_running_ = true;
   return true;
 }
 
-bool GameApp::initSDL() {
+bool GameApp::InitSDL() {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     SPDLOG_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
     return false;
@@ -69,12 +69,12 @@ bool GameApp::initSDL() {
   return true;
 }
 
-bool GameApp::initTime() {
+bool GameApp::InitTime() {
   time_ = std::make_unique<Time>();
   return true;
 }
 
-bool GameApp::initResourceManager() {
+bool GameApp::InitResourceManager() {
   resource_manager_ =
       std::make_unique<engine::resource::ResourceManager>(renderer_);
   return true;

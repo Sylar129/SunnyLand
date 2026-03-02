@@ -28,7 +28,7 @@ AudioManager::AudioManager() {
 }
 
 AudioManager::~AudioManager() {
-  clearSounds();
+  ClearSounds();
 
   MIX_DestroyMixer(mixer_);
 
@@ -37,7 +37,7 @@ AudioManager::~AudioManager() {
 }
 
 // --- 音效管理 ---
-MIX_Audio* AudioManager::loadSound(const std::string& file_path) {
+MIX_Audio* AudioManager::LoadSound(const std::string& file_path) {
   auto it = sounds_.find(file_path);
   if (it != sounds_.end()) {
     return it->second.get();
@@ -56,16 +56,16 @@ MIX_Audio* AudioManager::loadSound(const std::string& file_path) {
   return raw_chunk;
 }
 
-MIX_Audio* AudioManager::getSound(const std::string& file_path) {
+MIX_Audio* AudioManager::GetSound(const std::string& file_path) {
   auto it = sounds_.find(file_path);
   if (it != sounds_.end()) {
     return it->second.get();
   }
   SPDLOG_WARN("音效 '{}' 未找到缓存，尝试加载。", file_path);
-  return loadSound(file_path);
+  return LoadSound(file_path);
 }
 
-void AudioManager::unloadSound(const std::string& file_path) {
+void AudioManager::UnloadSound(const std::string& file_path) {
   auto it = sounds_.find(file_path);
   if (it != sounds_.end()) {
     SPDLOG_DEBUG("卸载音效: {}", file_path);
@@ -75,13 +75,13 @@ void AudioManager::unloadSound(const std::string& file_path) {
   }
 }
 
-void AudioManager::clearSounds() {
+void AudioManager::ClearSounds() {
   if (!sounds_.empty()) {
     SPDLOG_DEBUG("正在清除所有 {} 个缓存的音效。", sounds_.size());
     sounds_.clear();  // unique_ptr处理删除
   }
 }
 
-void AudioManager::clearAudio() { clearSounds(); }
+void AudioManager::ClearAudio() { ClearSounds(); }
 
 }  // namespace engine::resource

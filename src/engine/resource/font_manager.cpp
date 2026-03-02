@@ -19,13 +19,13 @@ FontManager::FontManager() {
 FontManager::~FontManager() {
   if (!fonts_.empty()) {
     SPDLOG_DEBUG("FontManager 不为空，调用 clearFonts 处理清理逻辑。");
-    clearFonts();
+    ClearFonts();
   }
   TTF_Quit();
   SPDLOG_TRACE("FontManager 析构成功。");
 }
 
-TTF_Font* FontManager::loadFont(const std::string& file_path, int point_size) {
+TTF_Font* FontManager::LoadFont(const std::string& file_path, int point_size) {
   if (point_size <= 0) {
     SPDLOG_ERROR("无法加载字体 '{}'：无效的点大小 {}。", file_path, point_size);
     return nullptr;
@@ -55,7 +55,7 @@ TTF_Font* FontManager::loadFont(const std::string& file_path, int point_size) {
   return raw_font;
 }
 
-TTF_Font* FontManager::getFont(const std::string& file_path, int point_size) {
+TTF_Font* FontManager::GetFont(const std::string& file_path, int point_size) {
   FontKey key = {file_path, point_size};
   auto it = fonts_.find(key);
   if (it != fonts_.end()) {
@@ -63,10 +63,10 @@ TTF_Font* FontManager::getFont(const std::string& file_path, int point_size) {
   }
 
   SPDLOG_WARN("字体 '{}' ({}pt) 不在缓存中，尝试加载。", file_path, point_size);
-  return loadFont(file_path, point_size);
+  return LoadFont(file_path, point_size);
 }
 
-void FontManager::unloadFont(const std::string& file_path, int point_size) {
+void FontManager::UnloadFont(const std::string& file_path, int point_size) {
   FontKey key = {file_path, point_size};
   auto it = fonts_.find(key);
   if (it != fonts_.end()) {
@@ -77,7 +77,7 @@ void FontManager::unloadFont(const std::string& file_path, int point_size) {
   }
 }
 
-void FontManager::clearFonts() {
+void FontManager::ClearFonts() {
   if (!fonts_.empty()) {
     SPDLOG_DEBUG("正在清理所有 {} 个缓存的字体。", fonts_.size());
     fonts_.clear();

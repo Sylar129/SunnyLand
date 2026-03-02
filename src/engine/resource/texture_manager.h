@@ -22,11 +22,11 @@ class TextureManager final {
   TextureManager& operator=(TextureManager&&) = delete;
 
  private:
-  SDL_Texture* loadTexture(const std::string& file_path);
-  SDL_Texture* getTexture(const std::string& file_path);
-  glm::vec2 getTextureSize(const std::string& file_path);
-  void unloadTexture(const std::string& file_path);
-  void clearTextures();
+  SDL_Texture* LoadTexture(const std::string& file_path);
+  SDL_Texture* GetTexture(const std::string& file_path);
+  glm::vec2 GetTextureSize(const std::string& file_path);
+  void UnloadTexture(const std::string& file_path);
+  void ClearTextures();
 
   struct SDLTextureDeleter {
     void operator()(SDL_Texture* texture) const {

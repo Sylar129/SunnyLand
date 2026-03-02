@@ -15,7 +15,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer_(renderer) {
   SPDLOG_TRACE("TextureManager 构造成功。");
 }
 
-SDL_Texture* TextureManager::loadTexture(const std::string& file_path) {
+SDL_Texture* TextureManager::LoadTexture(const std::string& file_path) {
   auto it = textures_.find(file_path);
   if (it != textures_.end()) {
     return it->second.get();
@@ -35,18 +35,18 @@ SDL_Texture* TextureManager::loadTexture(const std::string& file_path) {
   return raw_texture;
 }
 
-SDL_Texture* TextureManager::getTexture(const std::string& file_path) {
+SDL_Texture* TextureManager::GetTexture(const std::string& file_path) {
   auto it = textures_.find(file_path);
   if (it != textures_.end()) {
     return it->second.get();
   }
 
   SPDLOG_WARN("纹理 '{}' 未找到缓存，尝试加载。", file_path);
-  return loadTexture(file_path);
+  return LoadTexture(file_path);
 }
 
-glm::vec2 TextureManager::getTextureSize(const std::string& file_path) {
-  SDL_Texture* texture = getTexture(file_path);
+glm::vec2 TextureManager::GetTextureSize(const std::string& file_path) {
+  SDL_Texture* texture = GetTexture(file_path);
   if (!texture) {
     SPDLOG_WARN("无法获取纹理: {}", file_path);
     return glm::vec2(0);
@@ -60,7 +60,7 @@ glm::vec2 TextureManager::getTextureSize(const std::string& file_path) {
   return size;
 }
 
-void TextureManager::unloadTexture(const std::string& file_path) {
+void TextureManager::UnloadTexture(const std::string& file_path) {
   auto it = textures_.find(file_path);
   if (it != textures_.end()) {
     SPDLOG_DEBUG("卸载纹理: {}", file_path);
@@ -70,7 +70,7 @@ void TextureManager::unloadTexture(const std::string& file_path) {
   }
 }
 
-void TextureManager::clearTextures() {
+void TextureManager::ClearTextures() {
   if (!textures_.empty()) {
     SPDLOG_DEBUG("正在清除所有 {} 个缓存的纹理。", textures_.size());
     textures_.clear();

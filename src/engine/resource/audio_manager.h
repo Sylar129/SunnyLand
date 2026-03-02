@@ -15,7 +15,6 @@ class AudioManager final {
 
  public:
   AudioManager();
-
   ~AudioManager();
 
   AudioManager(const AudioManager&) = delete;
@@ -24,11 +23,11 @@ class AudioManager final {
   AudioManager& operator=(AudioManager&&) = delete;
 
  private:
-  MIX_Audio* loadSound(const std::string& file_path);
-  MIX_Audio* getSound(const std::string& file_path);
-  void unloadSound(const std::string& file_path);
-  void clearSounds();
-  void clearAudio();
+  MIX_Audio* LoadSound(const std::string& file_path);
+  MIX_Audio* GetSound(const std::string& file_path);
+  void UnloadSound(const std::string& file_path);
+  void ClearSounds();
+  void ClearAudio();
 
   struct SDLMixAudioDeleter {
     void operator()(MIX_Audio* audio) const {

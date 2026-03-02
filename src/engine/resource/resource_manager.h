@@ -28,7 +28,7 @@ class ResourceManager final {
 
   ~ResourceManager();
 
-  void clear();
+  void Clear();
 
   ResourceManager(const ResourceManager&) = delete;
   ResourceManager& operator=(const ResourceManager&) = delete;
@@ -37,23 +37,23 @@ class ResourceManager final {
 
   // --- 统一资源访问接口 ---
   // -- Texture --
-  SDL_Texture* loadTexture(const std::string& file_path);
-  SDL_Texture* getTexture(const std::string& file_path);
-  void unloadTexture(const std::string& file_path);
-  glm::vec2 getTextureSize(const std::string& file_path);
-  void clearTextures();
+  SDL_Texture* LoadTexture(const std::string& file_path);
+  SDL_Texture* GetTexture(const std::string& file_path);
+  void UnloadTexture(const std::string& file_path);
+  glm::vec2 GetTextureSize(const std::string& file_path);
+  void ClearTextures();
 
   // -- Sound Effects (Chunks) --
-  MIX_Audio* loadSound(const std::string& file_path);
-  MIX_Audio* getSound(const std::string& file_path);
-  void unloadSound(const std::string& file_path);
-  void clearSounds();
+  MIX_Audio* LoadSound(const std::string& file_path);
+  MIX_Audio* GetSound(const std::string& file_path);
+  void UnloadSound(const std::string& file_path);
+  void ClearSounds();
 
   // -- Fonts --
-  TTF_Font* loadFont(const std::string& file_path, int point_size);
-  TTF_Font* getFont(const std::string& file_path, int point_size);
-  void unloadFont(const std::string& file_path, int point_size);
-  void clearFonts();
+  TTF_Font* LoadFont(const std::string& file_path, int point_size);
+  TTF_Font* GetFont(const std::string& file_path, int point_size);
+  void UnloadFont(const std::string& file_path, int point_size);
+  void ClearFonts();
 
  private:
   std::unique_ptr<TextureManager> texture_manager_;

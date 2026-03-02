@@ -33,7 +33,6 @@ class FontManager final {
 
  public:
   FontManager();
-
   ~FontManager();
 
   FontManager(const FontManager&) = delete;
@@ -42,10 +41,10 @@ class FontManager final {
   FontManager& operator=(FontManager&&) = delete;
 
  private:
-  TTF_Font* loadFont(const std::string& file_path, int point_size);
-  TTF_Font* getFont(const std::string& file_path, int point_size);
-  void unloadFont(const std::string& file_path, int point_size);
-  void clearFonts();
+  TTF_Font* LoadFont(const std::string& file_path, int point_size);
+  TTF_Font* GetFont(const std::string& file_path, int point_size);
+  void UnloadFont(const std::string& file_path, int point_size);
+  void ClearFonts();
 
  private:
   struct SDLFontDeleter {

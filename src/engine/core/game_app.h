@@ -28,9 +28,9 @@ class GameApp final {
 
  private:
   [[nodiscard]] bool Init();
-  bool initSDL();
-  bool initTime();
-  bool initResourceManager();
+  bool InitSDL();
+  bool InitTime();
+  bool InitResourceManager();
 
   void HandleEvents();
   void Update(float delta_time);
