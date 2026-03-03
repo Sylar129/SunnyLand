@@ -10,7 +10,7 @@ FontManager::FontManager() {
   if (!TTF_WasInit() && !TTF_Init()) {
     ENGINE_CRITICAL("FontManager Error: TTF_Init failed: {}", SDL_GetError());
   }
-  ENGINE_TRACE("Init FontManager Successfully");
+  ENGINE_TRACE("Init FontManager successfully");
 }
 
 FontManager::~FontManager() {
@@ -19,7 +19,7 @@ FontManager::~FontManager() {
     ClearFonts();
   }
   TTF_Quit();
-  ENGINE_TRACE("Deinit FontManager Successfully");
+  ENGINE_TRACE("Deinit FontManager successfully");
 }
 
 TTF_Font* FontManager::LoadFont(const std::string& file_path, int point_size) {

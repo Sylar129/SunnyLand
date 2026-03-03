@@ -10,7 +10,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer_(renderer) {
   if (!renderer_) {
     ENGINE_CRITICAL("Failed to init TextureManager:  SDL_Renderer is empty");
   }
-  ENGINE_TRACE("Init TextureManager Successfully");
+  ENGINE_TRACE("Init TextureManager successfully");
 }
 
 SDL_Texture* TextureManager::LoadTexture(const std::string& file_path) {
