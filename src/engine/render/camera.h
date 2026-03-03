@@ -27,27 +27,27 @@ class Camera final {
          const glm::vec2& position = glm::vec2(0.0f, 0.0f),
          const std::optional<engine::utils::Rect> limit_bounds = std::nullopt);
 
-  void update(float delta_time);       ///< @brief Update camera position
-  void move(const glm::vec2& offset);  ///< @brief Move camera
+  void Update(float delta_time);       ///< @brief Update camera position
+  void Move(const glm::vec2& offset);  ///< @brief Move camera
 
-  glm::vec2 worldToScreen(const glm::vec2& world_pos)
+  glm::vec2 WorldToScreen(const glm::vec2& world_pos)
       const;  ///< @brief Convert world coordinates to screen coordinates
-  glm::vec2 worldToScreenWithParallax(const glm::vec2& world_pos,
+  glm::vec2 WorldToScreenWithParallax(const glm::vec2& world_pos,
                                       const glm::vec2& scroll_factor)
       const;  ///< @brief Convert world coordinates to screen coordinates,
               ///< considering parallax scrolling
-  glm::vec2 screenToWorld(const glm::vec2& screen_pos)
+  glm::vec2 ScreenToWorld(const glm::vec2& screen_pos)
       const;  ///< @brief Convert screen coordinates to world coordinates
 
-  void setPosition(const glm::vec2& position);  ///< @brief Set camera position
-  void setLimitBounds(
+  void SetPosition(const glm::vec2& position);  ///< @brief Set camera position
+  void SetLimitBounds(
       const engine::utils::Rect&
           bounds);  ///< @brief Set the movement range limit for the camera
 
-  const glm::vec2& getPosition() const;  ///< @brief Get camera position
-  std::optional<engine::utils::Rect> getLimitBounds()
+  const glm::vec2& GetPosition() const;  ///< @brief Get camera position
+  std::optional<engine::utils::Rect> GetLimitBounds()
       const;  ///< @brief Get the camera's movement range limit
-  glm::vec2 getViewportSize() const;  ///< @brief Get viewport size
+  glm::vec2 GetViewportSize() const;  ///< @brief Get viewport size
 
   // Disable copy and move semantics
   Camera(const Camera&) = delete;
@@ -56,7 +56,7 @@ class Camera final {
   Camera& operator=(Camera&&) = delete;
 
  private:
-  void clampPosition();  ///< @brief Clamp camera position within boundaries
+  void ClampPosition();  ///< @brief Clamp camera position within boundaries
 };
 
 }  // namespace engine::render

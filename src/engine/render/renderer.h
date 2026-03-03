@@ -51,7 +51,7 @@ class Renderer final {
    * @param scale Scale factor.
    * @param angle Rotation angle (degrees).
    */
-  void drawSprite(const Camera& camera, const Sprite& sprite,
+  void DrawSprite(const Camera& camera, const Sprite& sprite,
                   const glm::vec2& position,
                   const glm::vec2& scale = {1.0f, 1.0f}, double angle = 0.0f);
 
@@ -64,7 +64,7 @@ class Renderer final {
    * @param scroll_factor Scroll factor.
    * @param scale Scale factor.
    */
-  void drawParallax(const Camera& camera, const Sprite& sprite,
+  void DrawParallax(const Camera& camera, const Sprite& sprite,
                     const glm::vec2& position, const glm::vec2& scroll_factor,
                     const glm::bvec2& repeat = {true, true},
                     const glm::vec2& scale = {1.0f, 1.0f});
@@ -78,22 +78,22 @@ class Renderer final {
    * @param size Optional: size of destination rectangle. If
    * std::nullopt, use Sprite's original size.
    */
-  void drawUISprite(const Sprite& sprite, const glm::vec2& position,
+  void DrawUISprite(const Sprite& sprite, const glm::vec2& position,
                     const std::optional<glm::vec2>& size = std::nullopt);
 
-  void present();  ///< @brief Update screen, wraps SDL_RenderPresent function
-  void clearScreen();  ///< @brief Clear screen, wraps SDL_RenderClear function
+  void Present();  ///< @brief Update screen, wraps SDL_RenderPresent function
+  void ClearScreen();  ///< @brief Clear screen, wraps SDL_RenderClear function
 
-  void setDrawColor(
+  void SetDrawColor(
       Uint8 r, Uint8 g, Uint8 b,
       Uint8 a = 255);  ///< @brief Set draw color, wraps SDL_SetRenderDrawColor
                        ///< function, using Uint8 type
-  void setDrawColorFloat(float r, float g, float b,
+  void SetDrawColorFloat(float r, float g, float b,
                          float a = 1.0f);  ///< @brief Set draw color, wraps
                                            ///< SDL_SetRenderDrawColorFloat
                                            ///< function, using float type
 
-  SDL_Renderer* getSDLRenderer() const {
+  SDL_Renderer* GetSDLRenderer() const {
     return renderer_;
   }  ///< @brief Get underlying SDL_Renderer pointer
 
@@ -104,12 +104,12 @@ class Renderer final {
   Renderer& operator=(Renderer&&) = delete;
 
  private:
-  std::optional<SDL_FRect> getSpriteSrcRect(
+  std::optional<SDL_FRect> GetSpriteSrcRect(
       const Sprite&
           sprite);  ///< @brief
                     ///< Get sprite's source rectangle for rendering. Returns
                     ///< std::nullopt on error and skips drawing
-  bool isRectInViewport(
+  bool IsRectInViewport(
       const Camera& camera,
       const SDL_FRect& rect);  ///< @brief Check if rectangle is within viewport
                                ///< for viewport clipping

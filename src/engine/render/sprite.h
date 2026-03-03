@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include <optional>  // 用于 std::optional 表示可选的源矩形
+#include <optional>  // For std::optional to represent optional source rectangle
 #include <string>
 
-#include "SDL3/SDL_rect.h"  // 用于 SDL_FRect
+#include "SDL3/SDL_rect.h"  // For SDL_FRect
 
 namespace engine::render {
 
@@ -35,23 +35,23 @@ class Sprite final {
         is_flipped_(is_flipped) {}
 
   // --- getters and setters ---
-  const std::string& getTextureId() const {
+  const std::string& GetTextureId() const {
     return texture_id_;
   }  ///< @brief Get texture ID
-  const std::optional<SDL_FRect>& getSourceRect() const {
+  const std::optional<SDL_FRect>& GetSourceRect() const {
     return source_rect_;
   }  ///< @brief Get source rectangle (std::nullopt if using entire texture)
-  bool isFlipped() const {
+  bool IsFlipped() const {
     return is_flipped_;
   }  ///< @brief Get whether to flip horizontally
 
-  void setTextureId(const std::string& texture_id) {
+  void SetTextureId(const std::string& texture_id) {
     texture_id_ = texture_id;
   }  ///< @brief Set texture ID
-  void setSourceRect(const std::optional<SDL_FRect>& source_rect) {
+  void SetSourceRect(const std::optional<SDL_FRect>& source_rect) {
     source_rect_ = source_rect;
   }  ///< @brief Set source rectangle (std::nullopt if using entire texture)
-  void setFlipped(bool flipped) {
+  void SetFlipped(bool flipped) {
     is_flipped_ = flipped;
   }  ///< @brief Set whether to flip horizontally
 

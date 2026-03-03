@@ -46,8 +46,8 @@ bool GameApp::Init() {
   if (!InitSDL()) return false;
   if (!InitTime()) return false;
   if (!InitResourceManager()) return false;
-  if (!initRenderer()) return false;
-  if (!initCamera()) return false;
+  if (!InitRenderer()) return false;
+  if (!InitCamera()) return false;
 
   is_running_ = true;
   return true;
@@ -75,26 +75,26 @@ bool GameApp::InitSDL() {
   return true;
 }
 
-bool GameApp::initRenderer() {
+bool GameApp::InitRenderer() {
   try {
     renderer_ = std::make_unique<engine::render::Renderer>(
         sdl_renderer_, resource_manager_.get());
   } catch (const std::exception& e) {
-    ENGINE_ERROR("初始化渲染器失败: {}", e.what());
+    ENGINE_ERROR("Renderer initialization failed: {}", e.what());
     return false;
   }
-  ENGINE_TRACE("渲染器初始化成功。");
+  ENGINE_TRACE("Renderer initialized successfully.");
   return true;
 }
 
-bool GameApp::initCamera() {
+bool GameApp::InitCamera() {
   try {
     camera_ = std::make_unique<engine::render::Camera>(glm::vec2(640, 360));
   } catch (const std::exception& e) {
-    ENGINE_ERROR("初始化相机失败: {}", e.what());
+    ENGINE_ERROR("Camera initialization failed: {}", e.what());
     return false;
   }
-  ENGINE_TRACE("相机初始化成功。");
+  ENGINE_TRACE("Camera initialized successfully.");
   return true;
 }
 
@@ -118,17 +118,17 @@ void GameApp::HandleEvents() {
   }
 }
 
-void GameApp::Update(float delta_time) { testCamera(); }
+void GameApp::Update(float delta_time) { TestCamera(); }
 
 void GameApp::Render() {
-  // 1. 清除屏幕
-  renderer_->clearScreen();
+  // Clear screen
+  renderer_->ClearScreen();
 
-  // 2. 具体渲染代码
-  testRenderer();
+  // Render scene
+  TestRenderer();
 
-  // 3. 更新屏幕显示
-  renderer_->present();
+  // Update screen display
+  renderer_->Present();
 }
 
 void GameApp::Close() {
@@ -147,7 +147,7 @@ void GameApp::Close() {
   is_running_ = false;
 }
 
-void GameApp::testRenderer() {
+void GameApp::TestRenderer() {
   engine::render::Sprite sprite_world("assets/textures/Actors/frog.png");
   engine::render::Sprite sprite_ui("assets/textures/UI/buttons/Start1.png");
   engine::render::Sprite sprite_parallax("assets/textures/Layers/back.png");
@@ -155,20 +155,20 @@ void GameApp::testRenderer() {
   static float rotation = 0.0f;
   rotation += 0.1f;
 
-  // 注意渲染顺序
-  renderer_->drawParallax(*camera_, sprite_parallax, glm::vec2(100, 100),
+  // Note: rendering order matters
+  renderer_->DrawParallax(*camera_, sprite_parallax, glm::vec2(100, 100),
                           glm::vec2(0.5f, 0.5f), glm::bvec2(true, false));
-  renderer_->drawSprite(*camera_, sprite_world, glm::vec2(200, 200),
+  renderer_->DrawSprite(*camera_, sprite_world, glm::vec2(200, 200),
                         glm::vec2(1.0f, 1.0f), rotation);
-  renderer_->drawUISprite(sprite_ui, glm::vec2(100, 100));
+  renderer_->DrawUISprite(sprite_ui, glm::vec2(100, 100));
 }
 
-void GameApp::testCamera() {
+void GameApp::TestCamera() {
   auto key_state = SDL_GetKeyboardState(nullptr);
-  if (key_state[SDL_SCANCODE_UP]) camera_->move(glm::vec2(0, -1));
-  if (key_state[SDL_SCANCODE_DOWN]) camera_->move(glm::vec2(0, 1));
-  if (key_state[SDL_SCANCODE_LEFT]) camera_->move(glm::vec2(-1, 0));
-  if (key_state[SDL_SCANCODE_RIGHT]) camera_->move(glm::vec2(1, 0));
+  if (key_state[SDL_SCANCODE_UP]) camera_->Move(glm::vec2(0, -1));
+  if (key_state[SDL_SCANCODE_DOWN]) camera_->Move(glm::vec2(0, 1));
+  if (key_state[SDL_SCANCODE_LEFT]) camera_->Move(glm::vec2(-1, 0));
+  if (key_state[SDL_SCANCODE_RIGHT]) camera_->Move(glm::vec2(1, 0));
 }
 
 }  // namespace engine::core

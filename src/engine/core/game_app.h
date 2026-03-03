@@ -34,8 +34,8 @@ class GameApp final {
  private:
   [[nodiscard]] bool Init();
   [[nodiscard]] bool InitSDL();
-  [[nodiscard]] bool initRenderer();
-  [[nodiscard]] bool initCamera();
+  [[nodiscard]] bool InitRenderer();
+  [[nodiscard]] bool InitCamera();
   [[nodiscard]] bool InitTime();
   [[nodiscard]] bool InitResourceManager();
 
@@ -44,9 +44,9 @@ class GameApp final {
   void Render();
   void Close();
 
-  // 测试用函数
-  void testRenderer();
-  void testCamera();
+  // Test functions
+  void TestRenderer();
+  void TestCamera();
 
   SDL_Window* window_ = nullptr;
   SDL_Renderer* sdl_renderer_ = nullptr;

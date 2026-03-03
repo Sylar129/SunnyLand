@@ -27,27 +27,28 @@ Renderer::Renderer(SDL_Renderer* sdl_renderer,
         "Renderer construction failed: provided ResourceManager pointer is "
         "null.");
   }
-  setDrawColor(0, 0, 0, 255);
+  SetDrawColor(0, 0, 0, 255);
   ENGINE_TRACE("Renderer construction successful.");
 }
 
-void Renderer::drawSprite(const Camera& camera, const Sprite& sprite,
+void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
                           const glm::vec2& position, const glm::vec2& scale,
                           double angle) {
-  auto texture = resource_manager_->GetTexture(sprite.getTextureId());
+  auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("无法为 ID {} 获取纹理。", sprite.getTextureId());
+    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return;
   }
 
-  auto src_rect = getSpriteSrcRect(sprite);
+  auto src_rect = GetSpriteSrcRect(sprite);
   if (!src_rect.has_value()) {
-    ENGINE_ERROR("无法获取精灵的源矩形，ID: {}", sprite.getTextureId());
+    ENGINE_ERROR("Failed to get sprite's source rectangle, ID: {}",
+                 sprite.GetTextureId());
     return;
   }
 
   // Apply camera transformation
-  glm::vec2 position_screen = camera.worldToScreen(position);
+  glm::vec2 position_screen = camera.WorldToScreen(position);
 
   // Calculate destination rectangle, note that position is the sprite's
   // top-left coordinate
@@ -56,50 +57,50 @@ void Renderer::drawSprite(const Camera& camera, const Sprite& sprite,
   SDL_FRect dest_rect = {position_screen.x, position_screen.y, scaled_w,
                          scaled_h};
 
-  if (!isRectInViewport(camera,
+  if (!IsRectInViewport(camera,
                         dest_rect)) {  // Viewport clipping: if sprite is
                                        // outside viewport, do not draw
     ENGINE_INFO("Sprite is outside viewport range, ID: {}",
-                sprite.getTextureId());
+                sprite.GetTextureId());
     return;
   }
 
   // Execute drawing (default rotation center is the sprite's center)
   if (!SDL_RenderTextureRotated(
           renderer_, texture, &src_rect.value(), &dest_rect, angle, NULL,
-          sprite.isFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
+          sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
     ENGINE_ERROR("Failed to render rotated texture (ID: {}): {}",
-                 sprite.getTextureId(), SDL_GetError());
+                 sprite.GetTextureId(), SDL_GetError());
   }
 }
 
-void Renderer::drawParallax(const Camera& camera, const Sprite& sprite,
+void Renderer::DrawParallax(const Camera& camera, const Sprite& sprite,
                             const glm::vec2& position,
                             const glm::vec2& scroll_factor,
                             const glm::bvec2& repeat, const glm::vec2& scale) {
-  auto texture = resource_manager_->GetTexture(sprite.getTextureId());
+  auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.getTextureId());
+    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return;
   }
 
-  auto src_rect = getSpriteSrcRect(sprite);
+  auto src_rect = GetSpriteSrcRect(sprite);
   if (!src_rect.has_value()) {
     ENGINE_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                 sprite.getTextureId());
+                 sprite.GetTextureId());
     return;
   }
 
   // Apply camera transformation
   glm::vec2 position_screen =
-      camera.worldToScreenWithParallax(position, scroll_factor);
+      camera.WorldToScreenWithParallax(position, scroll_factor);
 
   // Calculate scaled texture size
   float scaled_tex_w = src_rect.value().w * scale.x;
   float scaled_tex_h = src_rect.value().h * scale.y;
 
   glm::vec2 start, stop;
-  glm::vec2 viewport_size = camera.getViewportSize();
+  glm::vec2 viewport_size = camera.GetViewportSize();
 
   if (repeat.x) {
     // Use glm::mod for float modulo
@@ -128,24 +129,25 @@ void Renderer::drawParallax(const Camera& camera, const Sprite& sprite,
       SDL_FRect dest_rect = {x, y, scaled_tex_w, scaled_tex_h};
       if (!SDL_RenderTexture(renderer_, texture, nullptr, &dest_rect)) {
         ENGINE_ERROR("Failed to render parallax texture (ID: {}): {}",
-                     sprite.getTextureId(), SDL_GetError());
+                     sprite.GetTextureId(), SDL_GetError());
         return;
       }
     }
   }
 }
 
-void Renderer::drawUISprite(const Sprite& sprite, const glm::vec2& position,
+void Renderer::DrawUISprite(const Sprite& sprite, const glm::vec2& position,
                             const std::optional<glm::vec2>& size) {
-  auto texture = resource_manager_->GetTexture(sprite.getTextureId());
+  auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("无法为 ID {} 获取纹理。", sprite.getTextureId());
+    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return;
   }
 
-  auto src_rect = getSpriteSrcRect(sprite);
+  auto src_rect = GetSpriteSrcRect(sprite);
   if (!src_rect.has_value()) {
-    ENGINE_ERROR("无法获取精灵的源矩形，ID: {}", sprite.getTextureId());
+    ENGINE_ERROR("Failed to get sprite's source rectangle, ID: {}",
+                 sprite.GetTextureId());
     return;
   }
 
@@ -163,60 +165,60 @@ void Renderer::drawUISprite(const Sprite& sprite, const glm::vec2& position,
   // Execute drawing (UI rotation is not considered)
   if (!SDL_RenderTextureRotated(
           renderer_, texture, &src_rect.value(), &dest_rect, 0.0, nullptr,
-          sprite.isFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
+          sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
     ENGINE_ERROR("Failed to render UI Sprite (ID: {}): {}",
-                 sprite.getTextureId(), SDL_GetError());
+                 sprite.GetTextureId(), SDL_GetError());
   }
 }
 
-void Renderer::setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+void Renderer::SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
   if (!SDL_SetRenderDrawColor(renderer_, r, g, b, a)) {
     ENGINE_ERROR("Failed to set render draw color: {}", SDL_GetError());
   }
 }
 
-void Renderer::setDrawColorFloat(float r, float g, float b, float a) {
+void Renderer::SetDrawColorFloat(float r, float g, float b, float a) {
   if (!SDL_SetRenderDrawColorFloat(renderer_, r, g, b, a)) {
     ENGINE_ERROR("Failed to set render draw color: {}", SDL_GetError());
   }
 }
 
-void Renderer::clearScreen() {
+void Renderer::ClearScreen() {
   if (!SDL_RenderClear(renderer_)) {
     ENGINE_ERROR("Failed to clear renderer: {}", SDL_GetError());
   }
 }
 
-void Renderer::present() { SDL_RenderPresent(renderer_); }
+void Renderer::Present() { SDL_RenderPresent(renderer_); }
 
-std::optional<SDL_FRect> Renderer::getSpriteSrcRect(const Sprite& sprite) {
-  SDL_Texture* texture = resource_manager_->GetTexture(sprite.getTextureId());
+std::optional<SDL_FRect> Renderer::GetSpriteSrcRect(const Sprite& sprite) {
+  SDL_Texture* texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.getTextureId());
+    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return std::nullopt;
   }
 
-  auto src_rect = sprite.getSourceRect();
+  auto src_rect = sprite.GetSourceRect();
   if (src_rect.has_value()) {  // If Sprite has a specified rect, check if size
                                // is valid
     if (src_rect.value().w <= 0 || src_rect.value().h <= 0) {
       ENGINE_ERROR("Source rectangle size is invalid, ID: {}",
-                   sprite.getTextureId());
+                   sprite.GetTextureId());
       return std::nullopt;
     }
     return src_rect;
   } else {  // Otherwise get texture size and return the entire texture size
     SDL_FRect result = {0, 0, 0, 0};
     if (!SDL_GetTextureSize(texture, &result.w, &result.h)) {
-      ENGINE_ERROR("Failed to get texture size, ID: {}", sprite.getTextureId());
+      ENGINE_ERROR("Failed to get texture size, ID: {}", sprite.GetTextureId());
       return std::nullopt;
     }
     return result;
   }
 }
 
-bool Renderer::isRectInViewport(const Camera& camera, const SDL_FRect& rect) {
-  glm::vec2 viewport_size = camera.getViewportSize();
+bool Renderer::IsRectInViewport(const Camera& camera, const SDL_FRect& rect) {
+  glm::vec2 viewport_size = camera.GetViewportSize();
   return rect.x + rect.w >= 0 &&
          rect.x <= viewport_size.x &&  // Equivalent to AABB collision detection
          rect.y + rect.h >= 0 && rect.y <= viewport_size.y;

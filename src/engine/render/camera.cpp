@@ -16,28 +16,28 @@ Camera::Camera(const glm::vec2& viewport_size, const glm::vec2& position,
                position_.y);
 }
 
-void Camera::setPosition(const glm::vec2& position) {
+void Camera::SetPosition(const glm::vec2& position) {
   position_ = position;
-  clampPosition();
+  ClampPosition();
 }
 
-void Camera::update(float /* delta_time */) {
+void Camera::Update(float /* delta_time */) {
   // TODO Auto-follow target
 }
 
-void Camera::move(const glm::vec2& offset) {
+void Camera::Move(const glm::vec2& offset) {
   position_ += offset;
-  clampPosition();
+  ClampPosition();
 }
 
-void Camera::setLimitBounds(const engine::utils::Rect& bounds) {
+void Camera::SetLimitBounds(const engine::utils::Rect& bounds) {
   limit_bounds_ = bounds;
-  clampPosition();  // Apply limit immediately after setting bounds
+  ClampPosition();  // Apply limit immediately after setting bounds
 }
 
-const glm::vec2& Camera::getPosition() const { return position_; }
+const glm::vec2& Camera::GetPosition() const { return position_; }
 
-void Camera::clampPosition() {
+void Camera::ClampPosition() {
   // Boundary check needs to ensure camera view (position to position +
   // viewport_size) is within limit_bounds
   if (limit_bounds_.has_value() && limit_bounds_->size.x > 0 &&
@@ -57,25 +57,25 @@ void Camera::clampPosition() {
   // If limit_bounds is invalid, do not apply limit
 }
 
-glm::vec2 Camera::worldToScreen(const glm::vec2& world_pos) const {
+glm::vec2 Camera::WorldToScreen(const glm::vec2& world_pos) const {
   // 将世界坐标减去相机左上角位置
   return world_pos - position_;
 }
 
-glm::vec2 Camera::worldToScreenWithParallax(
+glm::vec2 Camera::WorldToScreenWithParallax(
     const glm::vec2& world_pos, const glm::vec2& scroll_factor) const {
   // 相机位置应用滚动因子
   return world_pos - position_ * scroll_factor;
 }
 
-glm::vec2 Camera::screenToWorld(const glm::vec2& screen_pos) const {
+glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
   // 将屏幕坐标加上相机左上角位置
   return screen_pos + position_;
 }
 
-glm::vec2 Camera::getViewportSize() const { return viewport_size_; }
+glm::vec2 Camera::GetViewportSize() const { return viewport_size_; }
 
-std::optional<engine::utils::Rect> Camera::getLimitBounds() const {
+std::optional<engine::utils::Rect> Camera::GetLimitBounds() const {
   return limit_bounds_;
 }
 
