@@ -14,22 +14,22 @@ endif()
 
 set(TARGET ${PROJECT_NAME})
 
-add_subdirectory(vendored/spdlog)
-add_subdirectory(vendored/SDL)
+add_subdirectory(third_party/spdlog)
+add_subdirectory(third_party/SDL)
 
 set(SDLIMAGE_VENDORED OFF)
-add_subdirectory(vendored/SDL_image)
+add_subdirectory(third_party/SDL_image)
 
 set(SDLMIXER_VENDORED OFF)
 set(SDLMIXER_VORBIS_STB OFF)
 set(SDLMIXER_VORBIS_VORBISFILE OFF)
-add_subdirectory(vendored/SDL_mixer)
+add_subdirectory(third_party/SDL_mixer)
 
-add_subdirectory(vendored/SDL_ttf)
-add_subdirectory(vendored/glm)
+add_subdirectory(third_party/SDL_ttf)
+add_subdirectory(third_party/glm)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
-add_subdirectory(vendored/json)
+add_subdirectory(third_party/json)
 
 include_directories(src)
 
