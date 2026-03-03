@@ -66,6 +66,8 @@ bool GameApp::InitSDL() {
     ENGINE_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
     return false;
   }
+  SDL_SetRenderLogicalPresentation(renderer_, 640, 360,
+                                   SDL_LOGICAL_PRESENTATION_LETTERBOX);
   return true;
 }
 
