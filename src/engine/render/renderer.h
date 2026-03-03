@@ -18,48 +18,51 @@ namespace engine::render {
 class Camera;
 
 /**
- * @brief 封装 SDL3 渲染操作
+ * @brief Encapsulates SDL3 rendering operations
  *
- * 包装 SDL_Renderer 并提供清除屏幕、绘制精灵和呈现最终图像的方法。
- * 在构造时初始化。依赖于一个有效的 SDL_Renderer 和 ResourceManager。
- * 构造失败会抛出异常。
+ * Wraps SDL_Renderer and provides methods to clear screen, draw sprites, and
+ * present the final image. Initializes on construction. Depends on valid
+ * SDL_Renderer and ResourceManager. Construction failure throws an exception.
  */
 class Renderer final {
  private:
-  SDL_Renderer* renderer_ = nullptr;  ///< @brief 指向 SDL_Renderer 的非拥有指针
+  SDL_Renderer* renderer_ =
+      nullptr;  ///< @brief Non-owning pointer to SDL_Renderer
   engine::resource::ResourceManager* resource_manager_ =
-      nullptr;  ///< @brief 指向 ResourceManager 的非拥有指针
+      nullptr;  ///< @brief Non-owning pointer to ResourceManager
 
  public:
   /**
-   * @brief 构造函数
+   * @brief Constructor
    *
-   * @param sdl_renderer 指向有效的 SDL_Renderer 的指针。不能为空。
-   * @param resource_manager 指向有效的 ResourceManager 的指针。不能为空。
-   * @throws std::runtime_error 如果任一指针为 nullptr。
+   * @param sdl_renderer Pointer to valid SDL_Renderer. Cannot be null.
+   * @param resource_manager Pointer to valid ResourceManager. Cannot be null.
+   * @throws std::runtime_error If any pointer is nullptr.
    */
   Renderer(SDL_Renderer* sdl_renderer,
            engine::resource::ResourceManager* resource_manager);
 
   /**
-   * @brief 绘制一个精灵
+   * @brief Draw a sprite
    *
-   * @param sprite 包含纹理ID、源矩形和翻转状态的 Sprite 对象。
-   * @param position 世界坐标中的左上角位置。
-   * @param scale 缩放因子。
-   * @param angle 旋转角度（度）。
+   * @param sprite Sprite object containing texture ID, source rect, and flip
+   * state.
+   * @param position Top-left position in world coordinates.
+   * @param scale Scale factor.
+   * @param angle Rotation angle (degrees).
    */
   void drawSprite(const Camera& camera, const Sprite& sprite,
                   const glm::vec2& position,
                   const glm::vec2& scale = {1.0f, 1.0f}, double angle = 0.0f);
 
   /**
-   * @brief 绘制视差滚动背景
+   * @brief Draw parallax scrolling background
    *
-   * @param sprite 包含纹理ID、源矩形和翻转状态的 Sprite 对象。
-   * @param position 世界坐标。
-   * @param scroll_factor 滚动因子。
-   * @param scale 缩放因子。
+   * @param sprite Sprite object containing texture ID, source rect, and flip
+   * state.
+   * @param position World coordinates.
+   * @param scroll_factor Scroll factor.
+   * @param scale Scale factor.
    */
   void drawParallax(const Camera& camera, const Sprite& sprite,
                     const glm::vec2& position, const glm::vec2& scroll_factor,
@@ -67,33 +70,34 @@ class Renderer final {
                     const glm::vec2& scale = {1.0f, 1.0f});
 
   /**
-   * @brief 在屏幕坐标中直接渲染一个用于UI的Sprite对象。
+   * @brief Directly render a Sprite object for UI in screen coordinates.
    *
-   * @param sprite 包含纹理ID、源矩形和翻转状态的Sprite对象。
-   * @param position 屏幕坐标中的左上角位置。
-   * @param size 可选：目标矩形的大小。如果为
-   * std::nullopt，则使用Sprite的原始大小。
+   * @param sprite Sprite object containing texture ID, source rect, and flip
+   * state.
+   * @param position Top-left position in screen coordinates.
+   * @param size Optional: size of destination rectangle. If
+   * std::nullopt, use Sprite's original size.
    */
   void drawUISprite(const Sprite& sprite, const glm::vec2& position,
                     const std::optional<glm::vec2>& size = std::nullopt);
 
-  void present();      ///< @brief 更新屏幕，包装 SDL_RenderPresent 函数
-  void clearScreen();  ///< @brief 清屏，包装 SDL_RenderClear 函数
+  void present();  ///< @brief Update screen, wraps SDL_RenderPresent function
+  void clearScreen();  ///< @brief Clear screen, wraps SDL_RenderClear function
 
   void setDrawColor(
       Uint8 r, Uint8 g, Uint8 b,
-      Uint8 a = 255);  ///< @brief 设置绘制颜色，包装 SDL_SetRenderDrawColor
-                       ///< 函数，使用 Uint8 类型
-  void setDrawColorFloat(
-      float r, float g, float b,
-      float a = 1.0f);  ///< @brief 设置绘制颜色，包装
-                        ///< SDL_SetRenderDrawColorFloat 函数，使用 float 类型
+      Uint8 a = 255);  ///< @brief Set draw color, wraps SDL_SetRenderDrawColor
+                       ///< function, using Uint8 type
+  void setDrawColorFloat(float r, float g, float b,
+                         float a = 1.0f);  ///< @brief Set draw color, wraps
+                                           ///< SDL_SetRenderDrawColorFloat
+                                           ///< function, using float type
 
   SDL_Renderer* getSDLRenderer() const {
     return renderer_;
-  }  ///< @brief 获取底层的 SDL_Renderer 指针
+  }  ///< @brief Get underlying SDL_Renderer pointer
 
-  // 禁用拷贝和移动语义
+  // Disable copy and move semantics
   Renderer(const Renderer&) = delete;
   Renderer& operator=(const Renderer&) = delete;
   Renderer(Renderer&&) = delete;
@@ -103,10 +107,12 @@ class Renderer final {
   std::optional<SDL_FRect> getSpriteSrcRect(
       const Sprite&
           sprite);  ///< @brief
-                    ///< 获取精灵的源矩形，用于具体绘制。出现错误则返回std::nullopt并跳过绘制
+                    ///< Get sprite's source rectangle for rendering. Returns
+                    ///< std::nullopt on error and skips drawing
   bool isRectInViewport(
       const Camera& camera,
-      const SDL_FRect& rect);  ///< @brief 判断矩形是否在视口中，用于视口裁剪
+      const SDL_FRect& rect);  ///< @brief Check if rectangle is within viewport
+                               ///< for viewport clipping
 };
 
 }  // namespace engine::render

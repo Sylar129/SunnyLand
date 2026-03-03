@@ -10,26 +10,22 @@
 namespace engine::render {
 
 /**
- * @brief 表示要绘制的视觉精灵的数据。
+ * @brief Represents data of a visual sprite to be drawn.
  *
- * 包含纹理标识符、要绘制的纹理部分（源矩形）以及翻转状态。
- * 位置、缩放和旋转由外部（例如 SpriteComponent）标识。
- * 渲染工作由 Renderer 类完成。（传入Sprite作为参数）
+ * Contains texture identifier, texture part to draw (source rectangle), and
+ * flip state. Position, scale and rotation are handled externally (e.g., by
+ * SpriteComponent). Rendering is performed by Renderer class. (Pass Sprite as
+ * parameter)
  */
 class Sprite final {
- private:
-  std::string texture_id_;                ///< @brief 纹理资源的标识符
-  std::optional<SDL_FRect> source_rect_;  ///< @brief 可选：要绘制的纹理部分
-  bool is_flipped_ = false;               ///< @brief 是否水平翻转
-
  public:
   /**
-   * @brief 构造一个精灵
+   * @brief Construct a sprite
    *
-   * @param texture_id 纹理资源的标识符。不应为空。
-   * @param source_rect 可选的源矩形（SDL_FRect），定义要使用的纹理部分。如果为
-   * std::nullopt，则使用整个纹理。
-   * @param is_flipped 是否水平翻转
+   * @param texture_id Identifier of texture resource. Should not be empty.
+   * @param source_rect Optional source rectangle (SDL_FRect), defining which
+   * part of texture to use. If std::nullopt, use the entire texture.
+   * @param is_flipped Whether to flip horizontally
    */
   Sprite(const std::string& texture_id,
          const std::optional<SDL_FRect>& source_rect = std::nullopt,
@@ -41,21 +37,29 @@ class Sprite final {
   // --- getters and setters ---
   const std::string& getTextureId() const {
     return texture_id_;
-  }  ///< @brief 获取纹理 ID
+  }  ///< @brief Get texture ID
   const std::optional<SDL_FRect>& getSourceRect() const {
     return source_rect_;
-  }  ///< @brief 获取源矩形 (如果使用整个纹理则为 std::nullopt)
-  bool isFlipped() const { return is_flipped_; }  ///< @brief 获取是否水平翻转
+  }  ///< @brief Get source rectangle (std::nullopt if using entire texture)
+  bool isFlipped() const {
+    return is_flipped_;
+  }  ///< @brief Get whether to flip horizontally
 
   void setTextureId(const std::string& texture_id) {
     texture_id_ = texture_id;
-  }  ///< @brief 设置纹理 ID
+  }  ///< @brief Set texture ID
   void setSourceRect(const std::optional<SDL_FRect>& source_rect) {
     source_rect_ = source_rect;
-  }  ///< @brief 设置源矩形 (如果使用整个纹理则为 std::nullopt)
+  }  ///< @brief Set source rectangle (std::nullopt if using entire texture)
   void setFlipped(bool flipped) {
     is_flipped_ = flipped;
-  }  ///< @brief 设置是否水平翻转
+  }  ///< @brief Set whether to flip horizontally
+
+ private:
+  std::string texture_id_;  ///< @brief Identifier of texture resource
+  std::optional<SDL_FRect>
+      source_rect_;          ///< @brief Optional: texture part to draw
+  bool is_flipped_ = false;  ///< @brief Whether to flip horizontally
 };
 
 }  // namespace engine::render

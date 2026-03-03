@@ -12,7 +12,8 @@ Camera::Camera(const glm::vec2& viewport_size, const glm::vec2& position,
     : viewport_size_(viewport_size),
       position_(position),
       limit_bounds_(limit_bounds) {
-  ENGINE_TRACE("Camera 初始化成功，位置: {},{}", position_.x, position_.y);
+  ENGINE_TRACE("Camera initialized successfully, position: {},", position_.x,
+               position_.y);
 }
 
 void Camera::setPosition(const glm::vec2& position) {
@@ -21,7 +22,7 @@ void Camera::setPosition(const glm::vec2& position) {
 }
 
 void Camera::update(float /* delta_time */) {
-  // TODO 自动跟随目标
+  // TODO Auto-follow target
 }
 
 void Camera::move(const glm::vec2& offset) {
@@ -31,28 +32,29 @@ void Camera::move(const glm::vec2& offset) {
 
 void Camera::setLimitBounds(const engine::utils::Rect& bounds) {
   limit_bounds_ = bounds;
-  clampPosition();  // 设置边界后，立即应用限制
+  clampPosition();  // Apply limit immediately after setting bounds
 }
 
 const glm::vec2& Camera::getPosition() const { return position_; }
 
 void Camera::clampPosition() {
-  // 边界检查需要确保相机视图（position 到 position + viewport_size）在
-  // limit_bounds 内
+  // Boundary check needs to ensure camera view (position to position +
+  // viewport_size) is within limit_bounds
   if (limit_bounds_.has_value() && limit_bounds_->size.x > 0 &&
       limit_bounds_->size.y > 0) {
-    // 计算允许的相机位置范围
+    // Calculate allowed camera position range
     glm::vec2 min_cam_pos = limit_bounds_->position;
     glm::vec2 max_cam_pos =
         limit_bounds_->position + limit_bounds_->size - viewport_size_;
 
-    // 确保 max_cam_pos 不小于 min_cam_pos (视口可能比世界还大)
+    // Ensure max_cam_pos is not less than min_cam_pos (viewport may be larger
+    // than the world)
     max_cam_pos.x = std::max(min_cam_pos.x, max_cam_pos.x);
     max_cam_pos.y = std::max(min_cam_pos.y, max_cam_pos.y);
 
     position_ = glm::clamp(position_, min_cam_pos, max_cam_pos);
   }
-  // 如果 limit_bounds 无效则不进行限制
+  // If limit_bounds is invalid, do not apply limit
 }
 
 glm::vec2 Camera::worldToScreen(const glm::vec2& world_pos) const {

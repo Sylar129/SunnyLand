@@ -9,49 +9,54 @@
 namespace engine::render {
 
 /**
- * @brief 相机类负责管理相机位置和视口大小，并提供坐标转换功能。
- * 它还包含限制相机移动范围的边界。
+ * @brief Camera class is responsible for managing camera position and viewport
+ * size, and provides coordinate transformation functionalities. It also
+ * contains boundaries to limit the camera's movement range.
  */
 class Camera final {
  private:
-  glm::vec2 viewport_size_;  ///< @brief 视口大小（屏幕大小）
-  glm::vec2 position_;       ///< @brief 相机左上角的世界坐标
+  glm::vec2 viewport_size_;  ///< @brief Viewport size (screen size)
+  glm::vec2
+      position_;  ///< @brief World coordinates of the camera's top-left corner
   std::optional<engine::utils::Rect>
-      limit_bounds_;  ///< @brief 限制相机的移动范围，空值表示不限制
+      limit_bounds_;  ///< @brief Limit the camera's movement range, null value
+                      ///< means no limit
 
  public:
   Camera(const glm::vec2& viewport_size,
          const glm::vec2& position = glm::vec2(0.0f, 0.0f),
          const std::optional<engine::utils::Rect> limit_bounds = std::nullopt);
 
-  void update(float delta_time);       ///< @brief 更新相机位置
-  void move(const glm::vec2& offset);  ///< @brief 移动相机
+  void update(float delta_time);       ///< @brief Update camera position
+  void move(const glm::vec2& offset);  ///< @brief Move camera
 
-  glm::vec2 worldToScreen(
-      const glm::vec2& world_pos) const;  ///< @brief 世界坐标转屏幕坐标
+  glm::vec2 worldToScreen(const glm::vec2& world_pos)
+      const;  ///< @brief Convert world coordinates to screen coordinates
   glm::vec2 worldToScreenWithParallax(const glm::vec2& world_pos,
                                       const glm::vec2& scroll_factor)
-      const;  ///< @brief 世界坐标转屏幕坐标，考虑视差滚动
-  glm::vec2 screenToWorld(
-      const glm::vec2& screen_pos) const;  ///< @brief 屏幕坐标转世界坐标
+      const;  ///< @brief Convert world coordinates to screen coordinates,
+              ///< considering parallax scrolling
+  glm::vec2 screenToWorld(const glm::vec2& screen_pos)
+      const;  ///< @brief Convert screen coordinates to world coordinates
 
-  void setPosition(const glm::vec2& position);  ///< @brief 设置相机位置
+  void setPosition(const glm::vec2& position);  ///< @brief Set camera position
   void setLimitBounds(
-      const engine::utils::Rect& bounds);  ///< @brief 设置限制相机的移动范围
+      const engine::utils::Rect&
+          bounds);  ///< @brief Set the movement range limit for the camera
 
-  const glm::vec2& getPosition() const;  ///< @brief 获取相机位置
+  const glm::vec2& getPosition() const;  ///< @brief Get camera position
   std::optional<engine::utils::Rect> getLimitBounds()
-      const;                          ///< @brief 获取限制相机的移动范围
-  glm::vec2 getViewportSize() const;  ///< @brief 获取视口大小
+      const;  ///< @brief Get the camera's movement range limit
+  glm::vec2 getViewportSize() const;  ///< @brief Get viewport size
 
-  // 禁用拷贝和移动语义
+  // Disable copy and move semantics
   Camera(const Camera&) = delete;
   Camera& operator=(const Camera&) = delete;
   Camera(Camera&&) = delete;
   Camera& operator=(Camera&&) = delete;
 
  private:
-  void clampPosition();  ///< @brief 限制相机位置在边界内
+  void clampPosition();  ///< @brief Clamp camera position within boundaries
 };
 
 }  // namespace engine::render
