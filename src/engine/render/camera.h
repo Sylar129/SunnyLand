@@ -60,4 +60,3 @@ class Camera final {
 };
 
 }  // namespace engine::render
-

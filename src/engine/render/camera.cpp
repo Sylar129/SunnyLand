@@ -58,18 +58,15 @@ void Camera::ClampPosition() {
 }
 
 glm::vec2 Camera::WorldToScreen(const glm::vec2& world_pos) const {
-  // 将世界坐标减去相机左上角位置
   return world_pos - position_;
 }
 
 glm::vec2 Camera::WorldToScreenWithParallax(
     const glm::vec2& world_pos, const glm::vec2& scroll_factor) const {
-  // 相机位置应用滚动因子
   return world_pos - position_ * scroll_factor;
 }
 
 glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
-  // 将屏幕坐标加上相机左上角位置
   return screen_pos + position_;
 }
 

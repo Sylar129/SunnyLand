@@ -116,5 +116,3 @@ class Renderer final {
 };
 
 }  // namespace engine::render
-
-
