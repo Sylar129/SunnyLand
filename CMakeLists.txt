@@ -14,22 +14,8 @@ endif()
 
 set(TARGET ${PROJECT_NAME})
 
-add_subdirectory(third_party/spdlog)
-add_subdirectory(third_party/SDL)
-
-set(SDLIMAGE_VENDORED OFF)
-add_subdirectory(third_party/SDL_image)
-
-set(SDLMIXER_VENDORED OFF)
-set(SDLMIXER_VORBIS_STB OFF)
-set(SDLMIXER_VORBIS_VORBISFILE OFF)
-add_subdirectory(third_party/SDL_mixer)
-
-add_subdirectory(third_party/SDL_ttf)
-add_subdirectory(third_party/glm)
-
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-add_subdirectory(third_party/json)
+# Load third-party dependencies
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Dependencies.cmake)
 
 include_directories(src)
 
