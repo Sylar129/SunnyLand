@@ -27,8 +27,7 @@ InputManager::InputManager(SDL_Renderer* sdl_renderer,
 void InputManager::Update() {
   for (auto& [action_name, state] : action_states_) {
     if (state == ActionState::PRESSED_THIS_FRAME) {
-      state =
-          ActionState::HELD_DOWN;  // 当某个键按下不动时，并不会生成SDL_Event。
+      state = ActionState::HELD_DOWN;
     } else if (state == ActionState::RELEASED_THIS_FRAME) {
       state = ActionState::INACTIVE;
     }
@@ -44,37 +43,34 @@ void InputManager::ProcessEvent(const SDL_Event& event) {
   switch (event.type) {
     case SDL_EVENT_KEY_DOWN:
     case SDL_EVENT_KEY_UP: {
-      SDL_Scancode scancode = event.key.scancode;  // 获取按键的scancode
+      SDL_Scancode scancode = event.key.scancode;
       bool is_down = event.key.down;
       bool is_repeat = event.key.repeat;
 
       auto it = scancode_to_actions_map_.find(scancode);
-      if (it != scancode_to_actions_map_.end()) {  // 如果按键有对应的action
+      if (it != scancode_to_actions_map_.end()) {
         const std::vector<std::string>& associated_actions = it->second;
         for (const std::string& action_name : associated_actions) {
-          UpdateActionState(action_name, is_down, is_repeat);  // 更新action状态
+          UpdateActionState(action_name, is_down, is_repeat);
         }
       }
       break;
     }
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
     case SDL_EVENT_MOUSE_BUTTON_UP: {
-      Uint8 button = event.button.button;  // 获取鼠标按钮
+      Uint8 button = event.button.button;
       bool is_down = event.button.down;
       auto it = mouse_button_to_actions_map_.find(button);
-      if (it !=
-          mouse_button_to_actions_map_.end()) {  // 如果鼠标按钮有对应的action
+      if (it != mouse_button_to_actions_map_.end()) {
         const std::vector<std::string>& associated_actions = it->second;
         for (const std::string& action_name : associated_actions) {
-          // 鼠标事件不考虑repeat, 所以第三个参数传false
-          UpdateActionState(action_name, is_down, false);  // 更新action状态
+          UpdateActionState(action_name, is_down, false);
         }
       }
-      // 在点击时更新鼠标位置
       mouse_position_ = {event.button.x, event.button.y};
       break;
     }
-    case SDL_EVENT_MOUSE_MOTION:  // 处理鼠标运动
+    case SDL_EVENT_MOUSE_MOTION:
       mouse_position_ = {event.motion.x, event.motion.y};
       break;
     case SDL_EVENT_QUIT:
@@ -124,56 +120,49 @@ glm::vec2 InputManager::GetLogicalMousePosition() const {
 }
 
 void InputManager::InitializeMappings(const engine::core::Config* config) {
-  ENGINE_TRACE("初始化输入映射...");
+  ENGINE_TRACE("Initializint input mappings...");
   if (!config) {
-    ENGINE_ERROR("输入管理器: Config 为空指针");
-    throw std::runtime_error("输入管理器: Config 为空指针");
+    ENGINE_ERROR("InputManager: Config is nullptr");
+    throw std::runtime_error("InputManager: Config is nullptr");
   }
-  actions_to_keyname_map_ =
-      config->input_mappings_;  // 获取配置中的输入映射（动作 -> 按键名称）
+  actions_to_keyname_map_ = config->input_mappings_;
   scancode_to_actions_map_.clear();
   mouse_button_to_actions_map_.clear();
   action_states_.clear();
 
-  // 如果配置中没有定义鼠标按钮动作(通常不需要配置),则添加默认映射, 用于 UI
   if (actions_to_keyname_map_.find("MouseLeftClick") ==
       actions_to_keyname_map_.end()) {
     ENGINE_DEBUG(
-        "配置中没有定义 'MouseLeftClick' 动作,添加默认映射到 'MouseLeft'.");
+        "No action 'MouseLeftClick' in Config. Adding default mapping "
+        "'MouseLeft'.");
     actions_to_keyname_map_["MouseLeftClick"] = {"MouseLeft"};
   }
   if (actions_to_keyname_map_.find("MouseRightClick") ==
       actions_to_keyname_map_.end()) {
     ENGINE_DEBUG(
-        "配置中没有定义 'MouseRightClick' 动作,添加默认映射到 'MouseRight'.");
+        "No action 'MouseRightClick' in Config. Adding default mapping "
+        "'MouseRight'.");
     actions_to_keyname_map_["MouseRightClick"] = {"MouseRight"};
   }
-  // 遍历 动作 -> 按键名称 的映射
   for (const auto& [action_name, key_names] : actions_to_keyname_map_) {
     action_states_[action_name] = ActionState::INACTIVE;
-    ENGINE_TRACE("映射动作: {}", action_name);
-    // 设置 "按键 -> 动作" 的映射
+    ENGINE_TRACE("mapping action: {}", action_name);
     for (const std::string& key_name : key_names) {
-      SDL_Scancode scancode =
-          ScancodeFromString(key_name);  // 尝试根据按键名称获取scancode
-      Uint8 mouse_button =
-          MouseButtonUint8FromString(key_name);  // 尝试根据按键名称获取鼠标按钮
-      // 未来可添加其它输入类型 ...
+      SDL_Scancode scancode = ScancodeFromString(key_name);
+      Uint8 mouse_button = MouseButtonUint8FromString(key_name);
 
-      if (scancode !=
-          SDL_SCANCODE_UNKNOWN) {  // 如果scancode有效,则将action添加到scancode_to_actions_map_中
+      if (scancode != SDL_SCANCODE_UNKNOWN) {
         scancode_to_actions_map_[scancode].push_back(action_name);
-        ENGINE_TRACE("  映射按键: {} (Scancode: {}) 到动作: {}", key_name,
-                     static_cast<int>(scancode), action_name);
-      } else if (
-          mouse_button !=
-          0) {  // 如果鼠标按钮有效,则将action添加到mouse_button_to_actions_map_中
+        ENGINE_TRACE("  Mapping keyboard: {} (Scancode: {}) to Action: {}",
+                     key_name, static_cast<int>(scancode), action_name);
+      } else if (mouse_button != 0) {
         mouse_button_to_actions_map_[mouse_button].push_back(action_name);
-        ENGINE_TRACE("  映射鼠标按钮: {} (Button ID: {}) 到动作: {}", key_name,
-                     static_cast<int>(mouse_button), action_name);
+        ENGINE_TRACE(
+            "  Mappding mouse button: {} (Button ID: {}) to Action: {}",
+            key_name, static_cast<int>(mouse_button), action_name);
       } else {
-        ENGINE_WARN("输入映射警告: 未知键或按钮名称 '{}' 用于动作 '{}'.",
-                    key_name, action_name);
+        ENGINE_WARN("Unknown key or button: '{}' for action: '{}'.", key_name,
+                    action_name);
       }
     }
   }
