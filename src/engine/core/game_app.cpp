@@ -27,7 +27,6 @@ void GameApp::Run() {
     ENGINE_ERROR("Failed to init game!");
     return;
   }
-  time_->SetTargetFps(144);
 
   while (is_running_) {
     time_->Update();
@@ -43,6 +42,7 @@ void GameApp::Run() {
 
 bool GameApp::Init() {
   ENGINE_TRACE("Init GameApp ...");
+  if (!initConfig()) return false;
   if (!InitSDL()) return false;
   if (!InitTime()) return false;
   if (!InitResourceManager()) return false;
@@ -53,13 +53,26 @@ bool GameApp::Init() {
   return true;
 }
 
+bool GameApp::initConfig() {
+  try {
+    config_ = std::make_unique<engine::core::Config>("assets/config.json");
+  } catch (const std::exception& e) {
+    ENGINE_ERROR("初始化配置失败: {}", e.what());
+    return false;
+  }
+  ENGINE_TRACE("配置初始化成功。");
+  return true;
+}
+
 bool GameApp::InitSDL() {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     ENGINE_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
     return false;
   }
 
-  window_ = SDL_CreateWindow("SunnyLand", 1280, 720, SDL_WINDOW_RESIZABLE);
+  window_ =
+      SDL_CreateWindow(config_->window_title_.c_str(), config_->window_width_,
+                       config_->window_height_, SDL_WINDOW_RESIZABLE);
   if (window_ == nullptr) {
     ENGINE_ERROR("Failed to create window! Error: {}", SDL_GetError());
     return false;
@@ -70,8 +83,21 @@ bool GameApp::InitSDL() {
     ENGINE_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
     return false;
   }
-  SDL_SetRenderLogicalPresentation(sdl_renderer_, 640, 360,
+
+  // 设置 VSync (注意: VSync
+  // 开启时，驱动程序会尝试将帧率限制到显示器刷新率，有可能会覆盖我们手动设置的
+  // target_fps)
+  int vsync_mode = config_->vsync_enabled_ ? SDL_RENDERER_VSYNC_ADAPTIVE
+                                           : SDL_RENDERER_VSYNC_DISABLED;
+  SDL_SetRenderVSync(sdl_renderer_, vsync_mode);
+  ENGINE_TRACE("VSync 设置为: {}",
+               config_->vsync_enabled_ ? "Enabled" : "Disabled");
+
+  // 设置逻辑分辨率为窗口大小的一半（针对像素游戏）
+  SDL_SetRenderLogicalPresentation(sdl_renderer_, config_->window_width_ / 2,
+                                   config_->window_height_ / 2,
                                    SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
   return true;
 }
 
@@ -89,7 +115,8 @@ bool GameApp::InitRenderer() {
 
 bool GameApp::InitCamera() {
   try {
-    camera_ = std::make_unique<engine::render::Camera>(glm::vec2(640, 360));
+    camera_ = std::make_unique<engine::render::Camera>(
+        glm::vec2(config_->window_width_ / 2, config_->window_height_ / 2));
   } catch (const std::exception& e) {
     ENGINE_ERROR("Camera initialization failed: {}", e.what());
     return false;
@@ -100,6 +127,8 @@ bool GameApp::InitCamera() {
 
 bool GameApp::InitTime() {
   time_ = std::make_unique<Time>();
+  time_->SetTargetFps(config_->target_fps_);
+
   return true;
 }
 
