@@ -34,7 +34,7 @@ class GameApp final {
 
  private:
   [[nodiscard]] bool Init();
-  [[nodiscard]] bool initConfig();
+  [[nodiscard]] bool InitConfig();
   [[nodiscard]] bool InitSDL();
   [[nodiscard]] bool InitRenderer();
   [[nodiscard]] bool InitCamera();

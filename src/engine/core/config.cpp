@@ -3,58 +3,60 @@
 #include "engine/core/config.h"
 
 #include <fstream>
+
 #include "log.h"
 #include "nlohmann/json.hpp"
 
-
 namespace engine::core {
 
-Config::Config(const std::string& filepath) { loadFromFile(filepath); }
+Config::Config(const std::string& filepath) { LoadFromFile(filepath); }
 
-bool Config::loadFromFile(const std::string& filepath) {
+bool Config::LoadFromFile(const std::string& filepath) {
   std::ifstream file(filepath);
   if (!file.is_open()) {
-    ENGINE_WARN("配置文件 '{}' 未找到。使用默认设置并创建默认配置文件。",
-                 filepath);
-    if (!saveToFile(filepath)) {
-      ENGINE_ERROR("无法创建默认配置文件 '{}'。", filepath);
+    ENGINE_WARN(
+        "Config file '{}' not found. Using default settings and creating "
+        "default config file.",
+        filepath);
+    if (!SaveToFile(filepath)) {
+      ENGINE_ERROR("Unable to create default config file '{}'.", filepath);
       return false;
     }
-    return false;  // 文件不存在，使用默认值
+    return false;  // File does not exist, use default values
   }
 
   try {
     nlohmann::json j;
     file >> j;
-    fromJson(j);
-    ENGINE_INFO("成功从 '{}' 加载配置。", filepath);
+    FromJson(j);
+    ENGINE_INFO("Successfully loaded config from '{}'.", filepath);
     return true;
   } catch (const std::exception& e) {
-    ENGINE_ERROR("读取配置文件 '{}' 时出错：{}。使用默认设置。", filepath,
-                  e.what());
+    ENGINE_ERROR("Error reading config file '{}': {}. Using default settings.",
+                 filepath, e.what());
   }
   return false;
 }
 
-bool Config::saveToFile(const std::string& filepath) {
+bool Config::SaveToFile(const std::string& filepath) {
   std::ofstream file(filepath);
   if (!file.is_open()) {
-    ENGINE_ERROR("无法打开配置文件 '{}' 进行写入。", filepath);
+    ENGINE_ERROR("Unable to open config file '{}' for writing.", filepath);
     return false;
   }
 
   try {
-    nlohmann::ordered_json j = toJson();
+    nlohmann::ordered_json j = ToJson();
     file << j.dump(4);
-    ENGINE_INFO("成功将配置保存到 '{}'。", filepath);
+    ENGINE_INFO("Successfully saved config to '{}'.", filepath);
     return true;
   } catch (const std::exception& e) {
-    ENGINE_ERROR("写入配置文件 '{}' 时出错：{}", filepath, e.what());
+    ENGINE_ERROR("Error writing config file '{}': {}", filepath, e.what());
   }
   return false;
 }
 
-void Config::fromJson(const nlohmann::json& j) {
+void Config::FromJson(const nlohmann::json& j) {
   if (j.contains("window")) {
     const auto& window_config = j["window"];
     window_title_ = window_config.value("title", window_title_);
@@ -70,7 +72,7 @@ void Config::fromJson(const nlohmann::json& j) {
     const auto& perf_config = j["performance"];
     target_fps_ = perf_config.value("target_fps", target_fps_);
     if (target_fps_ < 0) {
-      ENGINE_WARN("目标 FPS 不能为负数。设置为 0（无限制）。");
+      ENGINE_WARN("Target FPS cannot be negative. Setting to 0 (unlimited).");
       target_fps_ = 0;
     }
   }
@@ -80,31 +82,33 @@ void Config::fromJson(const nlohmann::json& j) {
     sound_volume_ = audio_config.value("sound_volume", sound_volume_);
   }
 
-  // 从 JSON 加载 input_mappings
+  // Load input_mappings from JSON
   if (j.contains("input_mappings") && j["input_mappings"].is_object()) {
     const auto& mappings_json = j["input_mappings"];
     try {
-      // 直接尝试从 JSON 对象转换为 map<string, vector<string>>
+      // Directly attempt to convert from JSON object to map<string,
+      // vector<string>>
       auto input_mappings =
           mappings_json
               .get<std::unordered_map<std::string, std::vector<std::string>>>();
-      // 如果成功，则将 input_mappings 移动到 input_mappings_
+      // If successful, move input_mappings to input_mappings_
       input_mappings_ = std::move(input_mappings);
-      ENGINE_TRACE("成功从配置加载输入映射。");
+      ENGINE_TRACE("Successfully loaded input mappings from config.");
     } catch (const std::exception& e) {
       ENGINE_WARN(
-          "配置加载警告：解析 'input_mappings' "
-          "时发生异常。使用默认映射。错误：{}",
+          "Config load warning: Exception occurred while parsing "
+          "'input_mappings'. "
+          "Using default mappings. Error: {}",
           e.what());
     }
   } else {
     ENGINE_TRACE(
-        "配置跟踪：未找到 'input_mappings' "
-        "部分或不是对象。使用头文件中定义的默认映射。");
+        "Config trace: 'input_mappings' section not found or not an object. "
+        "Using default mappings defined in header file.");
   }
 }
 
-nlohmann::ordered_json Config::toJson() const {
+nlohmann::ordered_json Config::ToJson() const {
   return nlohmann::ordered_json{
       {"window",
        {{"title", window_title_},

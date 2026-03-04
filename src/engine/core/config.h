@@ -6,66 +6,71 @@
 #include <unordered_map>
 #include <vector>
 
-#include "nlohmann/json_fwd.hpp"  // nlohmann_json 提供的前向声明
+#include "nlohmann/json_fwd.hpp"
 
 namespace engine::core {
 
 /**
- * @brief 管理应用程序的配置设置。
+ * @brief Manages application configuration settings.
  *
- * 提供配置项的默认值，并支持从 JSON 文件加载/保存配置。
- * 如果加载失败或文件不存在，将使用默认值。
+ * Provides default values for configuration items and supports
+ * loading/saving configuration from/to JSON files.
+ * Default values are used if loading fails or the file does not exist.
  */
 class Config final {
  public:
-  // --- 默认配置值 --- (为了方便拓展，全部设置为公有)
-  // 窗口设置
+  // --- Default configuration values --- (All public for easy extension)
+  // Window settings
   std::string window_title_ = "SunnyLand";
   int window_width_ = 1280;
   int window_height_ = 720;
   bool window_resizable_ = true;
 
-  // 图形设置
-  bool vsync_enabled_ = true;  ///< @brief 是否启用垂直同步
+  // Graphics settings
+  bool vsync_enabled_ = true;  ///< @brief Whether to enable vertical sync
 
-  // 性能设置
-  int target_fps_ = 144;  ///< @brief 目标 FPS 设置，0 表示不限制
+  // Performance settings
+  int target_fps_ = 144;  ///< @brief Target FPS setting, 0 means unlimited
 
-  // 音频设置
+  // Audio settings
   float music_volume_ = 0.5f;
   float sound_volume_ = 0.5f;
 
-  // 存储动作名称到 SDL Scancode 名称列表的映射
+  // Maps action names to lists of SDL Scancode names
   std::unordered_map<std::string, std::vector<std::string>> input_mappings_ = {
-      // 提供一些合理的默认值，以防配置文件加载失败或缺少此部分
+      // Provides reasonable default values in case the config file fails to
+      // load or this section is missing
       {"move_left", {"A", "Left"}}, {"move_right", {"D", "Right"}},
       {"move_up", {"W", "Up"}},     {"move_down", {"S", "Down"}},
       {"jump", {"J", "Space"}},     {"attack", {"K", "MouseLeft"}},
       {"pause", {"P", "Escape"}},
-      // 可以继续添加更多默认动作
+      // More default actions can be added here
   };
 
-  explicit Config(
-      const std::string& filepath);  ///< @brief 构造函数，指定配置文件路径。
+  ///< @brief Constructor specifying the config file path.
+  explicit Config(const std::string& filepath);
 
-  // 删除拷贝和移动语义
+  // Delete copy and move semantics
   Config(const Config&) = delete;
   Config& operator=(const Config&) = delete;
   Config(Config&&) = delete;
   Config& operator=(Config&&) = delete;
 
-  bool loadFromFile(const std::string& filepath);  ///< @brief 从指定的 JSON
-                                                   ///< 文件加载配置。成功返回
-                                                   ///< true，否则返回 false。
-  [[nodiscard]] bool saveToFile(
-      const std::string& filepath);  ///< @brief 将当前配置保存到指定的 JSON
-                                     ///< 文件。成功返回 true，否则返回 false。
+  ///< @brief Loads configuration from the specified JSON
+  ///< file. Returns true on success, false otherwise.
+  bool LoadFromFile(const std::string& filepath);
+
+  ///< @brief Saves current configuration to the specified
+  ///< JSON file. Returns true on success, false otherwise.
+  [[nodiscard]] bool SaveToFile(const std::string& filepath);
 
  private:
-  void fromJson(
-      const nlohmann::json& j);  ///< @brief 从 JSON 对象反序列化配置。
-  nlohmann::ordered_json toJson()
-      const;  ///< @brief 将当前配置转换为 JSON 对象（按顺序）。
+  ///< @brief Deserializes configuration from a JSON object.
+  void FromJson(const nlohmann::json& j);
+
+  ///< @brief Converts current configuration to a JSON object
+  ///< (ordered).
+  nlohmann::ordered_json ToJson() const;
 };
 
 }  // namespace engine::core
