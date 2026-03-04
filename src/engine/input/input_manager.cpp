@@ -171,14 +171,13 @@ void InputManager::InitializeMappings(const engine::core::Config* config) {
         mouse_button_to_actions_map_[mouse_button].push_back(action_name);
         ENGINE_TRACE("  映射鼠标按钮: {} (Button ID: {}) 到动作: {}", key_name,
                      static_cast<int>(mouse_button), action_name);
-        // else if: 未来可添加其它输入类型 ...
       } else {
         ENGINE_WARN("输入映射警告: 未知键或按钮名称 '{}' 用于动作 '{}'.",
                     key_name, action_name);
       }
     }
   }
-  ENGINE_TRACE("输入映射初始化完成.");
+  ENGINE_TRACE("Initialize input mappings successfully.");
 }
 
 SDL_Scancode InputManager::ScancodeFromString(const std::string& key_name) {
@@ -189,7 +188,6 @@ Uint8 InputManager::MouseButtonUint8FromString(const std::string& button_name) {
   if (button_name == "MouseLeft") return SDL_BUTTON_LEFT;
   if (button_name == "MouseMiddle") return SDL_BUTTON_MIDDLE;
   if (button_name == "MouseRight") return SDL_BUTTON_RIGHT;
-  // SDL 还定义了 SDL_BUTTON_X1 和 SDL_BUTTON_X2
   if (button_name == "MouseX1") return SDL_BUTTON_X1;
   if (button_name == "MouseX2") return SDL_BUTTON_X2;
   return 0;
@@ -200,17 +198,17 @@ void InputManager::UpdateActionState(const std::string& action_name,
                                      bool is_repeat_event) {
   auto it = action_states_.find(action_name);
   if (it == action_states_.end()) {
-    ENGINE_WARN("尝试更新未注册的动作状态: {}", action_name);
+    ENGINE_WARN("Trying to update unregistered action: {}", action_name);
     return;
   }
 
-  if (is_input_active) {  // 输入被激活 (按下)
+  if (is_input_active) {
     if (is_repeat_event) {
       it->second = ActionState::HELD_DOWN;
-    } else {  // 非重复的按下事件
+    } else {
       it->second = ActionState::PRESSED_THIS_FRAME;
     }
-  } else {  // 输入被释放 (松开)
+  } else {
     it->second = ActionState::RELEASED_THIS_FRAME;
   }
 }
