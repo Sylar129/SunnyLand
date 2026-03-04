@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include "engine/core/config.h"
 #include "engine/core/time.h"
 struct SDL_Window;
 struct SDL_Renderer;
@@ -33,6 +34,7 @@ class GameApp final {
 
  private:
   [[nodiscard]] bool Init();
+  [[nodiscard]] bool InitConfig();
   [[nodiscard]] bool InitSDL();
   [[nodiscard]] bool InitRenderer();
   [[nodiscard]] bool InitCamera();
@@ -55,6 +57,7 @@ class GameApp final {
   std::unique_ptr<resource::ResourceManager> resource_manager_;
   std::unique_ptr<engine::render::Renderer> renderer_;
   std::unique_ptr<engine::render::Camera> camera_;
+  std::unique_ptr<engine::core::Config> config_;
 };
 
 }  // namespace engine::core

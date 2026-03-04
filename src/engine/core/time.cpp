@@ -10,7 +10,7 @@ namespace engine::core {
 Time::Time() {
   last_time_ = SDL_GetTicksNS();
   frame_start_time_ = last_time_;
-  ENGINE_TRACE("Time init。Last time: {}", last_time_);
+  ENGINE_TRACE("Time init. Last time: {}", last_time_);
 }
 
 void Time::Update() {
