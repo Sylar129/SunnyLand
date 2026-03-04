@@ -6,6 +6,7 @@
 
 #include "engine/core/config.h"
 #include "engine/core/time.h"
+#include "engine/input/input_manager.h"
 struct SDL_Window;
 struct SDL_Renderer;
 
@@ -40,6 +41,7 @@ class GameApp final {
   [[nodiscard]] bool InitCamera();
   [[nodiscard]] bool InitTime();
   [[nodiscard]] bool InitResourceManager();
+  [[nodiscard]] bool InitInputManager();
 
   void HandleEvents();
   void Update(float delta_time);
@@ -49,6 +51,7 @@ class GameApp final {
   // Test functions
   void TestRenderer();
   void TestCamera();
+  void TestInputManager();
 
   SDL_Window* window_ = nullptr;
   SDL_Renderer* sdl_renderer_ = nullptr;
@@ -58,6 +61,7 @@ class GameApp final {
   std::unique_ptr<engine::render::Renderer> renderer_;
   std::unique_ptr<engine::render::Camera> camera_;
   std::unique_ptr<engine::core::Config> config_;
+  std::unique_ptr<engine::input::InputManager> input_manager_;
 };
 
 }  // namespace engine::core

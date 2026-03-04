@@ -31,6 +31,7 @@ void GameApp::Run() {
   while (is_running_) {
     time_->Update();
     float delta_time = time_->GetDeltaTime();
+    input_manager_->Update();
 
     HandleEvents();
     Update(delta_time);
@@ -48,6 +49,7 @@ bool GameApp::Init() {
   if (!InitResourceManager()) return false;
   if (!InitRenderer()) return false;
   if (!InitCamera()) return false;
+  if (!InitInputManager()) return false;
 
   is_running_ = true;
   return true;
@@ -134,13 +136,25 @@ bool GameApp::InitResourceManager() {
   return true;
 }
 
-void GameApp::HandleEvents() {
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    if (event.type == SDL_EVENT_QUIT) {
-      is_running_ = false;
-    }
+bool GameApp::InitInputManager() {
+  try {
+    input_manager_ = std::make_unique<engine::input::InputManager>(
+        sdl_renderer_, config_.get());
+  } catch (const std::exception& e) {
+    ENGINE_ERROR("Fail to init InputManager: {}", e.what());
+    return false;
   }
+  ENGINE_TRACE("Init InputManager successfully.");
+  return true;
+}
+
+void GameApp::HandleEvents() {
+  if (input_manager_->ShouldQuit()) {
+    ENGINE_TRACE("GameApp receive quit request from InputManager.");
+    is_running_ = false;
+    return;
+  }
+  TestInputManager();
 }
 
 void GameApp::Update(float delta_time) { TestCamera(); }
@@ -194,6 +208,24 @@ void GameApp::TestCamera() {
   if (key_state[SDL_SCANCODE_DOWN]) camera_->Move(glm::vec2(0, 1));
   if (key_state[SDL_SCANCODE_LEFT]) camera_->Move(glm::vec2(-1, 0));
   if (key_state[SDL_SCANCODE_RIGHT]) camera_->Move(glm::vec2(1, 0));
+}
+
+void GameApp::TestInputManager() {
+  std::vector<std::string> actions = {
+      "move_up", "move_down", "move_left",      "move_right",     "jump",
+      "attack",  "pause",     "MouseLeftClick", "MouseRightClick"};
+
+  for (const auto& action : actions) {
+    if (input_manager_->IsActionPressed(action)) {
+      ENGINE_INFO(" {} pressed ", action);
+    }
+    if (input_manager_->IsActionReleased(action)) {
+      ENGINE_INFO(" {} released ", action);
+    }
+    if (input_manager_->IsActionDown(action)) {
+      ENGINE_INFO(" {} holding ", action);
+    }
+  }
 }
 
 }  // namespace engine::core
