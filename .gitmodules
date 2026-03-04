@@ -1,21 +1,21 @@
-[submodule "vendored/spdlog"]
-	path = vendored/spdlog
+[submodule "third_party/spdlog"]
+	path = third_party/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "vendored/SDL"]
-	path = vendored/SDL
+[submodule "third_party/SDL"]
+	path = third_party/SDL
 	url = https://github.com/libsdl-org/SDL.git
-[submodule "vendored/SDL_image"]
-	path = vendored/SDL_image
+[submodule "third_party/SDL_image"]
+	path = third_party/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
-[submodule "vendored/SDL_mixer"]
-	path = vendored/SDL_mixer
+[submodule "third_party/SDL_mixer"]
+	path = third_party/SDL_mixer
 	url = https://github.com/libsdl-org/SDL_mixer.git
-[submodule "vendored/SDL_ttf"]
-	path = vendored/SDL_ttf
+[submodule "third_party/SDL_ttf"]
+	path = third_party/SDL_ttf
 	url = https://github.com/libsdl-org/SDL_ttf.git
-[submodule "vendored/glm"]
-	path = vendored/glm
+[submodule "third_party/glm"]
+	path = third_party/glm
 	url = https://github.com/g-truc/glm.git
-[submodule "vendored/json"]
-	path = vendored/json
+[submodule "third_party/json"]
+	path = third_party/json
 	url = https://github.com/nlohmann/json.git
