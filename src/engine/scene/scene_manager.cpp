@@ -9,42 +9,36 @@
 namespace engine::scene {
 
 SceneManager::SceneManager(engine::core::Context& context) : context_(context) {
-  ENGINE_TRACE("场景管理器已创建。");
+  ENGINE_TRACE("SceneManager initialized successfully.");
 }
 
 SceneManager::~SceneManager() {
-  ENGINE_TRACE("场景管理器已销毁。");
-  Close();  // 即使不手动调用 close 也能确保清理
+  ENGINE_TRACE("SceneManager is being destroyed. Cleaning up scene stack...");
+  Close();
 }
 
 Scene* SceneManager::GetCurrentScene() const {
   if (scene_stack_.empty()) {
     return nullptr;
   }
-  return scene_stack_.back().get();  // 返回栈顶场景的裸指针
+  return scene_stack_.back().get();
 }
 
 void SceneManager::Update(float delta_time) {
-  // 只更新栈顶（当前）场景
   Scene* current_scene = GetCurrentScene();
   if (current_scene) {
     current_scene->Update(delta_time);
   }
-  // 执行可能的切换场景操作
   ProcessPendingActions();
 }
 
 void SceneManager::Render() {
-  // 渲染时需要叠加渲染所有场景，而不只是栈顶
   for (const auto& scene : scene_stack_) {
-    if (scene) {
-      scene->Render();
-    }
+    scene->Render();
   }
 }
 
 void SceneManager::HandleInput() {
-  // 只考虑栈顶场景
   Scene* current_scene = GetCurrentScene();
   if (current_scene) {
     current_scene->HandleInput();
@@ -52,11 +46,10 @@ void SceneManager::HandleInput() {
 }
 
 void SceneManager::Close() {
-  ENGINE_TRACE("正在关闭场景管理器并清理场景栈...");
-  // 清理栈中所有剩余的场景（从顶到底）
+  ENGINE_TRACE("Closing SceneManager and cleaning up all scenes...");
   while (!scene_stack_.empty()) {
     if (scene_stack_.back()) {
-      ENGINE_DEBUG("正在清理场景 '{}' 。", scene_stack_.back()->GetName());
+      ENGINE_DEBUG("Cleaning scene '{}'", scene_stack_.back()->GetName());
       scene_stack_.back()->Clean();
     }
     scene_stack_.pop_back();
@@ -74,8 +67,6 @@ void SceneManager::RequestPushScene(std::unique_ptr<Scene>&& scene) {
   pending_action_ = PendingAction::Push;
   pending_scene_ = std::move(scene);
 }
-
-// --- Private Methods ---
 
 void SceneManager::ProcessPendingActions() {
   if (pending_action_ == PendingAction::None) {
@@ -101,43 +92,39 @@ void SceneManager::ProcessPendingActions() {
 
 void SceneManager::PushScene(std::unique_ptr<Scene>&& scene) {
   if (!scene) {
-    ENGINE_WARN("尝试将空场景压入栈。");
+    ENGINE_WARN("Trying to push an empty scene.");
     return;
   }
-  ENGINE_DEBUG("正在将场景 '{}' 压入栈。", scene->GetName());
+  ENGINE_DEBUG("Pushing scene '{}' to stack.", scene->GetName());
 
-  // 初始化新场景
-  if (!scene->IsInitialized()) {  // 确保只初始化一次
+  if (!scene->IsInitialized()) {
     scene->Init();
   }
 
-  // 将新场景移入栈顶
   scene_stack_.push_back(std::move(scene));
 }
 
 void SceneManager::PopScene() {
   if (scene_stack_.empty()) {
-    ENGINE_WARN("尝试从空场景栈中弹出。");
+    ENGINE_WARN("Trying to pop scene from an empty stack.");
     return;
   }
-  ENGINE_DEBUG("正在从栈中弹出场景 '{}' 。", scene_stack_.back()->GetName());
+  ENGINE_DEBUG("Poping scene '{}' from stack.", scene_stack_.back()->GetName());
 
-  // 清理并移除栈顶场景
   if (scene_stack_.back()) {
-    scene_stack_.back()->Clean();  // 显式调用清理
+    scene_stack_.back()->Clean();
   }
   scene_stack_.pop_back();
 }
 
 void SceneManager::ReplaceScene(std::unique_ptr<Scene>&& scene) {
   if (!scene) {
-    ENGINE_WARN("尝试用空场景替换。");
+    ENGINE_WARN("Trying to replace with an empty scene.");
     return;
   }
-  ENGINE_DEBUG("正在用场景 '{}' 替换场景 '{}' 。", scene->GetName(),
-               scene_stack_.back()->GetName());
+  ENGINE_DEBUG("Replacing scene '{}' with scene '{}'.",
+               scene_stack_.back()->GetName(), scene->GetName());
 
-  // 清理并移除场景栈中所有场景
   while (!scene_stack_.empty()) {
     if (scene_stack_.back()) {
       scene_stack_.back()->Clean();
@@ -145,12 +132,10 @@ void SceneManager::ReplaceScene(std::unique_ptr<Scene>&& scene) {
     scene_stack_.pop_back();
   }
 
-  // 初始化新场景
   if (!scene->IsInitialized()) {
     scene->Init();
   }
 
-  // 将新场景压入栈顶
   scene_stack_.push_back(std::move(scene));
 }
 

@@ -17,18 +17,9 @@ class Scene;
 namespace engine::scene {
 
 class SceneManager final {
- private:
-  engine::core::Context& context_;
-  std::vector<std::unique_ptr<Scene>> scene_stack_;
-
-  enum class PendingAction { None, Push, Pop, Replace };
-  PendingAction pending_action_ = PendingAction::None;
-  std::unique_ptr<Scene> pending_scene_;
-
  public:
   explicit SceneManager(engine::core::Context& context);
   ~SceneManager();
-
   DISABLE_COPY_AND_MOVE(SceneManager);
 
   void RequestPushScene(std::unique_ptr<Scene>&& scene);
@@ -36,7 +27,6 @@ class SceneManager final {
   void RequestReplaceScene(std::unique_ptr<Scene>&& scene);
 
   Scene* GetCurrentScene() const;
-  engine::core::Context& GetContext() const { return context_; }
 
   void Update(float delta_time);
   void Render();
@@ -49,6 +39,13 @@ class SceneManager final {
   void PushScene(std::unique_ptr<Scene>&& scene);
   void PopScene();
   void ReplaceScene(std::unique_ptr<Scene>&& scene);
+
+  engine::core::Context& context_;
+  std::vector<std::unique_ptr<Scene>> scene_stack_;
+
+  enum class PendingAction { None, Push, Pop, Replace };
+  PendingAction pending_action_ = PendingAction::None;
+  std::unique_ptr<Scene> pending_scene_;
 };
 
 }  // namespace engine::scene
