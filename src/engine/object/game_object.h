@@ -77,10 +77,10 @@ class GameObject final {
     }
   }
 
-  void Update(float delta_time);
-  void Render();
+  void HandleInput(engine::core::Context& context);
+  void Update(float delta_time, engine::core::Context& context);
+  void Render(engine::core::Context& context);
   void Clean();
-  void HandleInput();
 
  private:
   std::string name_;
