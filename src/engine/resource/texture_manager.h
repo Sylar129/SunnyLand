@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "SDL3/SDL_render.h"
+#include "engine/utils/non_copyable.h"
 #include "glm/glm.hpp"
 
 namespace engine::resource {
@@ -16,11 +17,7 @@ class TextureManager final {
 
  public:
   explicit TextureManager(SDL_Renderer* renderer);
-
-  TextureManager(const TextureManager&) = delete;
-  TextureManager& operator=(const TextureManager&) = delete;
-  TextureManager(TextureManager&&) = delete;
-  TextureManager& operator=(TextureManager&&) = delete;
+  DISABLE_COPY_AND_MOVE(TextureManager);
 
  private:
   SDL_Texture* LoadTexture(const std::string& file_path);

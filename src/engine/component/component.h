@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "engine/utils/non_copyable.h"
+
 namespace engine::core {
 class Context;
 }
@@ -18,11 +20,7 @@ class Component {
  public:
   Component() = default;
   virtual ~Component() = default;
-
-  Component(const Component&) = delete;
-  Component& operator=(const Component&) = delete;
-  Component(Component&&) = delete;
-  Component& operator=(Component&&) = delete;
+  DISABLE_COPY_AND_MOVE(Component);
 
   void SetOwner(engine::object::GameObject* owner) { owner_ = owner; }
   [[nodiscard]] engine::object::GameObject* GetOwner() const { return owner_; }
@@ -34,7 +32,6 @@ class Component {
   virtual void Render(engine::core::Context& context) {}
   virtual void Clean() {}
 
- protected:
   engine::object::GameObject* owner_ = nullptr;
 };
 

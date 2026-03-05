@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 
+#include "engine/utils/non_copyable.h"
 #include "glm/glm.hpp"
 
 struct SDL_Renderer;
@@ -21,15 +22,10 @@ class FontManager;
 class ResourceManager final {
  public:
   explicit ResourceManager(SDL_Renderer* renderer);
-
   ~ResourceManager();
+  DISABLE_COPY_AND_MOVE(ResourceManager);
 
   void Clear();
-
-  ResourceManager(const ResourceManager&) = delete;
-  ResourceManager& operator=(const ResourceManager&) = delete;
-  ResourceManager(ResourceManager&&) = delete;
-  ResourceManager& operator=(ResourceManager&&) = delete;
 
   SDL_Texture* LoadTexture(const std::string& file_path);
   SDL_Texture* GetTexture(const std::string& file_path);

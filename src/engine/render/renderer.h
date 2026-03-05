@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <optional>  // For std::optional
 
+#include "engine/utils/non_copyable.h"
 #include "sprite.h"
 
 struct SDL_Renderer;
@@ -41,6 +42,7 @@ class Renderer final {
    */
   Renderer(SDL_Renderer* sdl_renderer,
            engine::resource::ResourceManager* resource_manager);
+  DISABLE_COPY_AND_MOVE(Renderer);
 
   /**
    * @brief Draw a sprite
@@ -96,12 +98,6 @@ class Renderer final {
   SDL_Renderer* GetSDLRenderer() const {
     return renderer_;
   }  ///< @brief Get underlying SDL_Renderer pointer
-
-  // Disable copy and move semantics
-  Renderer(const Renderer&) = delete;
-  Renderer& operator=(const Renderer&) = delete;
-  Renderer(Renderer&&) = delete;
-  Renderer& operator=(Renderer&&) = delete;
 
  private:
   std::optional<SDL_FRect> GetSpriteSrcRect(
