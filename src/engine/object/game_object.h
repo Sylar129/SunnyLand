@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "engine/component/component.h"
+#include "engine/utils/non_copyable.h"
 #include "log.h"
 
 namespace engine::object {
@@ -18,11 +19,10 @@ class GameObject final {
  public:
   GameObject(const std::string& name, const std::string& tag = "");
 
-  GameObject(const GameObject&) = delete;
-  GameObject& operator=(const GameObject&) = delete;
-  GameObject(GameObject&&) = delete;
-  GameObject& operator=(GameObject&&) = delete;
+ private:
+  DISABLE_COPY_AND_MOVE(GameObject);
 
+ public:
   void SetName(const std::string& name) { name_ = name; }
   const std::string& GetName() const { return name_; }
   void SetTag(const std::string& tag) { tag_ = tag; }

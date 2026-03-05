@@ -7,6 +7,8 @@
 #include "engine/core/config.h"
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
+#include "engine/utils/non_copyable.h"
+
 struct SDL_Window;
 struct SDL_Renderer;
 
@@ -26,11 +28,10 @@ class GameApp final {
   GameApp();
   ~GameApp();
 
-  GameApp(const GameApp&) = delete;
-  GameApp& operator=(const GameApp&) = delete;
-  GameApp(GameApp&&) = delete;
-  GameApp& operator=(GameApp&&) = delete;
+ private:
+  DISABLE_COPY_AND_MOVE(GameApp);
 
+ public:
   void Run();
 
  private:

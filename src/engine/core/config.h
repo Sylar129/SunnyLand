@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "engine/utils/non_copyable.h"
 #include "nlohmann/json_fwd.hpp"
 
 namespace engine::core {
@@ -50,12 +51,10 @@ class Config final {
   ///< @brief Constructor specifying the config file path.
   explicit Config(const std::string& filepath);
 
-  // Delete copy and move semantics
-  Config(const Config&) = delete;
-  Config& operator=(const Config&) = delete;
-  Config(Config&&) = delete;
-  Config& operator=(Config&&) = delete;
+ private:
+  DISABLE_COPY_AND_MOVE(Config);
 
+ public:
   ///< @brief Loads configuration from the specified JSON
   ///< file. Returns true on success, false otherwise.
   bool LoadFromFile(const std::string& filepath);

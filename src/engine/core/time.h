@@ -3,6 +3,7 @@
 #pragma once
 
 #include "SDL3/SDL_stdinc.h"
+#include "engine/utils/non_copyable.h"
 
 namespace engine::core {
 
@@ -10,11 +11,10 @@ class Time final {
  public:
   Time();
 
-  Time(const Time&) = delete;
-  Time& operator=(const Time&) = delete;
-  Time(Time&&) = delete;
-  Time& operator=(Time&&) = delete;
+ private:
+  DISABLE_COPY_AND_MOVE(Time);
 
+ public:
   void Update();
 
   float GetDeltaTime() const;

@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "engine/utils/math.h"
+#include "engine/utils/non_copyable.h"
 
 namespace engine::render {
 
@@ -49,13 +50,9 @@ class Camera final {
       const;  ///< @brief Get the camera's movement range limit
   glm::vec2 GetViewportSize() const;  ///< @brief Get viewport size
 
-  // Disable copy and move semantics
-  Camera(const Camera&) = delete;
-  Camera& operator=(const Camera&) = delete;
-  Camera(Camera&&) = delete;
-  Camera& operator=(Camera&&) = delete;
-
  private:
+  DISABLE_COPY_AND_MOVE(Camera);
+
   void ClampPosition();  ///< @brief Clamp camera position within boundaries
 };
 
