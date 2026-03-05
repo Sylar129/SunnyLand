@@ -22,15 +22,11 @@ class FontManager;
 class ResourceManager final {
  public:
   explicit ResourceManager(SDL_Renderer* renderer);
-
   ~ResourceManager();
+  DISABLE_COPY_AND_MOVE(ResourceManager);
 
   void Clear();
 
- private:
-  DISABLE_COPY_AND_MOVE(ResourceManager);
-
- public:
   SDL_Texture* LoadTexture(const std::string& file_path);
   SDL_Texture* GetTexture(const std::string& file_path);
   void UnloadTexture(const std::string& file_path);

@@ -50,8 +50,6 @@ class Config final {
 
   ///< @brief Constructor specifying the config file path.
   explicit Config(const std::string& filepath);
-
- private:
   DISABLE_COPY_AND_MOVE(Config);
 
  public:

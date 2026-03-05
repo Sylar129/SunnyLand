@@ -16,11 +16,8 @@ class Component {
  public:
   Component() = default;
   virtual ~Component() = default;
-
- private:
   DISABLE_COPY_AND_MOVE(Component);
 
- public:
   void SetOwner(engine::object::GameObject* owner) { owner_ = owner; }
   engine::object::GameObject* GetOwner() const { return owner_; }
 
@@ -31,7 +28,6 @@ class Component {
   virtual void Render() {}
   virtual void Clean() {}
 
- protected:
   engine::object::GameObject* owner_ = nullptr;
 };
 

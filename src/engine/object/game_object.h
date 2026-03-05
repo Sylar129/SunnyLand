@@ -18,8 +18,6 @@ namespace engine::object {
 class GameObject final {
  public:
   GameObject(const std::string& name, const std::string& tag = "");
-
- private:
   DISABLE_COPY_AND_MOVE(GameObject);
 
  public:

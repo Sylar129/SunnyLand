@@ -42,6 +42,7 @@ class Renderer final {
    */
   Renderer(SDL_Renderer* sdl_renderer,
            engine::resource::ResourceManager* resource_manager);
+  DISABLE_COPY_AND_MOVE(Renderer);
 
   /**
    * @brief Draw a sprite
@@ -97,9 +98,6 @@ class Renderer final {
   SDL_Renderer* GetSDLRenderer() const {
     return renderer_;
   }  ///< @brief Get underlying SDL_Renderer pointer
-
- private:
-  DISABLE_COPY_AND_MOVE(Renderer);
 
  private:
   std::optional<SDL_FRect> GetSpriteSrcRect(

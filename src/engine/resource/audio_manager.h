@@ -17,8 +17,6 @@ class AudioManager final {
  public:
   AudioManager();
   ~AudioManager();
-
- private:
   DISABLE_COPY_AND_MOVE(AudioManager);
 
   MIX_Audio* LoadSound(const std::string& file_path);

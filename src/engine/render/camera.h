@@ -27,6 +27,7 @@ class Camera final {
   Camera(const glm::vec2& viewport_size,
          const glm::vec2& position = glm::vec2(0.0f, 0.0f),
          const std::optional<engine::utils::Rect> limit_bounds = std::nullopt);
+  DISABLE_COPY_AND_MOVE(Camera);
 
   void Update(float delta_time);       ///< @brief Update camera position
   void Move(const glm::vec2& offset);  ///< @brief Move camera
@@ -51,8 +52,6 @@ class Camera final {
   glm::vec2 GetViewportSize() const;  ///< @brief Get viewport size
 
  private:
-  DISABLE_COPY_AND_MOVE(Camera);
-
   void ClampPosition();  ///< @brief Clamp camera position within boundaries
 };
 

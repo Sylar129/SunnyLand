@@ -10,8 +10,6 @@ namespace engine::core {
 class Time final {
  public:
   Time();
-
- private:
   DISABLE_COPY_AND_MOVE(Time);
 
  public:

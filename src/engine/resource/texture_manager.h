@@ -17,8 +17,6 @@ class TextureManager final {
 
  public:
   explicit TextureManager(SDL_Renderer* renderer);
-
- private:
   DISABLE_COPY_AND_MOVE(TextureManager);
 
   SDL_Texture* LoadTexture(const std::string& file_path);

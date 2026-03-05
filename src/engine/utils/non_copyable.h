@@ -1,3 +1,5 @@
+// Copyright Sylar129
+
 #pragma once
 
 /**

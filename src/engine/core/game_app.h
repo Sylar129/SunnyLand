@@ -27,8 +27,6 @@ class GameApp final {
  public:
   GameApp();
   ~GameApp();
-
- private:
   DISABLE_COPY_AND_MOVE(GameApp);
 
  public:
