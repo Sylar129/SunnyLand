@@ -8,12 +8,6 @@ class GameObject;
 
 namespace engine::component {
 
-/**
- * @brief 组件的抽象基类。
- *
- * 所有具体组件都应从此类继承。
- * 定义了组件生命周期中可能调用的通用方法。
- */
 class Component {
   friend class engine::object::GameObject;
 
