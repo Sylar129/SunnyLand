@@ -31,6 +31,7 @@ class FontManager final {
   ~FontManager();
   DISABLE_COPY_AND_MOVE(FontManager);
 
+ private:
   TTF_Font* LoadFont(const std::string& file_path, int point_size);
   TTF_Font* GetFont(const std::string& file_path, int point_size);
   void UnloadFont(const std::string& file_path, int point_size);

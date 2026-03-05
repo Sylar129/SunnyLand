@@ -12,7 +12,6 @@ class Time final {
   Time();
   DISABLE_COPY_AND_MOVE(Time);
 
- public:
   void Update();
 
   float GetDeltaTime() const;

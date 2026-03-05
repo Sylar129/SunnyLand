@@ -52,7 +52,6 @@ class Config final {
   explicit Config(const std::string& filepath);
   DISABLE_COPY_AND_MOVE(Config);
 
- public:
   ///< @brief Loads configuration from the specified JSON
   ///< file. Returns true on success, false otherwise.
   bool LoadFromFile(const std::string& filepath);

@@ -20,7 +20,6 @@ class GameObject final {
   GameObject(const std::string& name, const std::string& tag = "");
   DISABLE_COPY_AND_MOVE(GameObject);
 
- public:
   void SetName(const std::string& name) { name_ = name; }
   const std::string& GetName() const { return name_; }
   void SetTag(const std::string& tag) { tag_ = tag; }

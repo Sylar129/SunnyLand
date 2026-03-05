@@ -29,7 +29,6 @@ class GameApp final {
   ~GameApp();
   DISABLE_COPY_AND_MOVE(GameApp);
 
- public:
   void Run();
 
  private:

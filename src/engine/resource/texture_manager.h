@@ -19,6 +19,7 @@ class TextureManager final {
   explicit TextureManager(SDL_Renderer* renderer);
   DISABLE_COPY_AND_MOVE(TextureManager);
 
+ private:
   SDL_Texture* LoadTexture(const std::string& file_path);
   SDL_Texture* GetTexture(const std::string& file_path);
   glm::vec2 GetTextureSize(const std::string& file_path);
