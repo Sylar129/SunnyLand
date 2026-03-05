@@ -10,6 +10,8 @@
 #include "engine/render/camera.h"
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
+#include "engine/scene/scene_manager.h"
+#include "game/game_scene.h"
 #include "log.h"
 
 namespace engine::core {
@@ -52,6 +54,11 @@ bool GameApp::Init() {
   if (!InitCamera()) return false;
   if (!InitInputManager()) return false;
   if (!InitContext()) return false;
+  if (!InitSceneManager()) return false;
+
+  auto scene = std::make_unique<game::scene::GameScene>("GameScene", *context_,
+                                                        *scene_manager_);
+  scene_manager_->requestPushScene(std::move(scene));
 
   is_running_ = true;
   return true;
@@ -162,25 +169,33 @@ bool GameApp::InitContext() {
   return true;
 }
 
+bool GameApp::InitSceneManager() {
+  try {
+    scene_manager_ = std::make_unique<engine::scene::SceneManager>(*context_);
+  } catch (const std::exception& e) {
+    ENGINE_ERROR("初始化场景管理器失败: {}", e.what());
+    return false;
+  }
+  ENGINE_TRACE("场景管理器初始化成功。");
+  return true;
+}
+
 void GameApp::HandleEvents() {
   if (input_manager_->ShouldQuit()) {
     ENGINE_TRACE("GameApp receive quit request from InputManager.");
     is_running_ = false;
     return;
   }
-  TestInputManager();
+  scene_manager_->handleInput();
 }
 
-void GameApp::Update(float delta_time) { TestCamera(); }
+void GameApp::Update(float delta_time) { scene_manager_->update(delta_time); }
 
 void GameApp::Render() {
-  // Clear screen
   renderer_->ClearScreen();
 
-  // Render scene
-  TestRenderer();
+  scene_manager_->render();
 
-  // Update screen display
   renderer_->Present();
 }
 
@@ -198,48 +213,6 @@ void GameApp::Close() {
   }
   SDL_Quit();
   is_running_ = false;
-}
-
-void GameApp::TestRenderer() {
-  engine::render::Sprite sprite_world("assets/textures/Actors/frog.png");
-  engine::render::Sprite sprite_ui("assets/textures/UI/buttons/Start1.png");
-  engine::render::Sprite sprite_parallax("assets/textures/Layers/back.png");
-
-  static float rotation = 0.0f;
-  rotation += 0.1f;
-
-  // Note: rendering order matters
-  renderer_->DrawParallax(*camera_, sprite_parallax, glm::vec2(100, 100),
-                          glm::vec2(0.5f, 0.5f), glm::bvec2(true, false));
-  renderer_->DrawSprite(*camera_, sprite_world, glm::vec2(200, 200),
-                        glm::vec2(1.0f, 1.0f), rotation);
-  renderer_->DrawUISprite(sprite_ui, glm::vec2(100, 100));
-}
-
-void GameApp::TestCamera() {
-  auto key_state = SDL_GetKeyboardState(nullptr);
-  if (key_state[SDL_SCANCODE_UP]) camera_->Move(glm::vec2(0, -1));
-  if (key_state[SDL_SCANCODE_DOWN]) camera_->Move(glm::vec2(0, 1));
-  if (key_state[SDL_SCANCODE_LEFT]) camera_->Move(glm::vec2(-1, 0));
-  if (key_state[SDL_SCANCODE_RIGHT]) camera_->Move(glm::vec2(1, 0));
-}
-
-void GameApp::TestInputManager() {
-  std::vector<std::string> actions = {
-      "move_up", "move_down", "move_left",      "move_right",     "jump",
-      "attack",  "pause",     "MouseLeftClick", "MouseRightClick"};
-
-  for (const auto& action : actions) {
-    if (input_manager_->IsActionPressed(action)) {
-      ENGINE_INFO(" {} pressed ", action);
-    }
-    if (input_manager_->IsActionReleased(action)) {
-      ENGINE_INFO(" {} released ", action);
-    }
-    if (input_manager_->IsActionDown(action)) {
-      ENGINE_INFO(" {} holding ", action);
-    }
-  }
 }
 
 }  // namespace engine::core

@@ -21,6 +21,10 @@ namespace engine::resource {
 class ResourceManager;
 }
 
+namespace engine::scene {
+class SceneManager;
+}
+
 namespace engine::core {
 
 class Context;
@@ -43,16 +47,12 @@ class GameApp final {
   [[nodiscard]] bool InitResourceManager();
   [[nodiscard]] bool InitInputManager();
   [[nodiscard]] bool InitContext();
+  [[nodiscard]] bool InitSceneManager();
 
   void HandleEvents();
   void Update(float delta_time);
   void Render();
   void Close();
-
-  // Test functions
-  void TestRenderer();
-  void TestCamera();
-  void TestInputManager();
 
   SDL_Window* window_ = nullptr;
   SDL_Renderer* sdl_renderer_ = nullptr;
@@ -64,6 +64,7 @@ class GameApp final {
   std::unique_ptr<engine::core::Config> config_;
   std::unique_ptr<engine::input::InputManager> input_manager_;
   std::unique_ptr<engine::core::Context> context_;
+  std::unique_ptr<engine::scene::SceneManager> scene_manager_;
 };
 
 }  // namespace engine::core

@@ -31,7 +31,15 @@ set(TARGET_SOURCES
     src/engine/resource/resource_manager.h
     src/engine/resource/texture_manager.cpp
     src/engine/resource/texture_manager.h
+    src/engine/scene/scene_manager.cpp
+    src/engine/scene/scene_manager.h
+    src/engine/scene/scene.cpp
+    src/engine/scene/scene.h
+    src/engine/utils/alignment.h
     src/engine/utils/math.h
+    src/engine/utils/non_copyable.h
+    src/game/game_scene.cpp
+    src/game/game_scene.h
     src/log.cpp
     src/log.h
     src/main.cpp
