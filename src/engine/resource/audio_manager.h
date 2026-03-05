@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "SDL3_mixer/SDL_mixer.h"
+#include "engine/utils/non_copyable.h"
 
 namespace engine::resource {
 
@@ -16,11 +17,7 @@ class AudioManager final {
  public:
   AudioManager();
   ~AudioManager();
-
-  AudioManager(const AudioManager&) = delete;
-  AudioManager& operator=(const AudioManager&) = delete;
-  AudioManager(AudioManager&&) = delete;
-  AudioManager& operator=(AudioManager&&) = delete;
+  DISABLE_COPY_AND_MOVE(AudioManager);
 
  private:
   MIX_Audio* LoadSound(const std::string& file_path);

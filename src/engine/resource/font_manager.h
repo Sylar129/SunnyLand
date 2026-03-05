@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "SDL3_ttf/SDL_ttf.h"
+#include "engine/utils/non_copyable.h"
 
 namespace engine::resource {
 
@@ -28,11 +29,7 @@ class FontManager final {
  public:
   FontManager();
   ~FontManager();
-
-  FontManager(const FontManager&) = delete;
-  FontManager& operator=(const FontManager&) = delete;
-  FontManager(FontManager&&) = delete;
-  FontManager& operator=(FontManager&&) = delete;
+  DISABLE_COPY_AND_MOVE(FontManager);
 
  private:
   TTF_Font* LoadFont(const std::string& file_path, int point_size);
