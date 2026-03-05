@@ -4,6 +4,8 @@ set(TARGET_SOURCES
     src/engine/component/component.h
     src/engine/core/config.cpp
     src/engine/core/config.h
+    src/engine/core/context.cpp
+    src/engine/core/context.h
     src/engine/core/game_app.cpp
     src/engine/core/game_app.h
     src/engine/core/time.cpp
