@@ -155,10 +155,10 @@ bool GameApp::InitContext() {
     context_ = std::make_unique<engine::core::Context>(
         *input_manager_, *renderer_, *camera_, *resource_manager_);
   } catch (const std::exception& e) {
-    ENGINE_ERROR("初始化上下文失败: {}", e.what());
+    ENGINE_ERROR("Failed to init Context: {}", e.what());
     return false;
   }
-  ENGINE_ERROR("上下文初始化成功。");
+  ENGINE_ERROR("Init Context successfully.");
   return true;
 }
 
