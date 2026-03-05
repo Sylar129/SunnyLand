@@ -4,8 +4,6 @@
 
 namespace engine::component {
 
-void TransformComponent::setScale(const glm::vec2 &scale) {
-  scale_ = scale;
-}
+void TransformComponent::SetScale(const glm::vec2 &scale) { scale_ = scale; }
 
 }  // namespace engine::component

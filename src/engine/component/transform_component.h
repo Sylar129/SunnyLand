@@ -17,13 +17,14 @@ class TransformComponent final : public Component {
       : position_(position), scale_(scale), rotation_(rotation) {}
   DISABLE_COPY_AND_MOVE(TransformComponent);
 
-  const glm::vec2& getPosition() const { return position_; }
-  float getRotation() const { return rotation_; }
-  const glm::vec2& getScale() const { return scale_; }
-  void setPosition(const glm::vec2& position) { position_ = position; }
-  void setRotation(float rotation) { rotation_ = rotation; }
-  void setScale(const glm::vec2& scale);
-  void translate(const glm::vec2& offset) { position_ += offset; }
+  glm::vec2 GetPosition() const { return position_; }
+  void SetPosition(const glm::vec2& position) { position_ = position; }
+  void Translate(const glm::vec2& offset) { position_ += offset; }
+
+  float GetRotation() const { return rotation_; }
+  void SetRotation(float rotation) { rotation_ = rotation; }
+  glm::vec2 GetScale() const { return scale_; }
+  void SetScale(const glm::vec2& scale);
 
  private:
   void Update(float, engine::core::Context&) override {}
