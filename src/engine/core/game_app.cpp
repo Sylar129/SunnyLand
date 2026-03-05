@@ -58,7 +58,7 @@ bool GameApp::Init() {
 
   auto scene = std::make_unique<game::scene::GameScene>("GameScene", *context_,
                                                         *scene_manager_);
-  scene_manager_->requestPushScene(std::move(scene));
+  scene_manager_->RequestPushScene(std::move(scene));
 
   is_running_ = true;
   return true;
@@ -186,15 +186,15 @@ void GameApp::HandleEvents() {
     is_running_ = false;
     return;
   }
-  scene_manager_->handleInput();
+  scene_manager_->HandleInput();
 }
 
-void GameApp::Update(float delta_time) { scene_manager_->update(delta_time); }
+void GameApp::Update(float delta_time) { scene_manager_->Update(delta_time); }
 
 void GameApp::Render() {
   renderer_->ClearScreen();
 
-  scene_manager_->render();
+  scene_manager_->Render();
 
   renderer_->Present();
 }

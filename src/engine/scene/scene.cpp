@@ -2,12 +2,11 @@
 
 #include "engine/scene/scene.h"
 
-#include <spdlog/spdlog.h>
-
 #include <algorithm>  // for std::remove_if
 
-#include "../object/game_object.h"
-#include "scene_manager.h"
+#include "engine/object/game_object.h"
+#include "engine/scene/scene_manager.h"
+#include "log.h"
 
 namespace engine::scene {
 
@@ -17,17 +16,17 @@ Scene::Scene(std::string name, engine::core::Context& context,
       context_(context),
       scene_manager_(scene_manager),
       is_initialized_(false) {
-  spdlog::trace("场景 '{}' 构造完成。", scene_name_);
+  ENGINE_TRACE("场景 '{}' 构造完成。", scene_name_);
 }
 
 Scene::~Scene() = default;
 
-void Scene::init() {
+void Scene::Init() {
   is_initialized_ = true;  // 子类应该最后调用父类的 init 方法
-  spdlog::trace("场景 '{}' 初始化完成。", scene_name_);
+  ENGINE_TRACE("场景 '{}' 初始化完成。", scene_name_);
 }
 
-void Scene::update(float delta_time) {
+void Scene::Update(float delta_time) {
   if (!is_initialized_) return;
 
   // 更新所有游戏对象，并删除需要移除的对象
@@ -43,10 +42,10 @@ void Scene::update(float delta_time) {
     }
   }
 
-  processPendingAdditions();  // 处理待添加（延时添加）的游戏对象
+  ProcessPendingAdditions();  // 处理待添加（延时添加）的游戏对象
 }
 
-void Scene::render() {
+void Scene::Render() {
   if (!is_initialized_) return;
   // 渲染所有游戏对象
   for (const auto& obj : game_objects_) {
@@ -54,7 +53,7 @@ void Scene::render() {
   }
 }
 
-void Scene::handleInput() {
+void Scene::HandleInput() {
   if (!is_initialized_) return;
 
   // 遍历所有游戏对象，并删除需要移除的对象
@@ -70,7 +69,7 @@ void Scene::handleInput() {
   }
 }
 
-void Scene::clean() {
+void Scene::Clean() {
   if (!is_initialized_) return;
 
   for (const auto& obj : game_objects_) {
@@ -79,28 +78,28 @@ void Scene::clean() {
   game_objects_.clear();
 
   is_initialized_ = false;  // 清理完成后，设置场景为未初始化
-  spdlog::trace("场景 '{}' 清理完成。", scene_name_);
+  ENGINE_TRACE("场景 '{}' 清理完成。", scene_name_);
 }
 
-void Scene::addGameObject(
+void Scene::AddGameObject(
     std::unique_ptr<engine::object::GameObject>&& game_object) {
   if (game_object)
     game_objects_.push_back(std::move(game_object));
   else
-    spdlog::warn("尝试向场景 '{}' 添加空游戏对象。", scene_name_);
+    ENGINE_WARN("尝试向场景 '{}' 添加空游戏对象。", scene_name_);
 }
 
-void Scene::safeAddGameObject(
+void Scene::SafeAddGameObject(
     std::unique_ptr<engine::object::GameObject>&& game_object) {
   if (game_object)
     pending_additions_.push_back(std::move(game_object));
   else
-    spdlog::warn("尝试向场景 '{}' 添加空游戏对象。", scene_name_);
+    ENGINE_WARN("尝试向场景 '{}' 添加空游戏对象。", scene_name_);
 }
 
-void Scene::removeGameObject(engine::object::GameObject* game_object_ptr) {
+void Scene::RemoveGameObject(engine::object::GameObject* game_object_ptr) {
   if (!game_object_ptr) {
-    spdlog::warn("尝试从场景 '{}' 中移除一个空的游戏对象指针。", scene_name_);
+    ENGINE_WARN("尝试从场景 '{}' 中移除一个空的游戏对象指针。", scene_name_);
     return;
   }
 
@@ -118,17 +117,17 @@ void Scene::removeGameObject(engine::object::GameObject* game_object_ptr) {
         ->Clean();  // 因为传入的是指针，因此只可能有一个元素被移除，不需要遍历it到末尾
     game_objects_.erase(
         it, game_objects_.end());  // 删除从it到末尾的元素（最后一个元素）
-    spdlog::trace("从场景 '{}' 中移除游戏对象。", scene_name_);
+    ENGINE_TRACE("从场景 '{}' 中移除游戏对象。", scene_name_);
   } else {
-    spdlog::warn("游戏对象指针未找到在场景 '{}' 中。", scene_name_);
+    ENGINE_WARN("游戏对象指针未找到在场景 '{}' 中。", scene_name_);
   }
 }
 
-void Scene::safeRemoveGameObject(engine::object::GameObject* game_object_ptr) {
+void Scene::SafeRemoveGameObject(engine::object::GameObject* game_object_ptr) {
   game_object_ptr->SetNeedRemove(true);
 }
 
-engine::object::GameObject* Scene::findGameObjectByName(
+engine::object::GameObject* Scene::FindGameObjectByName(
     const std::string& name) const {
   // 找到第一个符合条件的游戏对象就返回
   for (const auto& obj : game_objects_) {
@@ -139,10 +138,10 @@ engine::object::GameObject* Scene::findGameObjectByName(
   return nullptr;
 }
 
-void Scene::processPendingAdditions() {
+void Scene::ProcessPendingAdditions() {
   // 处理待添加的游戏对象
   for (auto& game_object : pending_additions_) {
-    addGameObject(std::move(game_object));
+    AddGameObject(std::move(game_object));
   }
   pending_additions_.clear();
 }

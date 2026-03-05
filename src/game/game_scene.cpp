@@ -18,21 +18,21 @@ GameScene::GameScene(std::string name, engine::core::Context& context,
   spdlog::trace("GameScene 构造完成。");
 }
 
-void GameScene::init() {
+void GameScene::Init() {
   // 创建 test_object
   createTestObject();
 
-  Scene::init();
+  Scene::Init();
   spdlog::trace("GameScene 初始化完成。");
 }
 
-void GameScene::update(float delta_time) { Scene::update(delta_time); }
+void GameScene::Update(float delta_time) { Scene::Update(delta_time); }
 
-void GameScene::render() { Scene::render(); }
+void GameScene::Render() { Scene::Render(); }
 
-void GameScene::handleInput() { Scene::handleInput(); }
+void GameScene::HandleInput() { Scene::HandleInput(); }
 
-void GameScene::clean() { Scene::clean(); }
+void GameScene::Clean() { Scene::Clean(); }
 
 // --- 私有方法 ---
 
@@ -48,7 +48,7 @@ void GameScene::createTestObject() {
       "assets/textures/Props/big-crate.png", context_.getResourceManager());
 
   // 将创建好的 GameObject 添加到场景中 （一定要用std::move，否则传递的是左值）
-  addGameObject(std::move(test_object));
+  AddGameObject(std::move(test_object));
   spdlog::trace("test_object 创建并添加到 GameScene 中。");
 }
 
