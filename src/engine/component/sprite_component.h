@@ -12,10 +12,6 @@
 #include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
 
-namespace engine::core {
-class Context;
-}
-
 namespace engine::resource {
 class ResourceManager;
 }

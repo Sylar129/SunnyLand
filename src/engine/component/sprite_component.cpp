@@ -24,16 +24,15 @@ SpriteComponent::SpriteComponent(
 
 void SpriteComponent::Init() {
   if (!owner_) {
-    ENGINE_ERROR("SpriteComponent 在初始化前未设置所有者。");
+    ENGINE_ERROR("SpriteComponent does not have an owner GameObject!");
     return;
   }
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
     ENGINE_WARN(
-        "GameObject '{}' 上的 SpriteComponent 需要一个 "
-        "TransformComponent，但未找到。",
+        "The SpriteComponent in GameObject '{}' does not have a "
+        "TransformComponent ",
         owner_->GetName());
-    // Sprite没有Transform无法计算偏移和渲染，直接返回
     return;
   }
 
@@ -52,7 +51,6 @@ void SpriteComponent::UpdateOffset() {
     return;
   }
   auto scale = transform_->GetScale();
-  // 计算精灵左上角相对于 TransformComponent::position_ 的偏移
   switch (alignment_) {
     case engine::utils::Alignment::TOP_LEFT:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
@@ -93,12 +91,10 @@ void SpriteComponent::Render(engine::core::Context& context) {
     return;
   }
 
-  // 获取变换信息（考虑偏移量）
   const glm::vec2& pos = transform_->GetPosition() + offset_;
   const glm::vec2& scale = transform_->GetScale();
   float rotation_degrees = transform_->GetRotation();
 
-  // 执行绘制
   context.getRenderer().DrawSprite(context.getCamera(), sprite_, pos, scale,
                                    rotation_degrees);
 }
