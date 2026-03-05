@@ -7,6 +7,8 @@ set(TARGET_SOURCES
     src/engine/core/game_app.h
     src/engine/core/time.cpp
     src/engine/core/time.h
+    src/engine/input/input_manager.cpp
+    src/engine/input/input_manager.h
     src/engine/render/camera.cpp
     src/engine/render/camera.h
     src/engine/render/renderer.cpp
