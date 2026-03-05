@@ -2,7 +2,6 @@
 
 #include "game/game_scene.h"
 
-#include "SDL3/SDL_rect.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
@@ -18,7 +17,7 @@ GameScene::GameScene(const std::string& name, engine::core::Context& context,
 }
 
 void GameScene::Init() {
-  createTestObject();
+  CreateTestObject();
 
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());
@@ -32,7 +31,7 @@ void GameScene::HandleInput() { Scene::HandleInput(); }
 
 void GameScene::Clean() { Scene::Clean(); }
 
-void GameScene::createTestObject() {
+void GameScene::CreateTestObject() {
   GAME_TRACE("Creating test object in GameScene");
   auto test_object =
       std::make_unique<engine::object::GameObject>("test_object");
