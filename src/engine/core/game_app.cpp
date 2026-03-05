@@ -173,10 +173,10 @@ bool GameApp::InitSceneManager() {
   try {
     scene_manager_ = std::make_unique<engine::scene::SceneManager>(*context_);
   } catch (const std::exception& e) {
-    ENGINE_ERROR("初始化场景管理器失败: {}", e.what());
+    ENGINE_ERROR("Failed to init SceneManager: {}", e.what());
     return false;
   }
-  ENGINE_TRACE("场景管理器初始化成功。");
+  ENGINE_TRACE("Init SceneManager successfully.");
   return true;
 }
 
