@@ -2,28 +2,26 @@
 
 #include "game/game_scene.h"
 
-#include <SDL3/SDL_rect.h>
-#include <spdlog/spdlog.h>
-
+#include "SDL3/SDL_rect.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/object/game_object.h"
+#include "log.h"
 
 namespace game::scene {
 
-GameScene::GameScene(std::string name, engine::core::Context& context,
+GameScene::GameScene(const std::string& name, engine::core::Context& context,
                      engine::scene::SceneManager& scene_manager)
     : Scene(name, context, scene_manager) {
-  spdlog::trace("GameScene 构造完成。");
+  GAME_TRACE("Contructing GameScene '{}'", name);
 }
 
 void GameScene::Init() {
-  // 创建 test_object
   createTestObject();
 
   Scene::Init();
-  spdlog::trace("GameScene 初始化完成。");
+  GAME_TRACE("Init GameScene '{}'", GetName());
 }
 
 void GameScene::Update(float delta_time) { Scene::Update(delta_time); }
@@ -34,22 +32,18 @@ void GameScene::HandleInput() { Scene::HandleInput(); }
 
 void GameScene::Clean() { Scene::Clean(); }
 
-// --- 私有方法 ---
-
 void GameScene::createTestObject() {
-  spdlog::trace("在 GameScene 中创建 test_object...");
+  GAME_TRACE("Creating test object in GameScene");
   auto test_object =
       std::make_unique<engine::object::GameObject>("test_object");
 
-  // 添加组件
   test_object->AddComponent<engine::component::TransformComponent>(
       glm::vec2(100.0f, 100.0f));
   test_object->AddComponent<engine::component::SpriteComponent>(
       "assets/textures/Props/big-crate.png", context_.getResourceManager());
 
-  // 将创建好的 GameObject 添加到场景中 （一定要用std::move，否则传递的是左值）
   AddGameObject(std::move(test_object));
-  spdlog::trace("test_object 创建并添加到 GameScene 中。");
+  GAME_TRACE("test_object has been created and added to GameScene");
 }
 
 }  // namespace game::scene

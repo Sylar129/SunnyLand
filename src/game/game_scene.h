@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include "engine/scene/scene.h"
 
 namespace engine::object {
@@ -14,7 +12,7 @@ namespace game::scene {
 
 class GameScene final : public engine::scene::Scene {
  public:
-  GameScene(std::string name, engine::core::Context& context,
+  GameScene(const std::string& name, engine::core::Context& context,
             engine::scene::SceneManager& scene_manager);
 
   void Init() override;
@@ -24,7 +22,6 @@ class GameScene final : public engine::scene::Scene {
   void Clean() override;
 
  private:
-  // 测试函数
   void createTestObject();
 };
 
