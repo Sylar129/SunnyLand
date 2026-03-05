@@ -11,15 +11,21 @@ GameObject::GameObject(const std::string& name, const std::string& tag)
   ENGINE_TRACE("GameObject created: {} {}", name_, tag_);
 }
 
-void GameObject::Update(float delta_time) {
+void GameObject::HandleInput(engine::core::Context& context) {
   for (auto& pair : components_) {
-    pair.second->Update(delta_time);
+    pair.second->HandleInput(context);
   }
 }
 
-void GameObject::Render() {
+void GameObject::Update(float delta_time, engine::core::Context& context) {
   for (auto& pair : components_) {
-    pair.second->Render();
+    pair.second->Update(delta_time, context);
+  }
+}
+
+void GameObject::Render(engine::core::Context& context) {
+  for (auto& pair : components_) {
+    pair.second->Render(context);
   }
 }
 
@@ -29,12 +35,6 @@ void GameObject::Clean() {
     pair.second->Clean();
   }
   components_.clear();
-}
-
-void GameObject::HandleInput() {
-  for (auto& pair : components_) {
-    pair.second->HandleInput();
-  }
 }
 
 }  // namespace engine::object

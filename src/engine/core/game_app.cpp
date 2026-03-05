@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "SDL3/SDL.h"
+#include "engine/core/context.h"
 #include "engine/core/time.h"
 #include "engine/render/camera.h"
 #include "engine/render/renderer.h"
@@ -50,6 +51,7 @@ bool GameApp::Init() {
   if (!InitRenderer()) return false;
   if (!InitCamera()) return false;
   if (!InitInputManager()) return false;
+  if (!InitContext()) return false;
 
   is_running_ = true;
   return true;
@@ -145,6 +147,18 @@ bool GameApp::InitInputManager() {
     return false;
   }
   ENGINE_TRACE("Init InputManager successfully.");
+  return true;
+}
+
+bool GameApp::InitContext() {
+  try {
+    context_ = std::make_unique<engine::core::Context>(
+        *input_manager_, *renderer_, *camera_, *resource_manager_);
+  } catch (const std::exception& e) {
+    ENGINE_ERROR("初始化上下文失败: {}", e.what());
+    return false;
+  }
+  ENGINE_ERROR("上下文初始化成功。");
   return true;
 }
 

@@ -7,6 +7,7 @@
 #include "engine/core/config.h"
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
+
 struct SDL_Window;
 struct SDL_Renderer;
 
@@ -20,6 +21,8 @@ class ResourceManager;
 }
 
 namespace engine::core {
+
+class Context;
 
 class GameApp final {
  public:
@@ -42,6 +45,7 @@ class GameApp final {
   [[nodiscard]] bool InitTime();
   [[nodiscard]] bool InitResourceManager();
   [[nodiscard]] bool InitInputManager();
+  [[nodiscard]] bool InitContext();
 
   void HandleEvents();
   void Update(float delta_time);
@@ -62,6 +66,7 @@ class GameApp final {
   std::unique_ptr<engine::render::Camera> camera_;
   std::unique_ptr<engine::core::Config> config_;
   std::unique_ptr<engine::input::InputManager> input_manager_;
+  std::unique_ptr<engine::core::Context> context_;
 };
 
 }  // namespace engine::core

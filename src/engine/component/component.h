@@ -2,6 +2,10 @@
 
 #pragma once
 
+namespace engine::core {
+class Context;
+}
+
 namespace engine::object {
 class GameObject;
 }
@@ -21,13 +25,13 @@ class Component {
   Component& operator=(Component&&) = delete;
 
   void SetOwner(engine::object::GameObject* owner) { owner_ = owner; }
-  engine::object::GameObject* GetOwner() const { return owner_; }
+  [[nodiscard]] engine::object::GameObject* GetOwner() const { return owner_; }
 
  protected:
   virtual void Init() {}
-  virtual void HandleInput() {}
-  virtual void Update(float delta_time) {}
-  virtual void Render() {}
+  virtual void HandleInput(engine::core::Context& context) {}
+  virtual void Update(float delta_time, engine::core::Context& context) {}
+  virtual void Render(engine::core::Context& context) {}
   virtual void Clean() {}
 
  protected:
