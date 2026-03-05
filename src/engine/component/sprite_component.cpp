@@ -89,7 +89,7 @@ void SpriteComponent::UpdateOffset() {
 }
 
 void SpriteComponent::Render(engine::core::Context& context) {
-  if (is_hidden_ || !transform_ || !resource_manager_) {
+  if (is_hidden_ || !transform_) {
     return;
   }
 
@@ -121,15 +121,11 @@ void SpriteComponent::SetSourceRect(
 }
 
 void SpriteComponent::UpdateSpriteSize() {
-  if (!resource_manager_) {
-    ENGINE_ERROR("ResourceManager 为空！无法获取纹理尺寸。");
-    return;
-  }
   if (sprite_.GetSourceRect().has_value()) {
     const auto& src_rect = sprite_.GetSourceRect().value();
     sprite_size_ = {src_rect.w, src_rect.h};
   } else {
-    sprite_size_ = resource_manager_->GetTextureSize(sprite_.GetTextureId());
+    sprite_size_ = resource_manager_.GetTextureSize(sprite_.GetTextureId());
   }
 }
 
