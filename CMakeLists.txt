@@ -30,3 +30,8 @@ target_link_libraries(${TARGET} PRIVATE ${TARGET_LINK_LIBS})
 # Post-build steps
 # ============================================================================
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PostBuildSteps.cmake)
+
+# ============================================================================
+# Tests
+# ============================================================================
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Tests.cmake)
