@@ -1,6 +1,7 @@
 # Source files configuration
 
 set(TARGET_SOURCES
+    src/engine/component/component.h
     src/engine/core/config.cpp
     src/engine/core/config.h
     src/engine/core/game_app.cpp
@@ -9,6 +10,8 @@ set(TARGET_SOURCES
     src/engine/core/time.h
     src/engine/input/input_manager.cpp
     src/engine/input/input_manager.h
+    src/engine/object/game_object.cpp
+    src/engine/object/game_object.h
     src/engine/render/camera.cpp
     src/engine/render/camera.h
     src/engine/render/renderer.cpp

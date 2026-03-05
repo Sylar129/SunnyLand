@@ -41,9 +41,9 @@ class GameObject final {
 
     auto new_component = std::make_unique<T>(std::forward<Args>(args)...);
     T* ptr = new_component.get();
-    new_component->setOwner(this);
+    new_component->SetOwner(this);
     components_[type_index] = std::move(new_component);
-    ptr->init();
+    ptr->Init();
     ENGINE_DEBUG("GameObject::addComponent: {} added component {}", name_,
                  typeid(T).name());
     return ptr;
