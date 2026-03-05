@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "engine/utils/non_copyable.h"
+
 namespace engine::input {
 class InputManager;
 }
@@ -22,11 +24,7 @@ class Context final {
   Context(engine::input::InputManager& input_manager,
           engine::render::Renderer& renderer, engine::render::Camera& camera,
           engine::resource::ResourceManager& resource_manager);
-
-  Context(const Context&) = delete;
-  Context& operator=(const Context&) = delete;
-  Context(Context&&) = delete;
-  Context& operator=(Context&&) = delete;
+  DISABLE_COPY_AND_MOVE(Context);
 
   engine::input::InputManager& getInputManager() const {
     return input_manager_;
