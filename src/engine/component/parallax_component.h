@@ -37,8 +37,7 @@ class ParallaxComponent final : public Component {
   TransformComponent* transform_ = nullptr;
 
   engine::render::Sprite sprite_;
-  glm::vec2 scroll_factor_;  ///< @brief 滚动速度因子 (0=静止, 1=随相机移动,
-                             ///< <1=比相机慢)
+  glm::vec2 scroll_factor_;
   glm::bvec2 repeat_;
   bool is_hidden_ = false;
 };

@@ -16,14 +16,12 @@ namespace engine::scene {
 
 bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
   map_path_ = level_path;
-  // 1. 加载 JSON 文件
   std::ifstream file(level_path);
   if (!file.is_open()) {
     ENGINE_ERROR("无法打开关卡文件: {}", level_path);
     return false;
   }
 
-  // 2. 解析 JSON 数据
   nlohmann::json json_data;
   try {
     file >> json_data;
@@ -32,14 +30,11 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
     return false;
   }
 
-  // 3. 加载图层数据
-  if (!json_data.contains("layers") ||
-      !json_data["layers"].is_array()) {  // 地图文件中必须有 layers 数组
+  if (!json_data.contains("layers") || !json_data["layers"].is_array()) {
     ENGINE_ERROR("地图文件 '{}' 中缺少或无效的 'layers' 数组。", level_path);
     return false;
   }
   for (const auto& layer_json : json_data["layers"]) {
-    // 获取各图层对象中的类型（type）字段
     std::string layer_type = layer_json.value("type", "none");
     if (!layer_json.value("visible", true)) {
       ENGINE_INFO("图层 '{}' 不可见，跳过加载。",
@@ -47,7 +42,6 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
       continue;
     }
 
-    // 根据图层类型决定加载方法
     if (layer_type == "imagelayer") {
       LoadImageLayer(layer_json, scene);
     } else if (layer_type == "tilelayer") {
@@ -65,7 +59,6 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
 
 void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
                                  Scene& scene) {
-  // 获取纹理相对路径 （会自动处理'\/'符号）
   const std::string& image_path = layer_json.value("image", "");
   if (image_path.empty()) {
     ENGINE_ERROR("图层 '{}' 缺少 'image' 属性。",
@@ -74,28 +67,22 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
   }
   auto texture_id = ResolvePath(image_path);
 
-  // 获取图层偏移量（json中没有则代表未设置，给默认值即可）
   const glm::vec2 offset = glm::vec2(layer_json.value("offsetx", 0.0f),
                                      layer_json.value("offsety", 0.0f));
 
-  // 获取视差因子及重复标志
   const glm::vec2 scroll_factor = glm::vec2(
       layer_json.value("parallaxx", 1.0f), layer_json.value("parallaxy", 1.0f));
   const glm::bvec2 repeat = glm::bvec2(layer_json.value("repeatx", false),
                                        layer_json.value("repeaty", false));
 
-  // 获取图层名称
   const std::string& layer_name = layer_json.value("name", "Unnamed");
 
-  /*  可用类似方法获取其它各种属性，这里我们暂时用不上 */
-
-  // 创建游戏对象
   auto game_object = std::make_unique<engine::object::GameObject>(layer_name);
-  // 依次添加Transform，Parallax组件
+
   game_object->AddComponent<engine::component::TransformComponent>(offset);
   game_object->AddComponent<engine::component::ParallaxComponent>(
       texture_id, scroll_factor, repeat);
-  // 添加到场景中
+
   scene.AddGameObject(std::move(game_object));
   ENGINE_INFO("加载图层: '{}' 完成", layer_name);
 }
