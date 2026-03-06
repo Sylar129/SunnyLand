@@ -2,6 +2,8 @@
 
 set(TARGET_SOURCES
     src/engine/component/component.h
+    src/engine/component/parallax_component.cpp
+    src/engine/component/parallax_component.h
     src/engine/component/sprite_component.cpp
     src/engine/component/sprite_component.h
     src/engine/component/transform_component.cpp
@@ -31,6 +33,8 @@ set(TARGET_SOURCES
     src/engine/resource/resource_manager.h
     src/engine/resource/texture_manager.cpp
     src/engine/resource/texture_manager.h
+    src/engine/scene/level_loader.cpp
+    src/engine/scene/level_loader.h
     src/engine/scene/scene_manager.cpp
     src/engine/scene/scene_manager.h
     src/engine/scene/scene.cpp
