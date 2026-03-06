@@ -5,12 +5,14 @@
 #include <memory>
 
 #include "SDL3/SDL.h"
+#include "assert.h"
 #include "engine/core/context.h"
 #include "engine/core/time.h"
 #include "engine/render/camera.h"
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
 #include "engine/scene/scene_manager.h"
+#include "engine/utils/assert.h"
 #include "game/game_scene.h"
 #include "log.h"
 
@@ -65,12 +67,9 @@ bool GameApp::Init() {
 }
 
 bool GameApp::InitConfig() {
-  try {
-    config_ = std::make_unique<engine::core::Config>("assets/config.json");
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Init Config failed: {}", e.what());
-    return false;
-  }
+  config_ = std::make_unique<engine::core::Config>("assets/config.json");
+  ENGINE_ASSERT(config_, "Failed to Init config!");
+
   ENGINE_TRACE("Init Config successfully.");
   return true;
 }
@@ -109,25 +108,20 @@ bool GameApp::InitSDL() {
 }
 
 bool GameApp::InitRenderer() {
-  try {
-    renderer_ = std::make_unique<engine::render::Renderer>(
-        sdl_renderer_, resource_manager_.get());
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Renderer initialization failed: {}", e.what());
-    return false;
-  }
+  renderer_ = std::make_unique<engine::render::Renderer>(
+      sdl_renderer_, resource_manager_.get());
+
+  ENGINE_ASSERT(renderer_, "Failed to Init Renderer!");
+
   ENGINE_TRACE("Renderer initialized successfully.");
   return true;
 }
 
 bool GameApp::InitCamera() {
-  try {
-    camera_ = std::make_unique<engine::render::Camera>(
-        glm::vec2(config_->window_width_ / 2, config_->window_height_ / 2));
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Camera initialization failed: {}", e.what());
-    return false;
-  }
+  camera_ = std::make_unique<engine::render::Camera>(
+      glm::vec2(config_->window_width_ / 2, config_->window_height_ / 2));
+  ENGINE_ASSERT(camera_, "Failed to Init Camera!");
+
   ENGINE_TRACE("Camera initialized successfully.");
   return true;
 }
@@ -146,36 +140,27 @@ bool GameApp::InitResourceManager() {
 }
 
 bool GameApp::InitInputManager() {
-  try {
-    input_manager_ = std::make_unique<engine::input::InputManager>(
-        sdl_renderer_, config_.get());
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Fail to init InputManager: {}", e.what());
-    return false;
-  }
+  input_manager_ = std::make_unique<engine::input::InputManager>(sdl_renderer_,
+                                                                 config_.get());
+  ENGINE_ASSERT(input_manager_, "Failed to Init InputManager!");
+
   ENGINE_TRACE("Init InputManager successfully.");
   return true;
 }
 
 bool GameApp::InitContext() {
-  try {
-    context_ = std::make_unique<engine::core::Context>(
-        *input_manager_, *renderer_, *camera_, *resource_manager_);
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Failed to init Context: {}", e.what());
-    return false;
-  }
+  context_ = std::make_unique<engine::core::Context>(
+      *input_manager_, *renderer_, *camera_, *resource_manager_);
+  ENGINE_ASSERT(context_, "Failed to Init Context!");
+
   ENGINE_ERROR("Init Context successfully.");
   return true;
 }
 
 bool GameApp::InitSceneManager() {
-  try {
-    scene_manager_ = std::make_unique<engine::scene::SceneManager>(*context_);
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Failed to init SceneManager: {}", e.what());
-    return false;
-  }
+  scene_manager_ = std::make_unique<engine::scene::SceneManager>(*context_);
+  ENGINE_ASSERT(scene_manager_, "Failed to Init SceneManager!");
+
   ENGINE_TRACE("Init SceneManager successfully.");
   return true;
 }

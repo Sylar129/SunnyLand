@@ -36,6 +36,7 @@ set(TARGET_SOURCES
     src/engine/scene/scene.cpp
     src/engine/scene/scene.h
     src/engine/utils/alignment.h
+    src/engine/utils/assert.h
     src/engine/utils/math.h
     src/engine/utils/non_copyable.h
     src/game/game_scene.cpp
