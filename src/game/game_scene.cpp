@@ -35,7 +35,7 @@ void GameScene::Render() { Scene::Render(); }
 
 void GameScene::HandleInput() {
   Scene::HandleInput();
-  testCamera();
+  TestCamera();
 }
 
 void GameScene::Clean() { Scene::Clean(); }
@@ -54,7 +54,7 @@ void GameScene::CreateTestObject() {
   GAME_TRACE("test_object has been created and added to GameScene");
 }
 
-void GameScene::testCamera() {
+void GameScene::TestCamera() {
   auto& camera = context_.getCamera();
   auto& input_manager = context_.getInputManager();
   if (input_manager.IsActionDown("move_up")) camera.Move(glm::vec2(0, -2));
