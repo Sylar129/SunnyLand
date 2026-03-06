@@ -2,10 +2,9 @@
 
 #include "engine/input/input_manager.h"
 
-#include <stdexcept>
-
 #include "SDL3/SDL.h"
 #include "engine/core/config.h"
+#include "engine/utils/assert.h"
 #include "glm/vec2.hpp"
 #include "log.h"
 
@@ -14,10 +13,8 @@ namespace engine::input {
 InputManager::InputManager(SDL_Renderer* sdl_renderer,
                            const engine::core::Config* config)
     : sdl_renderer_(sdl_renderer) {
-  if (!sdl_renderer_) {
-    ENGINE_ERROR("InputManager: SDL_Renderer is nullptr");
-    throw std::runtime_error("InputManager: SDL_Renderer is nullptr");
-  }
+  ENGINE_ASSERT(sdl_renderer_, "InputManager: SDL_Renderer is nullptr");
+
   InitializeMappings(config);
   SDL_GetMouseState(&mouse_position_.x, &mouse_position_.y);
   ENGINE_TRACE("Initial mouse position: ({}, {})", mouse_position_.x,
@@ -121,10 +118,9 @@ glm::vec2 InputManager::GetLogicalMousePosition() const {
 
 void InputManager::InitializeMappings(const engine::core::Config* config) {
   ENGINE_TRACE("Initializint input mappings...");
-  if (!config) {
-    ENGINE_ERROR("InputManager: Config is nullptr");
-    throw std::runtime_error("InputManager: Config is nullptr");
-  }
+
+  ENGINE_ASSERT(config, "InputManager: Config is nullptr");
+
   actions_to_keyname_map_ = config->input_mappings_;
   scancode_to_actions_map_.clear();
   mouse_button_to_actions_map_.clear();
