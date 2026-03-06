@@ -25,6 +25,9 @@ SDL_Texture* TextureManager::LoadTexture(const std::string& file_path) {
     ENGINE_ERROR("Failed to load texture: '{}': {}", file_path, SDL_GetError());
     return nullptr;
   }
+  if (!SDL_SetTextureScaleMode(raw_texture, SDL_SCALEMODE_NEAREST)) {
+    ENGINE_WARN("Can't set ScaleMode to SDL_SCALEMODE_NEAREST");
+  }
 
   textures_.emplace(
       file_path, std::unique_ptr<SDL_Texture, SDLTextureDeleter>(raw_texture));
