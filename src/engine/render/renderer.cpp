@@ -2,12 +2,11 @@
 
 #include "engine/render/renderer.h"
 
-#include <stdexcept>  // For std::runtime_error
-
 #include "SDL3/SDL.h"
 #include "engine/render/camera.h"
 #include "engine/render/sprite.h"
 #include "engine/resource/resource_manager.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace engine::render {
@@ -17,16 +16,14 @@ Renderer::Renderer(SDL_Renderer* sdl_renderer,
                    engine::resource::ResourceManager* resource_manager)
     : renderer_(sdl_renderer), resource_manager_(resource_manager) {
   ENGINE_TRACE("Constructing Renderer...");
-  if (!renderer_) {
-    throw std::runtime_error(
-        "Renderer construction failed: provided SDL_Renderer pointer is null.");
-  }
-  if (!resource_manager_) {
-    // ResourceManager is required for drawSprite
-    throw std::runtime_error(
-        "Renderer construction failed: provided ResourceManager pointer is "
-        "null.");
-  }
+
+  ENGINE_ASSERT(
+      renderer_,
+      "Renderer construction failed: provided SDL_Renderer pointer is null.");
+  ENGINE_ASSERT(resource_manager_,
+                "Renderer construction failed: provided ResourceManager "
+                "pointer is null.");
+
   SetDrawColor(0, 0, 0, 255);
   ENGINE_TRACE("Renderer construction successful.");
 }

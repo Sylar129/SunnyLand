@@ -2,11 +2,13 @@
 
 #include "engine/component/sprite_component.h"
 
+#include "assert.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/object/game_object.h"
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace engine::component {
@@ -23,10 +25,7 @@ SpriteComponent::SpriteComponent(
 }
 
 void SpriteComponent::Init() {
-  if (!owner_) {
-    ENGINE_ERROR("SpriteComponent does not have an owner GameObject!");
-    return;
-  }
+  ENGINE_ASSERT(owner_, "SpriteComponent does not have an owner GameObject!");
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
     ENGINE_WARN(

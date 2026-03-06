@@ -3,13 +3,13 @@
 #include "engine/resource/texture_manager.h"
 
 #include "SDL3_image/SDL_image.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace engine::resource {
 TextureManager::TextureManager(SDL_Renderer* renderer) : renderer_(renderer) {
-  if (!renderer_) {
-    ENGINE_CRITICAL("Failed to init TextureManager:  SDL_Renderer is empty");
-  }
+  ENGINE_ASSERT(renderer_,
+                "Failed to init TextureManager: SDL_Renderer is nullptr");
   ENGINE_TRACE("Init TextureManager successfully");
 }
 
