@@ -6,7 +6,7 @@
 #include <string>
 
 #include "glm/vec2.hpp"
-#include "nlohmann/json_fwd.hpp"
+#include "nlohmann/json.hpp"
 
 namespace engine::component {
 struct TileInfo;
