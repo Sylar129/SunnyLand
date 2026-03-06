@@ -8,6 +8,7 @@
 #include "assert.h"
 #include "engine/core/context.h"
 #include "engine/core/time.h"
+#include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
@@ -55,6 +56,7 @@ bool GameApp::Init() {
   if (!InitRenderer()) return false;
   if (!InitCamera()) return false;
   if (!InitInputManager()) return false;
+  if (!initPhysicsEngine()) return false;
   if (!InitContext()) return false;
   if (!InitSceneManager()) return false;
 
@@ -150,7 +152,8 @@ bool GameApp::InitInputManager() {
 
 bool GameApp::InitContext() {
   context_ = std::make_unique<engine::core::Context>(
-      *input_manager_, *renderer_, *camera_, *resource_manager_);
+      *input_manager_, *renderer_, *camera_, *resource_manager_,
+      *physics_engine_);
   ENGINE_ASSERT(context_, "Failed to Init Context!");
 
   ENGINE_ERROR("Init Context successfully.");
@@ -162,6 +165,11 @@ bool GameApp::InitSceneManager() {
   ENGINE_ASSERT(scene_manager_, "Failed to Init SceneManager!");
 
   ENGINE_TRACE("Init SceneManager successfully.");
+  return true;
+}
+
+bool GameApp::initPhysicsEngine() {
+  physics_engine_ = std::make_unique<engine::physics::PhysicsEngine>();
   return true;
 }
 

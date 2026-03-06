@@ -4,7 +4,9 @@
 
 #include <algorithm>  // for std::remove_if
 
+#include "engine/core/context.h"
 #include "engine/object/game_object.h"
+#include "engine/physics/physics_engine.h"
 #include "engine/scene/scene_manager.h"
 #include "log.h"
 
@@ -30,6 +32,8 @@ void Scene::Update(float delta_time) {
   if (!is_initialized_) {
     return;
   }
+
+  context_.getPhysicsEngine().update(delta_time);
 
   for (auto it = game_objects_.begin(); it != game_objects_.end();) {
     auto& object = *it;
