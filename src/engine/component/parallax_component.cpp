@@ -7,6 +7,7 @@
 #include "engine/object/game_object.h"
 #include "engine/render/renderer.h"
 #include "engine/render/sprite.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace engine::component {
@@ -21,15 +22,11 @@ ParallaxComponent::ParallaxComponent(const std::string& texture_id,
 }
 
 void ParallaxComponent::Init() {
-  if (!owner_) {
-    ENGINE_ERROR("ParallaxComponent 初始化时，GameObject 为空。");
-    return;
-  }
+  ENGINE_ASSERT(owner_, "ParallaxComponent: owner is nullptr");
+
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_ERROR(
-        "ParallaxComponent 初始化时，GameObject 上没有找到 TransformComponent "
-        "组件。");
+    ENGINE_ERROR("ParallaxComponent: can't find TransformComponent");
     return;
   }
 }

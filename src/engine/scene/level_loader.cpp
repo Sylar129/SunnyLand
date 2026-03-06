@@ -18,7 +18,7 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
   map_path_ = level_path;
   std::ifstream file(level_path);
   if (!file.is_open()) {
-    ENGINE_ERROR("无法打开关卡文件: {}", level_path);
+    ENGINE_ERROR("Can't open level file: {}", level_path);
     return false;
   }
 
@@ -26,18 +26,18 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
   try {
     file >> json_data;
   } catch (const nlohmann::json::parse_error& e) {
-    ENGINE_ERROR("解析 JSON 数据失败: {}", e.what());
+    ENGINE_ERROR("Parsing JSON failed: {}", e.what());
     return false;
   }
 
   if (!json_data.contains("layers") || !json_data["layers"].is_array()) {
-    ENGINE_ERROR("地图文件 '{}' 中缺少或无效的 'layers' 数组。", level_path);
+    ENGINE_ERROR("Missing or invalid 'layers' in map '{}'", level_path);
     return false;
   }
   for (const auto& layer_json : json_data["layers"]) {
     std::string layer_type = layer_json.value("type", "none");
     if (!layer_json.value("visible", true)) {
-      ENGINE_INFO("图层 '{}' 不可见，跳过加载。",
+      ENGINE_INFO("Layer '{}' is invisible. Skipping.",
                   layer_json.value("name", "Unnamed"));
       continue;
     }
@@ -49,11 +49,11 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
     } else if (layer_type == "objectgroup") {
       LoadObjectLayer(layer_json, scene);
     } else {
-      ENGINE_WARN("不支持的图层类型: {}", layer_type);
+      ENGINE_WARN("Unsupported layer type: {}", layer_type);
     }
   }
 
-  ENGINE_INFO("关卡加载完成: {}", level_path);
+  ENGINE_INFO("Level [{}] loaded.", level_path);
   return true;
 }
 
@@ -61,7 +61,7 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
                                  Scene& scene) {
   const std::string& image_path = layer_json.value("image", "");
   if (image_path.empty()) {
-    ENGINE_ERROR("图层 '{}' 缺少 'image' 属性。",
+    ENGINE_ERROR("Missing 'image' in Layer '{}'",
                  layer_json.value("name", "Unnamed"));
     return;
   }
@@ -84,7 +84,7 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
       texture_id, scroll_factor, repeat);
 
   scene.AddGameObject(std::move(game_object));
-  ENGINE_INFO("加载图层: '{}' 完成", layer_name);
+  ENGINE_INFO("Loading Layer '{}' completed.", layer_name);
 }
 
 void LevelLoader::LoadTileLayer(const nlohmann::json&, Scene&) {
@@ -96,12 +96,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json&, Scene&) {
 }
 
 std::string LevelLoader::ResolvePath(const std::string& image_path) {
-  // 获取地图文件的父目录（相对于可执行文件） "assets/maps/level1.tmj" ->
-  // "assets/maps"
   auto map_dir = std::filesystem::path(map_path_).parent_path();
-  // 合并路径（相对于可执行文件）并返回。 /*
-  // std::filesystem::canonical：解析路径中的当前目录（.）和上级目录（..）导航符，
-  /*  得到一个干净的路径 */
   auto final_path = std::filesystem::canonical(map_dir / image_path);
   return final_path.string();
 }
