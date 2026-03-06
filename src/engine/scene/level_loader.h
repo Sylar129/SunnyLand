@@ -1,12 +1,15 @@
+// Copyright Sylar129
+
 #pragma once
-#include <nlohmann/json_fwd.hpp>
+
 #include <string>
+
+#include "nlohmann/json_fwd.hpp"
 
 namespace engine::scene {
 class Scene;
 
 class LevelLoader final {
-  std::string map_path_;  ///< @brief 地图路径（拼接路径时需要）
  public:
   LevelLoader() = default;
 
@@ -16,14 +19,14 @@ class LevelLoader final {
    * @param scene 要加载数据的目标 Scene 对象。
    * @return bool 是否加载成功。
    */
-  bool loadLevel(const std::string& map_path, Scene& scene);
+  bool LoadLevel(const std::string& map_path, Scene& scene);
 
  private:
-  void loadImageLayer(const nlohmann::json& layer_json,
+  void LoadImageLayer(const nlohmann::json& layer_json,
                       Scene& scene);  ///< @brief 加载图片图层
-  void loadTileLayer(const nlohmann::json& layer_json,
+  void LoadTileLayer(const nlohmann::json& layer_json,
                      Scene& scene);  ///< @brief 加载瓦片图层
-  void loadObjectLayer(const nlohmann::json& layer_json,
+  void LoadObjectLayer(const nlohmann::json& layer_json,
                        Scene& scene);  ///< @brief 加载对象图层
 
   /**
@@ -34,7 +37,9 @@ class LevelLoader final {
    * @param image_path （图片）相对路径
    * @return std::string 解析后的完整路径。
    */
-  std::string resolvePath(std::string image_path);
+  std::string ResolvePath(const std::string& image_path);
+
+  std::string map_path_;  ///< @brief 地图路径（拼接路径时需要）
 };
 
 }  // namespace engine::scene

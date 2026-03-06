@@ -21,7 +21,7 @@ GameScene::GameScene(const std::string& name, engine::core::Context& context,
 
 void GameScene::Init() {
   engine::scene::LevelLoader level_loader;
-  level_loader.loadLevel("assets/maps/level1.tmj", *this);
+  level_loader.LoadLevel("assets/maps/level1.tmj", *this);
 
   CreateTestObject();
 

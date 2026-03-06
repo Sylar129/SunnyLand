@@ -1,33 +1,33 @@
-#include "parallax_component.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/component/parallax_component.h"
 
-#include "../core/context.h"
-#include "../object/game_object.h"
-#include "../render/camera.h"
-#include "../render/renderer.h"
-#include "../render/sprite.h"
-#include "transform_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/core/context.h"
+#include "engine/object/game_object.h"
+#include "engine/render/renderer.h"
+#include "engine/render/sprite.h"
+#include "log.h"
 
 namespace engine::component {
 
 ParallaxComponent::ParallaxComponent(const std::string& texture_id,
                                      const glm::vec2& scroll_factor,
                                      const glm::bvec2& repeat)
-    : sprite_(engine::render::Sprite(texture_id)),  // 视差背景默认为整张图片
+    : sprite_(engine::render::Sprite(texture_id)),
       scroll_factor_(scroll_factor),
       repeat_(repeat) {
-  spdlog::trace("ParallaxComponent 初始化完成，纹理 ID: {}", texture_id);
+  ENGINE_TRACE("ParallaxComponent 初始化完成，纹理 ID: {}", texture_id);
 }
 
 void ParallaxComponent::Init() {
   if (!owner_) {
-    spdlog::error("ParallaxComponent 初始化时，GameObject 为空。");
+    ENGINE_ERROR("ParallaxComponent 初始化时，GameObject 为空。");
     return;
   }
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    spdlog::error(
+    ENGINE_ERROR(
         "ParallaxComponent 初始化时，GameObject 上没有找到 TransformComponent "
         "组件。");
     return;
@@ -38,7 +38,6 @@ void ParallaxComponent::Render(engine::core::Context& context) {
   if (is_hidden_ || !transform_) {
     return;
   }
-  // 直接调用视差滚动绘制函数
   context.getRenderer().DrawParallax(context.getCamera(), sprite_,
                                      transform_->GetPosition(), scroll_factor_,
                                      repeat_, transform_->GetScale());
