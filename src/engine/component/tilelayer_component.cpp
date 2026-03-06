@@ -4,6 +4,7 @@
 
 #include "engine/core/context.h"
 #include "engine/render/renderer.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace engine::component {
@@ -14,19 +15,17 @@ TileLayerComponent::TileLayerComponent(const glm::ivec2& tile_size,
     : tile_size_(tile_size), map_size_(map_size), tiles_(std::move(tiles)) {
   if (tiles_.size() != static_cast<size_t>(map_size_.x * map_size_.y)) {
     ENGINE_ERROR(
-        "TileLayerComponent: "
-        "地图尺寸与提供的瓦片向量大小不匹配。瓦片数据将被清除。");
+        "TileLayerComponent: Invalid tiles data size. Clearing tiles.");
     tiles_.clear();
     map_size_ = {0, 0};
   }
-  ENGINE_TRACE("TileLayerComponent 构造完成");
+  ENGINE_TRACE("TileLayerComponent constructed.");
 }
 
 void TileLayerComponent::Init() {
-  if (!owner_) {
-    ENGINE_WARN("TileLayerComponent 的 owner_ 未设置。");
-  }
-  ENGINE_TRACE("TileLayerComponent 初始化完成");
+  ENGINE_ASSERT(owner_, "TileLayerComponent Init failed: owner_ is null.");
+
+  ENGINE_TRACE("TileLayerComponent initialized.");
 }
 
 void TileLayerComponent::Render(engine::core::Context& context) {
@@ -44,8 +43,7 @@ void TileLayerComponent::Render(engine::core::Context& context) {
         glm::vec2 tile_left_top_pos = {
             offset_.x + static_cast<float>(x) * tile_size_.x,
             offset_.y + static_cast<float>(y) * tile_size_.y};
-        // 但如果图片的大小与瓦片的大小不一致，需要调整 y 坐标
-        // (瓦片层的对齐点是左下角)
+
         if (static_cast<int>(tile_info.sprite.GetSourceRect()->h) !=
             tile_size_.y) {
           tile_left_top_pos.y -= (tile_info.sprite.GetSourceRect()->h -
@@ -60,14 +58,14 @@ void TileLayerComponent::Render(engine::core::Context& context) {
 
 const TileInfo* TileLayerComponent::getTileInfoAt(const glm::ivec2& pos) const {
   if (pos.x < 0 || pos.x >= map_size_.x || pos.y < 0 || pos.y >= map_size_.y) {
-    ENGINE_WARN("TileLayerComponent: 瓦片坐标越界: ({}, {})", pos.x, pos.y);
+    ENGINE_WARN("TileLayerComponent: invalid pos: ({}, {})", pos.x, pos.y);
     return nullptr;
   }
   size_t index = static_cast<size_t>(pos.y * map_size_.x + pos.x);
   if (index < tiles_.size()) {
     return &tiles_[index];
   }
-  ENGINE_WARN("TileLayerComponent: 瓦片索引越界: {}", index);
+  ENGINE_WARN("TileLayerComponent: invalid index: {}", index);
   return nullptr;
 }
 
