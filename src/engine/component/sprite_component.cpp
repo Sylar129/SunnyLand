@@ -24,6 +24,17 @@ SpriteComponent::SpriteComponent(
   ENGINE_TRACE("Creating SpriteComponent, texture id: {}", texture_id);
 }
 
+SpriteComponent::SpriteComponent(
+    engine::render::Sprite&& sprite,
+    engine::resource::ResourceManager& resource_manager,
+    engine::utils::Alignment alignment)
+    : resource_manager_(resource_manager),
+      sprite_(std::move(sprite)),
+      alignment_(alignment) {
+  ENGINE_TRACE("Creating SpriteComponent, texture id: {}",
+               sprite_.GetTextureId());
+}
+
 void SpriteComponent::Init() {
   ENGINE_ASSERT(owner_, "SpriteComponent does not have an owner GameObject!");
   transform_ = owner_->GetComponent<TransformComponent>();

@@ -22,7 +22,6 @@ class GameScene final : public engine::scene::Scene {
   void Clean() override;
 
  private:
-  void CreateTestObject();
   void TestCamera();
 };
 

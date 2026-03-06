@@ -6,8 +6,10 @@
 #include <fstream>
 
 #include "engine/component/parallax_component.h"
+#include "engine/component/sprite_component.h"
 #include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
+#include "engine/core/context.h"
 #include "engine/object/game_object.h"
 #include "engine/scene/scene.h"
 #include "log.h"
@@ -122,7 +124,55 @@ void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
 
 void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
                                   Scene& scene) {
-  // TODO
+  if (!layer_json.contains("objects") || !layer_json["objects"].is_array()) {
+    ENGINE_ERROR("Object layer '{}' missing 'objects' attribute.",
+                 layer_json.value("name", "Unnamed"));
+    return;
+  }
+
+  const auto& objects = layer_json["objects"];
+  for (const auto& object : objects) {
+    auto gid = object.value("gid", 0);
+
+    if (gid == 0) {
+      // TODO: Handle shapes
+    } else {
+      auto tile_info = GetTileInfoByGid(gid);
+      if (tile_info.sprite.GetTextureId().empty()) {
+        ENGINE_ERROR("Tile {} does not have texture.", gid);
+        continue;
+      }
+
+      auto position =
+          glm::vec2(object.value("x", 0.0f), object.value("y", 0.0f));
+      auto dst_size =
+          glm::vec2(object.value("width", 0.0f), object.value("height", 0.0f));
+
+      position = glm::vec2(position.x, position.y - dst_size.y);
+
+      auto rotation = object.value("rotation", 0.0f);
+
+      auto src_size_opt = tile_info.sprite.GetSourceRect();
+      if (!src_size_opt) {
+        ENGINE_ERROR("Tile {} does not have source rect.", gid);
+        continue;
+      }
+      auto src_size = glm::vec2(src_size_opt->w, src_size_opt->h);
+      auto scale = dst_size / src_size;
+
+      const std::string& object_name = object.value("name", "Unnamed");
+
+      auto game_object =
+          std::make_unique<engine::object::GameObject>(object_name);
+      game_object->AddComponent<engine::component::TransformComponent>(
+          position, scale, rotation);
+      game_object->AddComponent<engine::component::SpriteComponent>(
+          std::move(tile_info.sprite), scene.GetContext().getResourceManager());
+
+      scene.AddGameObject(std::move(game_object));
+      ENGINE_INFO("Load object: '{}' completed.", object_name);
+    }
+  }
 }
 
 void LevelLoader::LoadTileset(const std::string& tileset_path, int first_gid) {
@@ -164,11 +214,35 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
                               static_cast<float>(tile_size_.y)};
     return {{texture_id, texture_rect}, engine::component::TileType::NORMAL};
   } else {
+    if (!tileset.contains("tiles")) {
+      ENGINE_ERROR("Tileset '{}' missing 'tiles' attribute.",
+                   tileset_it->first);
+      return engine::component::TileInfo();
+    }
+
     const auto& tiles_json = tileset["tiles"];
     for (const auto& tile_json : tiles_json) {
-      if (tile_json.value("id", -1) == local_id) {
-        auto texture_id = ResolvePath(tile_json["image"], file_path);
-        return {{texture_id}, engine::component::TileType::NORMAL};
+      auto tile_id = tile_json.value("id", 0);
+      if (tile_id == local_id) {
+        if (!tile_json.contains("image")) {
+          ENGINE_ERROR("Tileset '{}' missing 'image' attribute.",
+                       tileset_it->first, tile_id);
+          return engine::component::TileInfo();
+        }
+
+        auto texture_id =
+            ResolvePath(tile_json["image"].get<std::string>(), file_path);
+        auto image_width = tile_json.value("imagewidth", 0);
+        auto image_height = tile_json.value("imageheight", 0);
+        SDL_FRect texture_rect = {
+
+            static_cast<float>(tile_json.value("x", 0)),
+            static_cast<float>(tile_json.value("y", 0)),
+            static_cast<float>(tile_json.value("width", image_width)),
+            static_cast<float>(tile_json.value("height", image_height))};
+        engine::render::Sprite sprite{texture_id, texture_rect};
+        return engine::component::TileInfo(sprite,
+                                           engine::component::TileType::NORMAL);
       }
     }
   }
