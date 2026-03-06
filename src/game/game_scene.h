@@ -23,6 +23,7 @@ class GameScene final : public engine::scene::Scene {
 
  private:
   void CreateTestObject();
+  void testCamera();
 };
 
 }  // namespace game::scene
