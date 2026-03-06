@@ -1,47 +1,46 @@
-#include "tilelayer_component.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/component/tilelayer_component.h"
 
-#include "../core/context.h"
-#include "../object/game_object.h"
-#include "../render/camera.h"
-#include "../render/renderer.h"
+#include "engine/core/context.h"
+#include "engine/render/renderer.h"
+#include "log.h"
 
 namespace engine::component {
 
-TileLayerComponent::TileLayerComponent(glm::ivec2 tile_size,
-                                       glm::ivec2 map_size,
+TileLayerComponent::TileLayerComponent(const glm::ivec2& tile_size,
+                                       const glm::ivec2& map_size,
                                        std::vector<TileInfo>&& tiles)
     : tile_size_(tile_size), map_size_(map_size), tiles_(std::move(tiles)) {
   if (tiles_.size() != static_cast<size_t>(map_size_.x * map_size_.y)) {
-    spdlog::error(
+    ENGINE_ERROR(
         "TileLayerComponent: "
         "地图尺寸与提供的瓦片向量大小不匹配。瓦片数据将被清除。");
     tiles_.clear();
     map_size_ = {0, 0};
   }
-  spdlog::trace("TileLayerComponent 构造完成");
+  ENGINE_TRACE("TileLayerComponent 构造完成");
 }
 
 void TileLayerComponent::Init() {
   if (!owner_) {
-    spdlog::warn("TileLayerComponent 的 owner_ 未设置。");
+    ENGINE_WARN("TileLayerComponent 的 owner_ 未设置。");
   }
-  spdlog::trace("TileLayerComponent 初始化完成");
+  ENGINE_TRACE("TileLayerComponent 初始化完成");
 }
 
 void TileLayerComponent::Render(engine::core::Context& context) {
   if (tile_size_.x <= 0 || tile_size_.y <= 0) {
-    return;  // 防止除以零或无效尺寸
+    return;
   }
-  // 遍历所有瓦片
+
   for (int y = 0; y < map_size_.y; ++y) {
     for (int x = 0; x < map_size_.x; ++x) {
       size_t index = static_cast<size_t>(y) * map_size_.x + x;
-      // 检查索引有效性以及瓦片是否需要渲染
+
       if (index < tiles_.size() && tiles_[index].type != TileType::EMPTY) {
         const auto& tile_info = tiles_[index];
-        // 计算该瓦片在世界中的左上角位置 (drawSprite 预期接收左上角坐标)
+
         glm::vec2 tile_left_top_pos = {
             offset_.x + static_cast<float>(x) * tile_size_.x,
             offset_.y + static_cast<float>(y) * tile_size_.y};
@@ -52,7 +51,6 @@ void TileLayerComponent::Render(engine::core::Context& context) {
           tile_left_top_pos.y -= (tile_info.sprite.GetSourceRect()->h -
                                   static_cast<float>(tile_size_.y));
         }
-        // 执行绘制
         context.getRenderer().DrawSprite(context.getCamera(), tile_info.sprite,
                                          tile_left_top_pos);
       }
@@ -60,21 +58,20 @@ void TileLayerComponent::Render(engine::core::Context& context) {
   }
 }
 
-const TileInfo* TileLayerComponent::getTileInfoAt(glm::ivec2 pos) const {
+const TileInfo* TileLayerComponent::getTileInfoAt(const glm::ivec2& pos) const {
   if (pos.x < 0 || pos.x >= map_size_.x || pos.y < 0 || pos.y >= map_size_.y) {
-    spdlog::warn("TileLayerComponent: 瓦片坐标越界: ({}, {})", pos.x, pos.y);
+    ENGINE_WARN("TileLayerComponent: 瓦片坐标越界: ({}, {})", pos.x, pos.y);
     return nullptr;
   }
   size_t index = static_cast<size_t>(pos.y * map_size_.x + pos.x);
-  // 瓦片索引不能越界
   if (index < tiles_.size()) {
     return &tiles_[index];
   }
-  spdlog::warn("TileLayerComponent: 瓦片索引越界: {}", index);
+  ENGINE_WARN("TileLayerComponent: 瓦片索引越界: {}", index);
   return nullptr;
 }
 
-TileType TileLayerComponent::getTileTypeAt(glm::ivec2 pos) const {
+TileType TileLayerComponent::getTileTypeAt(const glm::ivec2& pos) const {
   const TileInfo* info = getTileInfoAt(pos);
   return info ? info->type : TileType::EMPTY;
 }
