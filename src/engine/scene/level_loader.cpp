@@ -125,7 +125,7 @@ void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
 void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
                                   Scene& scene) {
   if (!layer_json.contains("objects") || !layer_json["objects"].is_array()) {
-    ENGINE_ERROR("对象图层 '{}' 缺少 'objects' 属性。",
+    ENGINE_ERROR("Object layer '{}' missing 'objects' attribute.",
                  layer_json.value("name", "Unnamed"));
     return;
   }
@@ -135,40 +135,33 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
     auto gid = object.value("gid", 0);
 
     if (gid == 0) {
-      // 如果gid为0，代表是自定义形状，如碰撞盒，我们以后再处理
       // TODO: Handle shapes
     } else {
-      // 如果gid存在，则代表这是一个带图像的对象
       auto tile_info = GetTileInfoByGid(gid);
       if (tile_info.sprite.GetTextureId().empty()) {
-        ENGINE_ERROR("gid为 {} 的瓦片没有图像纹理。", gid);
+        ENGINE_ERROR("Tile {} does not have texture.", gid);
         continue;
       }
 
-      // 1. 获取Transform信息
       auto position =
           glm::vec2(object.value("x", 0.0f), object.value("y", 0.0f));
       auto dst_size =
           glm::vec2(object.value("width", 0.0f), object.value("height", 0.0f));
 
-      // !! 关键的坐标转换 !!
       position = glm::vec2(position.x, position.y - dst_size.y);
 
       auto rotation = object.value("rotation", 0.0f);
 
-      // 2. 计算缩放
       auto src_size_opt = tile_info.sprite.GetSourceRect();
       if (!src_size_opt) {
-        ENGINE_ERROR("gid为 {} 的瓦片没有源矩形。", gid);
+        ENGINE_ERROR("Tile {} does not have source rect.", gid);
         continue;
       }
       auto src_size = glm::vec2(src_size_opt->w, src_size_opt->h);
       auto scale = dst_size / src_size;
 
-      // 3. 获取对象名称
       const std::string& object_name = object.value("name", "Unnamed");
 
-      // 4. 创建GameObject并添加组件
       auto game_object =
           std::make_unique<engine::object::GameObject>(object_name);
       game_object->AddComponent<engine::component::TransformComponent>(
@@ -176,9 +169,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       game_object->AddComponent<engine::component::SpriteComponent>(
           std::move(tile_info.sprite), scene.GetContext().getResourceManager());
 
-      // 5. 添加到场景中
       scene.AddGameObject(std::move(game_object));
-      ENGINE_INFO("加载对象: '{}' 完成", object_name);
+      ENGINE_INFO("Load object: '{}' completed.", object_name);
     }
   }
 }
@@ -222,41 +214,35 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
                               static_cast<float>(tile_size_.y)};
     return {{texture_id, texture_rect}, engine::component::TileType::NORMAL};
   } else {
-    if (!tileset.contains(
-            "tiles")) {  // 没有tiles字段的话不符合数据格式要求，直接返回空的瓦片信息
-      ENGINE_ERROR("Tileset 文件 '{}' 缺少 'tiles' 属性。", tileset_it->first);
+    if (!tileset.contains("tiles")) {
+      ENGINE_ERROR("Tileset '{}' missing 'tiles' attribute.",
+                   tileset_it->first);
       return engine::component::TileInfo();
     }
-    // 遍历tiles数组，根据id查找对应的瓦片
+
     const auto& tiles_json = tileset["tiles"];
     for (const auto& tile_json : tiles_json) {
       auto tile_id = tile_json.value("id", 0);
-      if (tile_id == local_id) {  // 找到对应的瓦片，进行后续操作
-        if (!tile_json.contains(
-                "image")) {  // 没有image字段的话不符合数据格式要求，直接返回空的瓦片信息
-          ENGINE_ERROR("Tileset 文件 '{}' 中瓦片 {} 缺少 'image' 属性。",
+      if (tile_id == local_id) {
+        if (!tile_json.contains("image")) {
+          ENGINE_ERROR("Tileset '{}' missing 'image' attribute.",
                        tileset_it->first, tile_id);
           return engine::component::TileInfo();
         }
-        // --- 接下来根据必要信息创建并返回 TileInfo ---
-        // 获取图片路径
+
         auto texture_id =
             ResolvePath(tile_json["image"].get<std::string>(), file_path);
-        // 先确认图片尺寸
         auto image_width = tile_json.value("imagewidth", 0);
         auto image_height = tile_json.value("imageheight", 0);
-        // 从json中获取源矩形信息
         SDL_FRect texture_rect = {
-            // tiled中源矩形信息只有设置了才会有值，没有就是默认值
+
             static_cast<float>(tile_json.value("x", 0)),
             static_cast<float>(tile_json.value("y", 0)),
-            static_cast<float>(tile_json.value(
-                "width", image_width)),  // 如果未设置，则使用图片尺寸
+            static_cast<float>(tile_json.value("width", image_width)),
             static_cast<float>(tile_json.value("height", image_height))};
         engine::render::Sprite sprite{texture_id, texture_rect};
-        return engine::component::TileInfo(
-            sprite, engine::component::TileType::
-                        NORMAL);  // 目前只完成渲染，以后再考虑瓦片类型
+        return engine::component::TileInfo(sprite,
+                                           engine::component::TileType::NORMAL);
       }
     }
   }

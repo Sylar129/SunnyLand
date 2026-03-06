@@ -57,8 +57,8 @@ void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
   if (!IsRectInViewport(camera,
                         dest_rect)) {  // Viewport clipping: if sprite is
                                        // outside viewport, do not draw
-    // ENGINE_INFO("Sprite is outside viewport range, ID: {}",
-    //             sprite.GetTextureId());
+    ENGINE_INFO("Sprite is outside viewport range, ID: {}",
+                sprite.GetTextureId());
     return;
   }
 
