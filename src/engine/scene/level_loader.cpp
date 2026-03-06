@@ -41,7 +41,7 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
     for (const auto& tileset_json : json_data["tilesets"]) {
       auto tileset_path = ResolvePath(tileset_json["source"], map_path_);
       auto first_gid = tileset_json["firstgid"];
-      loadTileset(tileset_path, first_gid);
+      LoadTileset(tileset_path, first_gid);
     }
   }
 
@@ -102,33 +102,17 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
   ENGINE_INFO("Loading Layer '{}' completed.", layer_name);
 }
 
-void LevelLoader::loadTileset(const std::string& tileset_path, int first_gid) {
-  std::ifstream tileset_file(tileset_path);
-  if (!tileset_file.is_open()) { /* ... error ... */
-    return;
-  }
-
-  nlohmann::json ts_json;
-  tileset_file >> ts_json;
-
-  ts_json["file_path"] = tileset_path;  // 注入文件路径，方便之后解析相对路径
-  tileset_data_[first_gid] = std::move(ts_json);
-}
-
 void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
                                 Scene& scene) {
-  // ...
   std::vector<engine::component::TileInfo> tiles;
   tiles.reserve(map_size_.x * map_size_.y);
 
   const auto& data = layer_json["data"];
 
-  // **步骤3: 根据 GID 填充瓦片信息**
   for (const auto& gid : data) {
-    tiles.push_back(getTileInfoByGid(gid));
+    tiles.push_back(GetTileInfoByGid(gid));
   }
 
-  // **步骤4: 创建 GameObject 和 Component**
   auto game_object = std::make_unique<engine::object::GameObject>(
       layer_json.value("name", "Unnamed"));
   game_object->AddComponent<engine::component::TileLayerComponent>(
@@ -141,20 +125,35 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
   // TODO
 }
 
-engine::component::TileInfo LevelLoader::getTileInfoByGid(int gid) {
-  if (gid == 0) return {};  // 空瓦片
+void LevelLoader::LoadTileset(const std::string& tileset_path, int first_gid) {
+  std::ifstream tileset_file(tileset_path);
+  if (!tileset_file.is_open()) {
+    return;
+  }
 
-  // 找到 GID 所属的图块集
+  nlohmann::json ts_json;
+  tileset_file >> ts_json;
+
+  ts_json["file_path"] = tileset_path;
+  tileset_data_[first_gid] = std::move(ts_json);
+}
+
+engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
+  if (gid == 0) {
+    return {};
+  }
+
   auto tileset_it = tileset_data_.upper_bound(gid);
-  if (tileset_it == tileset_data_.begin()) return {};
+  if (tileset_it == tileset_data_.begin()) {
+    return {};
+  }
   --tileset_it;
 
   const auto& tileset = tileset_it->second;
   auto local_id = gid - tileset_it->first;
   const std::string file_path = tileset.value("file_path", "");
 
-  if (tileset.contains("image")) {  // Case 1:
-                                    // 单张大图的图块集
+  if (tileset.contains("image")) {
     auto texture_id = ResolvePath(tileset["image"], file_path);
     auto columns = tileset.value("columns", 1);
     auto coord_x = local_id % columns;
@@ -164,21 +163,20 @@ engine::component::TileInfo LevelLoader::getTileInfoByGid(int gid) {
                               static_cast<float>(tile_size_.x),
                               static_cast<float>(tile_size_.y)};
     return {{texture_id, texture_rect}, engine::component::TileType::NORMAL};
-  } else {  // Case 2: 独立图片的图块集
+  } else {
     const auto& tiles_json = tileset["tiles"];
     for (const auto& tile_json : tiles_json) {
       if (tile_json.value("id", -1) == local_id) {
         auto texture_id = ResolvePath(tile_json["image"], file_path);
-        // 多图片集合没有统一的源矩形，默认使用整张图片
         return {{texture_id}, engine::component::TileType::NORMAL};
       }
     }
   }
-  return {};  // 未找到
+  return {};
 }
 
 std::string LevelLoader::ResolvePath(const std::string& relative_path,
-                                     const std::string& file_path) {
+                                     const std::string& file_path) const {
   auto map_dir = std::filesystem::path(file_path).parent_path();
   auto final_path = std::filesystem::canonical(map_dir / relative_path);
   return final_path.string();

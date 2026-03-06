@@ -6,7 +6,7 @@
 #include <string>
 
 #include "glm/vec2.hpp"
-#include "nlohmann/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace engine::component {
 struct TileInfo;
@@ -26,10 +26,10 @@ class LevelLoader final {
   void LoadTileLayer(const nlohmann::json& layer_json, Scene& scene);
   void LoadObjectLayer(const nlohmann::json& layer_json, Scene& scene);
 
+  void LoadTileset(const std::string& tileset_path, int first_gid);
+  engine::component::TileInfo GetTileInfoByGid(int gid) const;
   std::string ResolvePath(const std::string& relative_path,
-                          const std::string& file_path);
-  engine::component::TileInfo getTileInfoByGid(int gid);
-  void loadTileset(const std::string& tileset_path, int first_gid);
+                          const std::string& file_path) const;
 
   std::string map_path_;
   glm::ivec2 map_size_;
