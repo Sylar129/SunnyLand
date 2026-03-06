@@ -23,8 +23,6 @@ void GameScene::Init() {
   engine::scene::LevelLoader level_loader;
   level_loader.LoadLevel("assets/maps/level1.tmj", *this);
 
-  CreateTestObject();
-
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());
 }
@@ -39,20 +37,6 @@ void GameScene::HandleInput() {
 }
 
 void GameScene::Clean() { Scene::Clean(); }
-
-void GameScene::CreateTestObject() {
-  GAME_TRACE("Creating test object in GameScene");
-  auto test_object =
-      std::make_unique<engine::object::GameObject>("test_object");
-
-  test_object->AddComponent<engine::component::TransformComponent>(
-      glm::vec2(100.0f, 100.0f));
-  test_object->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.getResourceManager());
-
-  AddGameObject(std::move(test_object));
-  GAME_TRACE("test_object has been created and added to GameScene");
-}
 
 void GameScene::TestCamera() {
   auto& camera = context_.getCamera();
