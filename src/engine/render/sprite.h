@@ -34,6 +34,8 @@ class Sprite final {
         source_rect_(source_rect),
         is_flipped_(is_flipped) {}
 
+  Sprite() = default;  ///< @brief Default constructor for empty sprite
+
   // --- getters and setters ---
   const std::string& GetTextureId() const {
     return texture_id_;

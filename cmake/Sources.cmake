@@ -6,6 +6,8 @@ set(TARGET_SOURCES
     src/engine/component/parallax_component.h
     src/engine/component/sprite_component.cpp
     src/engine/component/sprite_component.h
+    src/engine/component/tilelayer_component.cpp
+    src/engine/component/tilelayer_component.h
     src/engine/component/transform_component.cpp
     src/engine/component/transform_component.h
     src/engine/core/config.cpp
