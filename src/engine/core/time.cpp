@@ -33,6 +33,8 @@ void Time::LimitFrameRate(float current_delta_time) {
     SDL_DelayNS(ns_to_wait);
     delta_time_ =
         static_cast<float>(SDL_GetTicksNS() - last_time_) / 1000000000.0;
+  } else {
+    delta_time_ = current_delta_time;
   }
 }
 
