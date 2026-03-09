@@ -14,7 +14,7 @@ PhysicsComponent::PhysicsComponent(
     engine::physics::PhysicsEngine* physics_engine, bool use_gravity,
     float mass)
     : physics_engine_(physics_engine),
-      mass_(mass >= 0.0f ? mass : 1.0f),
+      mass_(mass > 0.0f ? mass : 1.0f),
       use_gravity_(use_gravity) {
   ENGINE_ASSERT(
       physics_engine_,

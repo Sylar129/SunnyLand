@@ -17,18 +17,6 @@ class PhysicsComponent final : public Component {
   friend class engine::object::GameObject;
 
  public:
-  glm::vec2 velocity_ = {0.0f, 0.0f};
-
- private:
-  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
-  TransformComponent* transform_ = nullptr;
-
-  glm::vec2 force_ = {0.0f, 0.0f};
-  float mass_ = 1.0f;
-  bool use_gravity_ = true;
-  bool enabled_ = true;
-
- public:
   PhysicsComponent(engine::physics::PhysicsEngine* physics_engine,
                    bool use_gravity = true, float mass = 1.0f);
   ~PhysicsComponent() override = default;
@@ -45,16 +33,26 @@ class PhysicsComponent final : public Component {
   bool IsUseGravity() const { return use_gravity_; }
 
   void SetEnabled(bool enabled) { enabled_ = enabled; }
-  void SetMass(float mass) { mass_ = (mass >= 0.0f) ? mass : 1.0f; }
+  void SetMass(float mass) { mass_ = (mass > 0.0f) ? mass : 1.0f; }
   void SetUseGravity(bool use_gravity) { use_gravity_ = use_gravity; }
   void SetVelocity(const glm::vec2& velocity) { velocity_ = velocity; }
   const glm::vec2& GetVelocity() const { return velocity_; }
   TransformComponent* GetTransform() const { return transform_; }
 
+  glm::vec2 velocity_ = {0.0f, 0.0f};
+
  private:
   void Init() override;
   void Update(float, engine::core::Context&) override {}
   void Clean() override;
+
+  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
+  TransformComponent* transform_ = nullptr;
+
+  glm::vec2 force_ = {0.0f, 0.0f};
+  float mass_ = 1.0f;
+  bool use_gravity_ = true;
+  bool enabled_ = true;
 };
 
 }  // namespace engine::component
