@@ -58,15 +58,14 @@ void GameScene::CreateTestObject() {
       std::make_unique<engine::physics::AABBCollider>(glm::vec2(32.0f, 32.0f)));
   AddGameObject(std::move(test_object));
 
-  // 物体2: 静止的箱子 (Circle)
   auto test_object2 =
       std::make_unique<engine::object::GameObject>("test_object2");
   test_object2->AddComponent<engine::component::TransformComponent>(
-      glm::vec2(50.0f, 250.0f));  // 放在下落路径上
+      glm::vec2(50.0f, 250.0f));
   test_object2->AddComponent<engine::component::SpriteComponent>(
       "assets/textures/Props/big-crate.png", context_.getResourceManager());
   test_object2->AddComponent<engine::component::PhysicsComponent>(
-      &context_.getPhysicsEngine(), false);  // 不受重力
+      &context_.getPhysicsEngine(), false);
   test_object2->AddComponent<engine::component::ColliderComponent>(
       std::make_unique<engine::physics::CircleCollider>(16.0f));
   AddGameObject(std::move(test_object2));
@@ -95,9 +94,9 @@ void GameScene::TestObject() {
 }
 
 void GameScene::TestCollisionPairs() {
-  auto& collision_pairs = context_.getPhysicsEngine().getCollisionPairs();
+  auto& collision_pairs = context_.getPhysicsEngine().GetCollisionPairs();
   for (auto& pair : collision_pairs) {
-    GAME_INFO("碰撞对: {} 和 {}", pair.first->GetName(),
+    GAME_INFO("Collision between: {} and {}", pair.first->GetName(),
               pair.second->GetName());
   }
 }
