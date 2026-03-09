@@ -1,6 +1,8 @@
 # Source files configuration
 
 set(TARGET_SOURCES
+    src/engine/component/collider_component.cpp
+    src/engine/component/collider_component.h
     src/engine/component/component.h
     src/engine/component/parallax_component.cpp
     src/engine/component/parallax_component.h
@@ -24,6 +26,9 @@ set(TARGET_SOURCES
     src/engine/input/input_manager.h
     src/engine/object/game_object.cpp
     src/engine/object/game_object.h
+    src/engine/physics/collider.h
+    src/engine/physics/collision.cpp
+    src/engine/physics/collision.h
     src/engine/physics/physics_engine.cpp
     src/engine/physics/physics_engine.h
     src/engine/render/camera.cpp

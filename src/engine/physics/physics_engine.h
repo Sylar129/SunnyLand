@@ -4,6 +4,7 @@
 
 #include <vector>
 
+#include "engine/object/game_object.h"
 #include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
 
@@ -29,10 +30,18 @@ class PhysicsEngine {
   void SetMaxSpeed(float max_speed) { max_speed_ = max_speed; }
   float GetMaxSpeed() const { return max_speed_; }
 
+  const auto& GetCollisionPairs() const { return collision_pairs_; };
+
  private:
+  void CheckObjectCollisions();
+
   std::vector<engine::component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
   float max_speed_ = 500.0f;
+
+  std::vector<
+      std::pair<engine::object::GameObject*, engine::object::GameObject*>>
+      collision_pairs_;
 };
 
 }  // namespace engine::physics

@@ -2,8 +2,10 @@
 
 #include "engine/physics/physics_engine.h"
 
+#include "engine/component/collider_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/transform_component.h"
+#include "engine/physics/collision.h"
 #include "engine/utils/assert.h"
 #include "glm/common.hpp"
 #include "log.h"
@@ -25,6 +27,8 @@ void PhysicsEngine::UnregisterComponent(
 }
 
 void PhysicsEngine::Update(float delta_time) {
+  collision_pairs_.clear();
+
   for (auto* pc : components_) {
     if (!pc->IsEnabled()) {
       continue;
@@ -41,6 +45,32 @@ void PhysicsEngine::Update(float delta_time) {
     auto* tc = pc->GetTransform();
     if (tc) {
       tc->Translate(pc->velocity_ * delta_time);
+    }
+  }
+
+  CheckObjectCollisions();
+}
+
+void PhysicsEngine::CheckObjectCollisions() {
+  for (size_t i = 0; i < components_.size(); ++i) {
+    auto* pc_a = components_[i];
+    if (!pc_a->IsEnabled()) continue;
+    auto* obj_a = pc_a->GetOwner();
+    if (!obj_a) continue;
+    auto* cc_a = obj_a->GetComponent<engine::component::ColliderComponent>();
+    if (!cc_a || !cc_a->IsActive()) continue;
+
+    for (size_t j = i + 1; j < components_.size(); ++j) {
+      auto* pc_b = components_[j];
+      if (!pc_b->IsEnabled()) continue;
+      auto* obj_b = pc_b->GetOwner();
+      if (!obj_b) continue;
+      auto* cc_b = obj_b->GetComponent<engine::component::ColliderComponent>();
+      if (!cc_b || !cc_b->IsActive()) continue;
+
+      if (collision::CheckCollision(*cc_a, *cc_b)) {
+        collision_pairs_.emplace_back(obj_a, obj_b);
+      }
     }
   }
 }
