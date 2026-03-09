@@ -1,12 +1,12 @@
 // Copyright Sylar129
 
-#include "physics_component.h"
+#include "engine/component/physics_component.h"
 
-#include <spdlog/spdlog.h>
-
-#include "../object/game_object.h"
-#include "../physics/physics_engine.h"
-#include "transform_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/object/game_object.h"
+#include "engine/physics/physics_engine.h"
+#include "engine/utils/assert.h"
+#include "log.h"
 
 namespace engine::component {
 
@@ -16,36 +16,34 @@ PhysicsComponent::PhysicsComponent(
     : physics_engine_(physics_engine),
       mass_(mass >= 0.0f ? mass : 1.0f),
       use_gravity_(use_gravity) {
-  if (!physics_engine_) {
-    spdlog::error(
-        "PhysicsComponent构造函数中，PhysicsEngine指针不能为nullptr！");
-  }
-  spdlog::trace("物理组件创建完成，质量: {}, 使用重力: {}", mass_,
-                use_gravity_);
+  ENGINE_ASSERT(
+      physics_engine_,
+      "In PhysicsComponent constructor, PhysicsEngine pointer cannot be "
+      "nullptr!");
+
+  ENGINE_TRACE(
+      "Physics component created successfully, mass: {}, use gravity: {}",
+      mass_, use_gravity_);
 }
 
 void PhysicsComponent::Init() {
-  if (!owner_) {
-    spdlog::error("物理组件初始化前需要一个GameObject作为所有者！");
-    return;
-  }
-  if (!physics_engine_) {
-    spdlog::error("物理组件初始化时，PhysicsEngine未正确初始化。");
-    return;
-  }
+  ENGINE_ASSERT(owner_,
+                "A GameObject is required as owner before physics component "
+                "initialization!");
+
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    spdlog::warn(
-        "物理组件初始化时，同一GameObject上没有找到TransformComponent组件。");
+    ENGINE_WARN(
+        "TransformComponent not found on the same GameObject during physics "
+        "component initialization.");
   }
-  // 注册到PhysicsEngine
   physics_engine_->RegisterComponent(this);
-  spdlog::trace("物理组件初始化完成。");
+  ENGINE_TRACE("Physics component initialization completed.");
 }
 
 void PhysicsComponent::Clean() {
   physics_engine_->UnregisterComponent(this);
-  spdlog::trace("物理组件清理完成。");
+  ENGINE_TRACE("Physics component cleanup completed.");
 }
 
 }  // namespace engine::component

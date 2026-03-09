@@ -26,18 +26,18 @@ void PhysicsEngine::UnregisterComponent(
 
 void PhysicsEngine::Update(float delta_time) {
   for (auto* pc : components_) {
-    if (!pc->isEnabled()) {
+    if (!pc->IsEnabled()) {
       continue;
     }
 
-    if (pc->isUseGravity()) {
-      pc->addForce(gravity_ * pc->getMass());
+    if (pc->IsUseGravity()) {
+      pc->AddForce(gravity_ * pc->GetMass());
     }
 
-    pc->velocity_ += (pc->getForce() / pc->getMass()) * delta_time;
-    pc->clearForce();
+    pc->velocity_ += (pc->GetForce() / pc->GetMass()) * delta_time;
+    pc->ClearForce();
 
-    auto* tc = pc->getTransform();
+    auto* tc = pc->GetTransform();
     if (tc) {
       tc->Translate(pc->velocity_ * delta_time);
     }

@@ -72,7 +72,7 @@ void GameScene::TestObject() {
   }
 
   if (input_manager.IsActionPressed("jump")) {
-    physics_comp->setVelocity(glm::vec2(physics_comp->getVelocity().x, -400));
+    physics_comp->SetVelocity(glm::vec2(physics_comp->GetVelocity().x, -400));
   }
 }
 
