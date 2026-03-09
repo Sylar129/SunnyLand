@@ -16,7 +16,6 @@ namespace engine::physics {
 void PhysicsEngine::RegisterComponent(
     engine::component::PhysicsComponent* component) {
   ENGINE_ASSERT(component, "PhysicsComponent is null.");
-
   components_.push_back(component);
   ENGINE_TRACE("Register PhysicsComponent complete.");
 }
@@ -36,9 +35,7 @@ void PhysicsEngine::RegisterCollisionLayer(
 
 void PhysicsEngine::UnregisterCollisionLayer(
     engine::component::TileLayerComponent* layer) {
-  auto it = std::remove(collision_tile_layers_.begin(),
-                        collision_tile_layers_.end(), layer);
-  collision_tile_layers_.erase(it, collision_tile_layers_.end());
+  std::erase(collision_tile_layers_, layer);
   ENGINE_TRACE("Unregister collision tile layer complete.");
 }
 

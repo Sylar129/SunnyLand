@@ -105,7 +105,7 @@ void SpriteComponent::Render(engine::core::Context& context) {
   const glm::vec2& scale = transform_->GetScale();
   float rotation_degrees = transform_->GetRotation();
 
-  context.getRenderer().DrawSprite(context.getCamera(), sprite_, pos, scale,
+  context.GetRenderer().DrawSprite(context.GetCamera(), sprite_, pos, scale,
                                    rotation_degrees);
 }
 

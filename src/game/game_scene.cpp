@@ -31,7 +31,7 @@ void GameScene::Init() {
     auto* tile_layer_comp =
         main_layer_obj->GetComponent<engine::component::TileLayerComponent>();
     if (tile_layer_comp) {
-      context_.getPhysicsEngine().RegisterCollisionLayer(tile_layer_comp);
+      context_.GetPhysicsEngine().RegisterCollisionLayer(tile_layer_comp);
       GAME_INFO("'main' layer registered to PhysicsEngine for collisions.");
     }
   }
@@ -62,9 +62,9 @@ void GameScene::CreateTestObject() {
   test_object->AddComponent<engine::component::TransformComponent>(
       glm::vec2(100.0f, 100.0f));
   test_object->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.getResourceManager());
+      "assets/textures/Props/big-crate.png", context_.GetResourceManager());
   test_object->AddComponent<engine::component::PhysicsComponent>(
-      &context_.getPhysicsEngine());
+      &context_.GetPhysicsEngine());
   test_object->AddComponent<engine::component::ColliderComponent>(
       std::make_unique<engine::physics::AABBCollider>(glm::vec2(32.0f, 32.0f)));
   AddGameObject(std::move(test_object));
@@ -74,9 +74,9 @@ void GameScene::CreateTestObject() {
   test_object2->AddComponent<engine::component::TransformComponent>(
       glm::vec2(100.0f, 250.0f));
   test_object2->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.getResourceManager());
+      "assets/textures/Props/big-crate.png", context_.GetResourceManager());
   test_object2->AddComponent<engine::component::PhysicsComponent>(
-      &context_.getPhysicsEngine(), false);
+      &context_.GetPhysicsEngine(), false);
   test_object2->AddComponent<engine::component::ColliderComponent>(
       std::make_unique<engine::physics::CircleCollider>(16.0f));
   AddGameObject(std::move(test_object2));
@@ -84,7 +84,7 @@ void GameScene::CreateTestObject() {
 
 void GameScene::TestObject() {
   if (!test_object_) return;
-  auto& input_manager = context_.getInputManager();
+  auto& input_manager = context_.GetInputManager();
   auto* pc = test_object_->GetComponent<engine::component::PhysicsComponent>();
   if (!pc) return;
 
@@ -102,7 +102,7 @@ void GameScene::TestObject() {
 }
 
 void GameScene::TestCollisionPairs() {
-  auto& collision_pairs = context_.getPhysicsEngine().GetCollisionPairs();
+  auto& collision_pairs = context_.GetPhysicsEngine().GetCollisionPairs();
   for (auto& pair : collision_pairs) {
     GAME_INFO("Collision between: {} and {}", pair.first->GetName(),
               pair.second->GetName());

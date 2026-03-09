@@ -31,15 +31,15 @@ class Context final {
           engine::physics::PhysicsEngine& physics_engine);
   DISABLE_COPY_AND_MOVE(Context);
 
-  engine::input::InputManager& getInputManager() const {
+  engine::input::InputManager& GetInputManager() const {
     return input_manager_;
   }
-  engine::render::Renderer& getRenderer() const { return renderer_; }
-  engine::render::Camera& getCamera() const { return camera_; }
-  engine::resource::ResourceManager& getResourceManager() const {
+  engine::render::Renderer& GetRenderer() const { return renderer_; }
+  engine::render::Camera& GetCamera() const { return camera_; }
+  engine::resource::ResourceManager& GetResourceManager() const {
     return resource_manager_;
   }
-  engine::physics::PhysicsEngine& getPhysicsEngine() const {
+  engine::physics::PhysicsEngine& GetPhysicsEngine() const {
     return physics_engine_;
   }
 

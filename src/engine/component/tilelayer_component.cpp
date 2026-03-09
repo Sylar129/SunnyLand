@@ -50,7 +50,7 @@ void TileLayerComponent::Render(engine::core::Context& context) {
           tile_left_top_pos.y -= (tile_info.sprite.GetSourceRect()->h -
                                   static_cast<float>(tile_size_.y));
         }
-        context.getRenderer().DrawSprite(context.getCamera(), tile_info.sprite,
+        context.GetRenderer().DrawSprite(context.GetCamera(), tile_info.sprite,
                                          tile_left_top_pos);
       }
     }

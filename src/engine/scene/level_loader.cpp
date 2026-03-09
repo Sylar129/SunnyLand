@@ -167,7 +167,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       game_object->AddComponent<engine::component::TransformComponent>(
           position, scale, rotation);
       game_object->AddComponent<engine::component::SpriteComponent>(
-          std::move(tile_info.sprite), scene.GetContext().getResourceManager());
+          std::move(tile_info.sprite), scene.GetContext().GetResourceManager());
 
       scene.AddGameObject(std::move(game_object));
       ENGINE_INFO("Load object: '{}' completed.", object_name);
