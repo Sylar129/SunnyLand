@@ -49,8 +49,8 @@ class CircleCollider final : public Collider {
   ~CircleCollider() override = default;
 
   ColliderType GetType() const override { return ColliderType::CIRCLE; }
-  float getRadius() const { return radius_; }
-  void setRadius(float radius) { radius_ = radius; }
+  float GetRadius() const { return radius_; }
+  void SetRadius(float radius) { radius_ = radius; }
 
  private:
   float radius_ = 0.0f;

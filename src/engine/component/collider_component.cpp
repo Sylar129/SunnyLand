@@ -5,6 +5,7 @@
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
 #include "engine/physics/collider.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace engine::component {
@@ -16,21 +17,16 @@ ColliderComponent::ColliderComponent(
       alignment_(alignment),
       is_trigger_(is_trigger),
       is_active_(is_active) {
-  if (!collider_) {
-    ENGINE_ERROR("创建 ColliderComponent 时传入了空的碰撞器！");
-  }
+  ENGINE_ASSERT(collider_,
+                "Empty collider passed to ColliderComponent constructor!");
 }
 
 void ColliderComponent::Init() {
-  if (!owner_) {
-    ENGINE_ERROR("ColliderComponent 没有所有者 GameObject！");
-    return;
-  }
+  ENGINE_ASSERT(owner_, "ColliderComponent has no owner GameObject!");
+
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_ERROR(
-        "ColliderComponent 需要一个在同一个 GameObject 上的 "
-        "TransformComponent！");
+    ENGINE_ERROR("ColliderComponent: No TransformComponent!");
     return;
   }
 
