@@ -58,7 +58,7 @@ void PhysicsEngine::CheckObjectCollisions() {
     auto* obj_a = pc_a->GetOwner();
     if (!obj_a) continue;
     auto* cc_a = obj_a->GetComponent<engine::component::ColliderComponent>();
-    if (!cc_a || !cc_a->isActive()) continue;
+    if (!cc_a || !cc_a->IsActive()) continue;
 
     for (size_t j = i + 1; j < components_.size(); ++j) {
       auto* pc_b = components_[j];
@@ -66,9 +66,9 @@ void PhysicsEngine::CheckObjectCollisions() {
       auto* obj_b = pc_b->GetOwner();
       if (!obj_b) continue;
       auto* cc_b = obj_b->GetComponent<engine::component::ColliderComponent>();
-      if (!cc_b || !cc_b->isActive()) continue;
+      if (!cc_b || !cc_b->IsActive()) continue;
 
-      if (collision::checkCollision(*cc_a, *cc_b)) {
+      if (collision::CheckCollision(*cc_a, *cc_b)) {
         collision_pairs_.emplace_back(obj_a, obj_b);
       }
     }

@@ -34,20 +34,20 @@ void ColliderComponent::Init() {
     return;
   }
 
-  updateOffset();
+  UpdateOffset();
 }
 
-void ColliderComponent::setAlignment(engine::utils::Alignment anchor) {
+void ColliderComponent::SetAlignment(engine::utils::Alignment anchor) {
   alignment_ = anchor;
   if (transform_ && collider_) {
-    updateOffset();
+    UpdateOffset();
   }
 }
 
-void ColliderComponent::updateOffset() {
+void ColliderComponent::UpdateOffset() {
   if (!collider_) return;
 
-  auto collider_size = collider_->getAABBSize();
+  auto collider_size = collider_->GetAABBSize();
 
   if (collider_size.x <= 0.0f || collider_size.y <= 0.0f) {
     offset_ = {0.0f, 0.0f};
@@ -89,12 +89,12 @@ void ColliderComponent::updateOffset() {
   }
 }
 
-engine::utils::Rect ColliderComponent::getWorldAABB() const {
+engine::utils::Rect ColliderComponent::GetWorldAABB() const {
   if (!transform_ || !collider_) {
     return {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
   }
   const glm::vec2 top_left_pos = transform_->GetPosition() + offset_;
-  const glm::vec2 base_size = collider_->getAABBSize();
+  const glm::vec2 base_size = collider_->GetAABBSize();
   const glm::vec2 scale = transform_->GetScale();
   glm::vec2 scaled_size = base_size * scale;
   return {top_left_pos, scaled_size};

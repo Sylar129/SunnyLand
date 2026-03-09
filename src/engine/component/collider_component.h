@@ -24,22 +24,22 @@ class ColliderComponent final : public Component {
       engine::utils::Alignment alignment = engine::utils::Alignment::NONE,
       bool is_trigger = false, bool is_active = true);
 
-  void updateOffset();
+  void UpdateOffset();
 
-  const TransformComponent* getTransform() const { return transform_; }
-  const engine::physics::Collider* getCollider() const {
+  const TransformComponent* GetTransform() const { return transform_; }
+  const engine::physics::Collider* GetCollider() const {
     return collider_.get();
   }
-  const glm::vec2& getOffset() const { return offset_; }
-  engine::utils::Alignment getAlignment() const { return alignment_; }
-  engine::utils::Rect getWorldAABB() const;
-  bool isTrigger() const { return is_trigger_; }
-  bool isActive() const { return is_active_; }
+  const glm::vec2& GetOffset() const { return offset_; }
+  engine::utils::Alignment GetAlignment() const { return alignment_; }
+  engine::utils::Rect GetWorldAABB() const;
+  bool IsTrigger() const { return is_trigger_; }
+  bool IsActive() const { return is_active_; }
 
-  void setAlignment(engine::utils::Alignment anchor);
-  void setOffset(const glm::vec2& offset) { offset_ = offset; }
-  void setTrigger(bool is_trigger) { is_trigger_ = is_trigger; }
-  void setActive(bool is_active) { is_active_ = is_active; }
+  void SetAlignment(engine::utils::Alignment anchor);
+  void SetOffset(const glm::vec2& offset) { offset_ = offset; }
+  void SetTrigger(bool is_trigger) { is_trigger_ = is_trigger; }
+  void SetActive(bool is_active) { is_active_ = is_active; }
 
  private:
   void Init() override;
