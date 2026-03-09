@@ -61,7 +61,7 @@ void GameScene::CreateTestObject() {
   auto test_object2 =
       std::make_unique<engine::object::GameObject>("test_object2");
   test_object2->AddComponent<engine::component::TransformComponent>(
-      glm::vec2(50.0f, 250.0f));
+      glm::vec2(100.0f, 250.0f));
   test_object2->AddComponent<engine::component::SpriteComponent>(
       "assets/textures/Props/big-crate.png", context_.getResourceManager());
   test_object2->AddComponent<engine::component::PhysicsComponent>(
