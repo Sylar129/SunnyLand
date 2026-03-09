@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+#include "engine/utils/math.h"
 #include "glm/vec2.hpp"
 #include "nlohmann/json.hpp"
 
@@ -36,6 +37,24 @@ class LevelLoader final {
       const nlohmann::json& tile_json) const;
   engine::component::TileType GetTileTypeById(
       const nlohmann::json& tileset_json, int local_id) const;
+
+  template <typename T>
+  std::optional<T> getTileProperty(const nlohmann::json& tile_json,
+                                   const std::string& property_name) {
+    if (!tile_json.contains("properties")) return std::nullopt;
+    const auto& properties = tile_json["properties"];
+    for (const auto& property : properties) {
+      if (property.value("name", "") == property_name) {
+        return property.value("value", T{});
+      }
+    }
+    return std::nullopt;
+  }
+
+  std::optional<engine::utils::Rect> getColliderRect(
+      const nlohmann::json& tile_json);
+
+  std::optional<nlohmann::json> getTileJsonByGid(int gid) const;
 
   std::string map_path_;
   glm::ivec2 map_size_;

@@ -40,6 +40,8 @@ class PhysicsEngine {
   void CheckObjectCollisions();
   void ResolveTileCollisions(engine::component::PhysicsComponent* pc,
                              float delta_time);
+  void resolveSolidObjectCollisions(engine::object::GameObject* move_obj,
+                                    engine::object::GameObject* solid_obj);
 
   std::vector<engine::component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
