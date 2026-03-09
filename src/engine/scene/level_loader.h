@@ -39,8 +39,8 @@ class LevelLoader final {
       const nlohmann::json& tileset_json, int local_id) const;
 
   template <typename T>
-  std::optional<T> getTileProperty(const nlohmann::json& tile_json,
-                                   const std::string& property_name) {
+  std::optional<T> GetTileProperty(const nlohmann::json& tile_json,
+                                   const std::string& property_name) const {
     if (!tile_json.contains("properties")) return std::nullopt;
     const auto& properties = tile_json["properties"];
     for (const auto& property : properties) {
@@ -51,10 +51,10 @@ class LevelLoader final {
     return std::nullopt;
   }
 
-  std::optional<engine::utils::Rect> getColliderRect(
-      const nlohmann::json& tile_json);
+  std::optional<engine::utils::Rect> GetColliderRect(
+      const nlohmann::json& tile_json) const;
 
-  std::optional<nlohmann::json> getTileJsonByGid(int gid) const;
+  std::optional<nlohmann::json> GetTileJsonByGid(int gid) const;
 
   std::string map_path_;
   glm::ivec2 map_size_;

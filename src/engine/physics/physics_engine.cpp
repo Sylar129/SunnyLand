@@ -81,9 +81,9 @@ void PhysicsEngine::CheckObjectCollisions() {
       if (collision::CheckCollision(*cc_a, *cc_b)) {
         // 如果是可移动物体与SOLID物体碰撞，则直接处理位置变化，不用记录碰撞对
         if (obj_a->GetTag() != "solid" && obj_b->GetTag() == "solid") {
-          resolveSolidObjectCollisions(obj_a, obj_b);
+          ResolveSolidObjectCollisions(obj_a, obj_b);
         } else if (obj_a->GetTag() == "solid" && obj_b->GetTag() != "solid") {
-          resolveSolidObjectCollisions(obj_b, obj_a);
+          ResolveSolidObjectCollisions(obj_b, obj_a);
         } else {
           // 记录碰撞对
           collision_pairs_.emplace_back(obj_a, obj_b);
@@ -253,7 +253,7 @@ void PhysicsEngine::ResolveTileCollisions(
   pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
 }
 
-void PhysicsEngine::resolveSolidObjectCollisions(
+void PhysicsEngine::ResolveSolidObjectCollisions(
     engine::object::GameObject* move_obj,
     engine::object::GameObject* solid_obj) {
   // 进入此函数前，已经检查了各个组件的有效性，因此直接进行计算
