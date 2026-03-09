@@ -12,6 +12,7 @@
 #include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/scene/level_loader.h"
+#include "engine/utils/assert.h"
 #include "log.h"
 
 namespace game::scene {
@@ -36,7 +37,9 @@ void GameScene::Init() {
     }
   }
 
-  CreateTestObject();
+  player_ = FindGameObjectByName("player");
+  GAME_ASSERT(player_, "No Player!");
+
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());
 }
@@ -50,42 +53,15 @@ void GameScene::Render() { Scene::Render(); }
 
 void GameScene::HandleInput() {
   Scene::HandleInput();
-  TestObject();
+  TestPlayer();
 }
 
 void GameScene::Clean() { Scene::Clean(); }
 
-void GameScene::CreateTestObject() {
-  auto test_object =
-      std::make_unique<engine::object::GameObject>("test_object");
-  test_object_ = test_object.get();
-  test_object->AddComponent<engine::component::TransformComponent>(
-      glm::vec2(100.0f, 100.0f));
-  test_object->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.GetResourceManager());
-  test_object->AddComponent<engine::component::PhysicsComponent>(
-      &context_.GetPhysicsEngine());
-  test_object->AddComponent<engine::component::ColliderComponent>(
-      std::make_unique<engine::physics::AABBCollider>(glm::vec2(32.0f, 32.0f)));
-  AddGameObject(std::move(test_object));
-
-  auto test_object2 =
-      std::make_unique<engine::object::GameObject>("test_object2");
-  test_object2->AddComponent<engine::component::TransformComponent>(
-      glm::vec2(100.0f, 250.0f));
-  test_object2->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.GetResourceManager());
-  test_object2->AddComponent<engine::component::PhysicsComponent>(
-      &context_.GetPhysicsEngine(), false);
-  test_object2->AddComponent<engine::component::ColliderComponent>(
-      std::make_unique<engine::physics::CircleCollider>(16.0f));
-  AddGameObject(std::move(test_object2));
-}
-
-void GameScene::TestObject() {
-  if (!test_object_) return;
+void GameScene::TestPlayer() {
+  if (!player_) return;
   auto& input_manager = context_.GetInputManager();
-  auto* pc = test_object_->GetComponent<engine::component::PhysicsComponent>();
+  auto* pc = player_->GetComponent<engine::component::PhysicsComponent>();
   if (!pc) return;
 
   if (input_manager.IsActionDown("move_left")) {

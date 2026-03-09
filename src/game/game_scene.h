@@ -22,11 +22,10 @@ class GameScene final : public engine::scene::Scene {
   void Clean() override;
 
  private:
-  void CreateTestObject();
-  void TestObject();
+  void TestPlayer();
   void TestCollisionPairs();
 
-  engine::object::GameObject* test_object_ = nullptr;
+  engine::object::GameObject* player_ = nullptr;
 };
 
 }  // namespace game::scene

@@ -79,7 +79,13 @@ void PhysicsEngine::CheckObjectCollisions() {
       if (!cc_b || !cc_b->IsActive()) continue;
 
       if (collision::CheckCollision(*cc_a, *cc_b)) {
-        collision_pairs_.emplace_back(obj_a, obj_b);
+        if (obj_a->GetTag() != "solid" && obj_b->GetTag() == "solid") {
+          ResolveSolidObjectCollisions(obj_a, obj_b);
+        } else if (obj_a->GetTag() == "solid" && obj_b->GetTag() != "solid") {
+          ResolveSolidObjectCollisions(obj_b, obj_a);
+        } else {
+          collision_pairs_.emplace_back(obj_a, obj_b);
+        }
       }
     }
   }
@@ -240,9 +246,48 @@ void PhysicsEngine::ResolveTileCollisions(
   }
 
   // Apply the collision-adjusted position to the transform
-  tc->SetPosition(new_obj_pos);
+  tc->Translate(new_obj_pos - obj_pos);
   // Ensure velocity doesn't exceed max speed after collision resolution
   pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
+}
+
+void PhysicsEngine::ResolveSolidObjectCollisions(
+    engine::object::GameObject* move_obj,
+    engine::object::GameObject* solid_obj) {
+  auto* move_tc =
+      move_obj->GetComponent<engine::component::TransformComponent>();
+  auto* move_pc = move_obj->GetComponent<engine::component::PhysicsComponent>();
+  auto* move_cc =
+      move_obj->GetComponent<engine::component::ColliderComponent>();
+  auto* solid_cc =
+      solid_obj->GetComponent<engine::component::ColliderComponent>();
+
+  auto move_aabb = move_cc->GetWorldAABB();
+  auto solid_aabb = solid_cc->GetWorldAABB();
+
+  auto move_center = move_aabb.position + move_aabb.size / 2.0f;
+  auto solid_center = solid_aabb.position + solid_aabb.size / 2.0f;
+  auto overlap = glm::vec2(move_aabb.size / 2.0f + solid_aabb.size / 2.0f) -
+                 glm::abs(move_center - solid_center);
+  if (overlap.x < 0.1f && overlap.y < 0.1f) return;
+
+  if (overlap.x < overlap.y) {
+    if (move_center.x < solid_center.x) {
+      move_tc->Translate(glm::vec2(-overlap.x, 0.0f));
+      if (move_pc->velocity_.x > 0.0f) move_pc->velocity_.x = 0.0f;
+    } else {
+      move_tc->Translate(glm::vec2(overlap.x, 0.0f));
+      if (move_pc->velocity_.x < 0.0f) move_pc->velocity_.x = 0.0f;
+    }
+  } else {
+    if (move_center.y < solid_center.y) {
+      move_tc->Translate(glm::vec2(0.0f, -overlap.y));
+      if (move_pc->velocity_.y > 0.0f) move_pc->velocity_.y = 0.0f;
+    } else {
+      move_tc->Translate(glm::vec2(0.0f, overlap.y));
+      if (move_pc->velocity_.y < 0.0f) move_pc->velocity_.y = 0.0f;
+    }
+  }
 }
 
 }  // namespace engine::physics

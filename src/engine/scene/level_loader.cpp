@@ -5,12 +5,15 @@
 #include <filesystem>
 #include <fstream>
 
+#include "engine/component/collider_component.h"
 #include "engine/component/parallax_component.h"
+#include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/object/game_object.h"
+#include "engine/physics/collider.h"
 #include "engine/scene/scene.h"
 #include "log.h"
 #include "nlohmann/json.hpp"
@@ -169,6 +172,48 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       game_object->AddComponent<engine::component::SpriteComponent>(
           std::move(tile_info.sprite), scene.GetContext().GetResourceManager());
 
+      auto tile_json = GetTileJsonByGid(gid);
+
+      if (tile_info.type == engine::component::TileType::SOLID) {
+        auto collider =
+            std::make_unique<engine::physics::AABBCollider>(src_size);
+        game_object->AddComponent<engine::component::ColliderComponent>(
+            std::move(collider));
+        game_object->AddComponent<engine::component::PhysicsComponent>(
+            &scene.GetContext().GetPhysicsEngine(), false);
+        game_object->SetTag("solid");
+      } else if (auto rect = GetColliderRect(tile_json); rect) {
+        auto collider =
+            std::make_unique<engine::physics::AABBCollider>(rect->size);
+        auto* cc =
+            game_object->AddComponent<engine::component::ColliderComponent>(
+                std::move(collider));
+        cc->SetOffset(rect->position);
+        game_object->AddComponent<engine::component::PhysicsComponent>(
+            &scene.GetContext().GetPhysicsEngine(), false);
+      }
+
+      auto tag = GetTileProperty<std::string>(tile_json, "tag");
+      if (tag) {
+        game_object->SetTag(tag.value());
+      }
+
+      auto gravity = GetTileProperty<bool>(tile_json, "gravity");
+      if (gravity) {
+        auto pc =
+            game_object->GetComponent<engine::component::PhysicsComponent>();
+        if (pc) {
+          pc->SetUseGravity(gravity.value());
+        } else {
+          ENGINE_WARN(
+              "Object '{}' does not have PhysicsComponent when setting gravity "
+              "property.",
+              object_name);
+          game_object->AddComponent<engine::component::PhysicsComponent>(
+              &scene.GetContext().GetPhysicsEngine(), gravity.value());
+        }
+      }
+
       scene.AddGameObject(std::move(game_object));
       ENGINE_INFO("Load object: '{}' completed.", object_name);
     }
@@ -280,6 +325,46 @@ engine::component::TileType LevelLoader::GetTileTypeById(
     }
   }
   return engine::component::TileType::NORMAL;
+}
+
+std::optional<engine::utils::Rect> LevelLoader::GetColliderRect(
+    const nlohmann::json& tile_json) const {
+  if (!tile_json.contains("objectgroup")) return std::nullopt;
+  auto& objectgroup = tile_json["objectgroup"];
+  if (!objectgroup.contains("objects")) return std::nullopt;
+  auto& objects = objectgroup["objects"];
+  for (const auto& object : objects) {
+    auto rect = engine::utils::Rect(
+        glm::vec2(object.value("x", 0.0f), object.value("y", 0.0f)),
+        glm::vec2(object.value("width", 0.0f), object.value("height", 0.0f)));
+    if (rect.size.x > 0 && rect.size.y > 0) {
+      return rect;
+    }
+  }
+  return std::nullopt;
+}
+
+std::optional<nlohmann::json> LevelLoader::GetTileJsonByGid(int gid) const {
+  auto tileset_it = tileset_data_.upper_bound(gid);
+  if (tileset_it == tileset_data_.begin()) {
+    ENGINE_ERROR("Tileset '{}' not found.", gid);
+    return std::nullopt;
+  }
+  --tileset_it;
+  const auto& tileset = tileset_it->second;
+  auto local_id = gid - tileset_it->first;
+  if (!tileset.contains("tiles")) {
+    ENGINE_ERROR("Tileset '{}' missing 'tiles' attribute.", tileset_it->first);
+    return std::nullopt;
+  }
+  const auto& tiles_json = tileset["tiles"];
+  for (const auto& tile_json : tiles_json) {
+    auto tile_id = tile_json.value("id", 0);
+    if (tile_id == local_id) {
+      return tile_json;
+    }
+  }
+  return std::nullopt;
 }
 
 }  // namespace engine::scene
