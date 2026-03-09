@@ -16,6 +16,10 @@ namespace engine::core {
 class Context;
 }
 
+namespace engine::physics {
+class PhysicsEngine;
+}
+
 namespace engine::component {
 
 enum class TileType {
@@ -40,30 +44,36 @@ class TileLayerComponent final : public Component {
   TileLayerComponent(const glm::ivec2& tile_size, const glm::ivec2& map_size,
                      std::vector<TileInfo>&& tiles);
 
-  const TileInfo* getTileInfoAt(const glm::ivec2& pos) const;
+  const TileInfo* GetTileInfoAt(const glm::ivec2& pos) const;
 
-  TileType getTileTypeAt(const glm::ivec2& pos) const;
+  TileType GetTileTypeAt(const glm::ivec2& pos) const;
 
-  TileType getTileTypeAtWorldPos(const glm::vec2& world_pos) const;
+  TileType GetTileTypeAtWorldPos(const glm::vec2& world_pos) const;
 
-  glm::ivec2 getTileSize() const { return tile_size_; }
-  glm::ivec2 getMapSize() const { return map_size_; }
-  glm::vec2 getWorldSize() const {
+  glm::ivec2 GetTileSize() const { return tile_size_; }
+  glm::ivec2 GetMapSize() const { return map_size_; }
+  glm::vec2 GetWorldSize() const {
     return glm::vec2(map_size_.x * tile_size_.x, map_size_.y * tile_size_.y);
   }
-  const std::vector<TileInfo>& getTiles() const { return tiles_; }
-  const glm::vec2& getOffset() const { return offset_; }
-  bool isHidden() const { return is_hidden_; }
+  const std::vector<TileInfo>& GetTiles() const { return tiles_; }
+  const glm::vec2& GetOffset() const { return offset_; }
+  bool IsHidden() const { return is_hidden_; }
 
-  void setOffset(const glm::vec2& offset) { offset_ = offset; }
-  void setHidden(bool hidden) { is_hidden_ = hidden; }
+  void SetOffset(const glm::vec2& offset) { offset_ = offset; }
+  void SetHidden(bool hidden) { is_hidden_ = hidden; }
+
+  void setPhysicsEngine(engine::physics::PhysicsEngine* physics_engine) {
+    physics_engine_ = physics_engine;
+  }
 
  protected:
   void Init() override;
   void Update(float, engine::core::Context&) override {}
   void Render(engine::core::Context& context) override;
+  void Clean() override;
 
  private:
+  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
   glm::ivec2 tile_size_;
   glm::ivec2 map_size_;
   std::vector<TileInfo> tiles_;

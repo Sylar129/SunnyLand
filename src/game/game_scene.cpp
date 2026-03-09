@@ -5,6 +5,7 @@
 #include "engine/component/collider_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
+#include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/input/input_manager.h"
@@ -24,6 +25,16 @@ GameScene::GameScene(const std::string& name, engine::core::Context& context,
 void GameScene::Init() {
   engine::scene::LevelLoader level_loader;
   level_loader.LoadLevel("assets/maps/level1.tmj", *this);
+
+  auto* main_layer_obj = FindGameObjectByName("main");
+  if (main_layer_obj) {
+    auto* tile_layer_comp =
+        main_layer_obj->GetComponent<engine::component::TileLayerComponent>();
+    if (tile_layer_comp) {
+      context_.getPhysicsEngine().registerCollisionLayer(tile_layer_comp);
+      GAME_INFO("已将 'main' 层注册到物理引擎进行碰撞检测。");
+    }
+  }
 
   CreateTestObject();
   Scene::Init();
@@ -73,23 +84,23 @@ void GameScene::CreateTestObject() {
 
 void GameScene::TestObject() {
   if (!test_object_) return;
-  auto transform_comp =
-      test_object_->GetComponent<engine::component::TransformComponent>();
-  if (!transform_comp) return;
-  auto* physics_comp =
-      test_object_->GetComponent<engine::component::PhysicsComponent>();
-  if (!physics_comp) return;
-
   auto& input_manager = context_.getInputManager();
+  auto* pc = test_object_->GetComponent<engine::component::PhysicsComponent>();
+  if (!pc) return;
+
+  // 水平移动: 直接设置速度
   if (input_manager.IsActionDown("move_left")) {
-    transform_comp->Translate(glm::vec2(-2, 0));
-  }
-  if (input_manager.IsActionDown("move_right")) {
-    transform_comp->Translate(glm::vec2(2, 0));
+    pc->velocity_.x = -100.0f;
+  } else if (input_manager.IsActionDown("move_right")) {
+    pc->velocity_.x = 100.0f;
+  } else {
+    // 模拟摩擦力，让物体停下来
+    pc->velocity_.x *= 0.9f;
   }
 
+  // 跳跃: 给予一个向上的瞬时速度
   if (input_manager.IsActionPressed("jump")) {
-    physics_comp->SetVelocity(glm::vec2(physics_comp->GetVelocity().x, -400));
+    pc->velocity_.y = -400.0f;
   }
 }
 

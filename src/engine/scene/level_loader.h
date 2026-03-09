@@ -10,6 +10,7 @@
 
 namespace engine::component {
 struct TileInfo;
+enum class TileType;
 }
 
 namespace engine::scene {
@@ -30,6 +31,11 @@ class LevelLoader final {
   engine::component::TileInfo GetTileInfoByGid(int gid) const;
   std::string ResolvePath(const std::string& relative_path,
                           const std::string& file_path) const;
+
+  engine::component::TileType getTileType(
+      const nlohmann::json& tile_json) const;
+  engine::component::TileType getTileTypeById(
+      const nlohmann::json& tileset_json, int local_id) const;
 
   std::string map_path_;
   glm::ivec2 map_size_;

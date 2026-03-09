@@ -3,6 +3,7 @@
 #include "engine/component/tilelayer_component.h"
 
 #include "engine/core/context.h"
+#include "engine/physics/physics_engine.h"
 #include "engine/render/renderer.h"
 #include "engine/utils/assert.h"
 #include "log.h"
@@ -56,7 +57,13 @@ void TileLayerComponent::Render(engine::core::Context& context) {
   }
 }
 
-const TileInfo* TileLayerComponent::getTileInfoAt(const glm::ivec2& pos) const {
+void TileLayerComponent::Clean() {
+  if (physics_engine_) {
+    physics_engine_->unregisterCollisionLayer(this);
+  }
+}
+
+const TileInfo* TileLayerComponent::GetTileInfoAt(const glm::ivec2& pos) const {
   if (pos.x < 0 || pos.x >= map_size_.x || pos.y < 0 || pos.y >= map_size_.y) {
     ENGINE_WARN("TileLayerComponent: invalid pos: ({}, {})", pos.x, pos.y);
     return nullptr;
@@ -69,19 +76,19 @@ const TileInfo* TileLayerComponent::getTileInfoAt(const glm::ivec2& pos) const {
   return nullptr;
 }
 
-TileType TileLayerComponent::getTileTypeAt(const glm::ivec2& pos) const {
-  const TileInfo* info = getTileInfoAt(pos);
+TileType TileLayerComponent::GetTileTypeAt(const glm::ivec2& pos) const {
+  const TileInfo* info = GetTileInfoAt(pos);
   return info ? info->type : TileType::EMPTY;
 }
 
-TileType TileLayerComponent::getTileTypeAtWorldPos(
+TileType TileLayerComponent::GetTileTypeAtWorldPos(
     const glm::vec2& world_pos) const {
   glm::vec2 relative_pos = world_pos - offset_;
 
   int tile_x = static_cast<int>(std::floor(relative_pos.x / tile_size_.x));
   int tile_y = static_cast<int>(std::floor(relative_pos.y / tile_size_.y));
 
-  return getTileTypeAt(glm::ivec2{tile_x, tile_y});
+  return GetTileTypeAt(glm::ivec2{tile_x, tile_y});
 }
 
 }  // namespace engine::component
