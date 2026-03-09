@@ -32,9 +32,9 @@ class LevelLoader final {
   std::string ResolvePath(const std::string& relative_path,
                           const std::string& file_path) const;
 
-  engine::component::TileType getTileType(
+  engine::component::TileType GetTileType(
       const nlohmann::json& tile_json) const;
-  engine::component::TileType getTileTypeById(
+  engine::component::TileType GetTileTypeById(
       const nlohmann::json& tileset_json, int local_id) const;
 
   std::string map_path_;

@@ -212,7 +212,7 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
                               static_cast<float>(coord_y * tile_size_.y),
                               static_cast<float>(tile_size_.x),
                               static_cast<float>(tile_size_.y)};
-    auto tile_type = getTileTypeById(tileset, local_id);
+    auto tile_type = GetTileTypeById(tileset, local_id);
     return {{texture_id, texture_rect}, tile_type};
   } else {
     if (!tileset.contains("tiles")) {
@@ -241,7 +241,7 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
             static_cast<float>(tile_json.value("width", image_width)),
             static_cast<float>(tile_json.value("height", image_height))};
         engine::render::Sprite sprite{texture_id, texture_rect};
-        auto tile_type = getTileType(tile_json);
+        auto tile_type = GetTileType(tile_json);
         return engine::component::TileInfo(sprite, tile_type);
       }
     }
@@ -256,7 +256,7 @@ std::string LevelLoader::ResolvePath(const std::string& relative_path,
   return final_path.string();
 }
 
-engine::component::TileType LevelLoader::getTileType(
+engine::component::TileType LevelLoader::GetTileType(
     const nlohmann::json& tile_json) const {
   if (tile_json.contains("properties")) {
     for (const auto& property : tile_json["properties"]) {
@@ -270,12 +270,12 @@ engine::component::TileType LevelLoader::getTileType(
   return engine::component::TileType::NORMAL;
 }
 
-engine::component::TileType LevelLoader::getTileTypeById(
+engine::component::TileType LevelLoader::GetTileTypeById(
     const nlohmann::json& tileset_json, int local_id) const {
   if (tileset_json.contains("tiles")) {
     for (const auto& tile : tileset_json["tiles"]) {
       if (tile.value("id", -1) == local_id) {
-        return getTileType(tile);
+        return GetTileType(tile);
       }
     }
   }
