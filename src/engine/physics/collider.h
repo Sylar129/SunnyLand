@@ -35,7 +35,10 @@ class AABBCollider final : public Collider {
 
   ColliderType GetType() const override { return ColliderType::AABB; }
   const glm::vec2& GetSize() const { return size_; }
-  void SetSize(glm::vec2 size) { size_ = std::move(size); }
+  void SetSize(glm::vec2 size) {
+    size_ = std::move(size);
+    SetAABBSize(size_);
+  }
 
  private:
   glm::vec2 size_ = {0.0f, 0.0f};
@@ -50,7 +53,10 @@ class CircleCollider final : public Collider {
 
   ColliderType GetType() const override { return ColliderType::CIRCLE; }
   float GetRadius() const { return radius_; }
-  void SetRadius(float radius) { radius_ = radius; }
+  void SetRadius(float radius) {
+    radius_ = radius;
+    SetAABBSize(glm::vec2(radius * 2.0f, radius * 2.0f));
+  }
 
  private:
   float radius_ = 0.0f;

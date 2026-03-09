@@ -14,6 +14,11 @@ bool CheckCollision(const engine::component::ColliderComponent& a,
   auto a_transform = a.GetTransform();
   auto b_transform = b.GetTransform();
 
+  // Ensure required components are present before dereferencing.
+  if (!a_collider || !b_collider || !a_transform || !b_transform) {
+    return false;
+  }
+
   auto a_size = a_collider->GetAABBSize() * a_transform->GetScale();
   auto b_size = b_collider->GetAABBSize() * b_transform->GetScale();
   auto a_pos = a_transform->GetPosition() + a.GetOffset();
