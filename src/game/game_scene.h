@@ -22,7 +22,10 @@ class GameScene final : public engine::scene::Scene {
   void Clean() override;
 
  private:
-  void TestCamera();
+  void CreateTestObject();
+  void TestObject();
+
+  engine::object::GameObject* test_object_ = nullptr;
 };
 
 }  // namespace game::scene
