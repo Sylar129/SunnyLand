@@ -35,7 +35,7 @@ void ParallaxComponent::Render(engine::core::Context& context) {
   if (is_hidden_ || !transform_) {
     return;
   }
-  context.getRenderer().DrawParallax(context.getCamera(), sprite_,
+  context.GetRenderer().DrawParallax(context.GetCamera(), sprite_,
                                      transform_->GetPosition(), scroll_factor_,
                                      repeat_, transform_->GetScale());
 }

@@ -5,6 +5,7 @@
 #include "engine/component/collider_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
+#include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/input/input_manager.h"
@@ -24,6 +25,16 @@ GameScene::GameScene(const std::string& name, engine::core::Context& context,
 void GameScene::Init() {
   engine::scene::LevelLoader level_loader;
   level_loader.LoadLevel("assets/maps/level1.tmj", *this);
+
+  auto* main_layer_obj = FindGameObjectByName("main");
+  if (main_layer_obj) {
+    auto* tile_layer_comp =
+        main_layer_obj->GetComponent<engine::component::TileLayerComponent>();
+    if (tile_layer_comp) {
+      context_.GetPhysicsEngine().RegisterCollisionLayer(tile_layer_comp);
+      GAME_INFO("'main' layer registered to PhysicsEngine for collisions.");
+    }
+  }
 
   CreateTestObject();
   Scene::Init();
@@ -51,9 +62,9 @@ void GameScene::CreateTestObject() {
   test_object->AddComponent<engine::component::TransformComponent>(
       glm::vec2(100.0f, 100.0f));
   test_object->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.getResourceManager());
+      "assets/textures/Props/big-crate.png", context_.GetResourceManager());
   test_object->AddComponent<engine::component::PhysicsComponent>(
-      &context_.getPhysicsEngine());
+      &context_.GetPhysicsEngine());
   test_object->AddComponent<engine::component::ColliderComponent>(
       std::make_unique<engine::physics::AABBCollider>(glm::vec2(32.0f, 32.0f)));
   AddGameObject(std::move(test_object));
@@ -63,9 +74,9 @@ void GameScene::CreateTestObject() {
   test_object2->AddComponent<engine::component::TransformComponent>(
       glm::vec2(100.0f, 250.0f));
   test_object2->AddComponent<engine::component::SpriteComponent>(
-      "assets/textures/Props/big-crate.png", context_.getResourceManager());
+      "assets/textures/Props/big-crate.png", context_.GetResourceManager());
   test_object2->AddComponent<engine::component::PhysicsComponent>(
-      &context_.getPhysicsEngine(), false);
+      &context_.GetPhysicsEngine(), false);
   test_object2->AddComponent<engine::component::ColliderComponent>(
       std::make_unique<engine::physics::CircleCollider>(16.0f));
   AddGameObject(std::move(test_object2));
@@ -73,28 +84,25 @@ void GameScene::CreateTestObject() {
 
 void GameScene::TestObject() {
   if (!test_object_) return;
-  auto transform_comp =
-      test_object_->GetComponent<engine::component::TransformComponent>();
-  if (!transform_comp) return;
-  auto* physics_comp =
-      test_object_->GetComponent<engine::component::PhysicsComponent>();
-  if (!physics_comp) return;
+  auto& input_manager = context_.GetInputManager();
+  auto* pc = test_object_->GetComponent<engine::component::PhysicsComponent>();
+  if (!pc) return;
 
-  auto& input_manager = context_.getInputManager();
   if (input_manager.IsActionDown("move_left")) {
-    transform_comp->Translate(glm::vec2(-2, 0));
-  }
-  if (input_manager.IsActionDown("move_right")) {
-    transform_comp->Translate(glm::vec2(2, 0));
+    pc->velocity_.x = -100.0f;
+  } else if (input_manager.IsActionDown("move_right")) {
+    pc->velocity_.x = 100.0f;
+  } else {
+    pc->velocity_.x *= 0.9f;
   }
 
   if (input_manager.IsActionPressed("jump")) {
-    physics_comp->SetVelocity(glm::vec2(physics_comp->GetVelocity().x, -400));
+    pc->velocity_.y = -400.0f;
   }
 }
 
 void GameScene::TestCollisionPairs() {
-  auto& collision_pairs = context_.getPhysicsEngine().GetCollisionPairs();
+  auto& collision_pairs = context_.GetPhysicsEngine().GetCollisionPairs();
   for (auto& pair : collision_pairs) {
     GAME_INFO("Collision between: {} and {}", pair.first->GetName(),
               pair.second->GetName());

@@ -167,7 +167,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       game_object->AddComponent<engine::component::TransformComponent>(
           position, scale, rotation);
       game_object->AddComponent<engine::component::SpriteComponent>(
-          std::move(tile_info.sprite), scene.GetContext().getResourceManager());
+          std::move(tile_info.sprite), scene.GetContext().GetResourceManager());
 
       scene.AddGameObject(std::move(game_object));
       ENGINE_INFO("Load object: '{}' completed.", object_name);
@@ -212,7 +212,8 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
                               static_cast<float>(coord_y * tile_size_.y),
                               static_cast<float>(tile_size_.x),
                               static_cast<float>(tile_size_.y)};
-    return {{texture_id, texture_rect}, engine::component::TileType::NORMAL};
+    auto tile_type = GetTileTypeById(tileset, local_id);
+    return {{texture_id, texture_rect}, tile_type};
   } else {
     if (!tileset.contains("tiles")) {
       ENGINE_ERROR("Tileset '{}' missing 'tiles' attribute.",
@@ -235,14 +236,13 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
         auto image_width = tile_json.value("imagewidth", 0);
         auto image_height = tile_json.value("imageheight", 0);
         SDL_FRect texture_rect = {
-
             static_cast<float>(tile_json.value("x", 0)),
             static_cast<float>(tile_json.value("y", 0)),
             static_cast<float>(tile_json.value("width", image_width)),
             static_cast<float>(tile_json.value("height", image_height))};
         engine::render::Sprite sprite{texture_id, texture_rect};
-        return engine::component::TileInfo(sprite,
-                                           engine::component::TileType::NORMAL);
+        auto tile_type = GetTileType(tile_json);
+        return engine::component::TileInfo(sprite, tile_type);
       }
     }
   }
@@ -254,6 +254,32 @@ std::string LevelLoader::ResolvePath(const std::string& relative_path,
   auto map_dir = std::filesystem::path(file_path).parent_path();
   auto final_path = std::filesystem::canonical(map_dir / relative_path);
   return final_path.string();
+}
+
+engine::component::TileType LevelLoader::GetTileType(
+    const nlohmann::json& tile_json) const {
+  if (tile_json.contains("properties")) {
+    for (const auto& property : tile_json["properties"]) {
+      if (property.value("name", "") == "solid") {
+        return property.value("value", false)
+                   ? engine::component::TileType::SOLID
+                   : engine::component::TileType::NORMAL;
+      }
+    }
+  }
+  return engine::component::TileType::NORMAL;
+}
+
+engine::component::TileType LevelLoader::GetTileTypeById(
+    const nlohmann::json& tileset_json, int local_id) const {
+  if (tileset_json.contains("tiles")) {
+    for (const auto& tile : tileset_json["tiles"]) {
+      if (tile.value("id", -1) == local_id) {
+        return GetTileType(tile);
+      }
+    }
+  }
+  return engine::component::TileType::NORMAL;
 }
 
 }  // namespace engine::scene

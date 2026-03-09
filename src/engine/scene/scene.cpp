@@ -33,7 +33,7 @@ void Scene::Update(float delta_time) {
     return;
   }
 
-  context_.getPhysicsEngine().Update(delta_time);
+  context_.GetPhysicsEngine().Update(delta_time);
 
   for (auto it = game_objects_.begin(); it != game_objects_.end();) {
     auto& object = *it;

@@ -10,6 +10,7 @@
 
 namespace engine::component {
 class PhysicsComponent;
+class TileLayerComponent;
 }
 
 namespace engine::physics {
@@ -23,6 +24,9 @@ class PhysicsEngine {
   void RegisterComponent(engine::component::PhysicsComponent* component);
   void UnregisterComponent(engine::component::PhysicsComponent* component);
 
+  void RegisterCollisionLayer(engine::component::TileLayerComponent* layer);
+  void UnregisterCollisionLayer(engine::component::TileLayerComponent* layer);
+
   void Update(float delta_time);
 
   void SetGravity(const glm::vec2& gravity) { gravity_ = gravity; }
@@ -34,6 +38,8 @@ class PhysicsEngine {
 
  private:
   void CheckObjectCollisions();
+  void ResolveTileCollisions(engine::component::PhysicsComponent* pc,
+                             float delta_time);
 
   std::vector<engine::component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
@@ -42,6 +48,7 @@ class PhysicsEngine {
   std::vector<
       std::pair<engine::object::GameObject*, engine::object::GameObject*>>
       collision_pairs_;
+  std::vector<engine::component::TileLayerComponent*> collision_tile_layers_;
 };
 
 }  // namespace engine::physics
