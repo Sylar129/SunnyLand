@@ -35,14 +35,13 @@ void PhysicsEngine::Update(float delta_time) {
     }
 
     pc->velocity_ += (pc->GetForce() / pc->GetMass()) * delta_time;
+    pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
     pc->ClearForce();
 
     auto* tc = pc->GetTransform();
     if (tc) {
       tc->Translate(pc->velocity_ * delta_time);
     }
-
-    pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
   }
 }
 

@@ -52,7 +52,7 @@ class GameApp final {
   [[nodiscard]] bool InitInputManager();
   [[nodiscard]] bool InitContext();
   [[nodiscard]] bool InitSceneManager();
-  [[nodiscard]] bool initPhysicsEngine();
+  [[nodiscard]] bool InitPhysicsEngine();
 
   void HandleEvents();
   void Update(float delta_time);
@@ -68,9 +68,9 @@ class GameApp final {
   std::unique_ptr<engine::render::Camera> camera_;
   std::unique_ptr<engine::core::Config> config_;
   std::unique_ptr<engine::input::InputManager> input_manager_;
+  std::unique_ptr<engine::physics::PhysicsEngine> physics_engine_;
   std::unique_ptr<engine::core::Context> context_;
   std::unique_ptr<engine::scene::SceneManager> scene_manager_;
-  std::unique_ptr<engine::physics::PhysicsEngine> physics_engine_;
 };
 
 }  // namespace engine::core

@@ -56,7 +56,7 @@ bool GameApp::Init() {
   if (!InitRenderer()) return false;
   if (!InitCamera()) return false;
   if (!InitInputManager()) return false;
-  if (!initPhysicsEngine()) return false;
+  if (!InitPhysicsEngine()) return false;
   if (!InitContext()) return false;
   if (!InitSceneManager()) return false;
 
@@ -168,7 +168,7 @@ bool GameApp::InitSceneManager() {
   return true;
 }
 
-bool GameApp::initPhysicsEngine() {
+bool GameApp::InitPhysicsEngine() {
   physics_engine_ = std::make_unique<engine::physics::PhysicsEngine>();
   return true;
 }

@@ -57,18 +57,19 @@ void GameScene::CreateTestObject() {
 
 void GameScene::TestObject() {
   if (!test_object_) return;
-  auto& input_manager = context_.getInputManager();
+  auto transform_comp =
+      test_object_->GetComponent<engine::component::TransformComponent>();
+  if (!transform_comp) return;
   auto* physics_comp =
       test_object_->GetComponent<engine::component::PhysicsComponent>();
   if (!physics_comp) return;
 
+  auto& input_manager = context_.getInputManager();
   if (input_manager.IsActionDown("move_left")) {
-    test_object_->GetComponent<engine::component::TransformComponent>()
-        ->Translate(glm::vec2(-2, 0));
+    transform_comp->Translate(glm::vec2(-2, 0));
   }
   if (input_manager.IsActionDown("move_right")) {
-    test_object_->GetComponent<engine::component::TransformComponent>()
-        ->Translate(glm::vec2(2, 0));
+    transform_comp->Translate(glm::vec2(2, 0));
   }
 
   if (input_manager.IsActionPressed("jump")) {

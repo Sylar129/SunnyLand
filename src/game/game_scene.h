@@ -25,7 +25,7 @@ class GameScene final : public engine::scene::Scene {
   void CreateTestObject();
   void TestObject();
 
-  engine::object::GameObject* test_object_;
+  engine::object::GameObject* test_object_ = nullptr;
 };
 
 }  // namespace game::scene
