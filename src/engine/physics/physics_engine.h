@@ -24,8 +24,8 @@ class PhysicsEngine {
   void RegisterComponent(engine::component::PhysicsComponent* component);
   void UnregisterComponent(engine::component::PhysicsComponent* component);
 
-  void registerCollisionLayer(engine::component::TileLayerComponent* layer);
-  void unregisterCollisionLayer(engine::component::TileLayerComponent* layer);
+  void RegisterCollisionLayer(engine::component::TileLayerComponent* layer);
+  void UnregisterCollisionLayer(engine::component::TileLayerComponent* layer);
 
   void Update(float delta_time);
 
@@ -38,7 +38,7 @@ class PhysicsEngine {
 
  private:
   void CheckObjectCollisions();
-  void resolveTileCollisions(engine::component::PhysicsComponent* pc,
+  void ResolveTileCollisions(engine::component::PhysicsComponent* pc,
                              float delta_time);
 
   std::vector<engine::component::PhysicsComponent*> components_;

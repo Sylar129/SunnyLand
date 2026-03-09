@@ -27,19 +27,19 @@ void PhysicsEngine::UnregisterComponent(
   ENGINE_TRACE("Unregister PhysicsComponent complete.");
 }
 
-void PhysicsEngine::registerCollisionLayer(
+void PhysicsEngine::RegisterCollisionLayer(
     engine::component::TileLayerComponent* layer) {
-  layer->setPhysicsEngine(this);  // 设置物理引擎指针
+  layer->setPhysicsEngine(this);
   collision_tile_layers_.push_back(layer);
-  ENGINE_TRACE("碰撞瓦片图层注册完成。");
+  ENGINE_TRACE("Register collision tile layer complete.");
 }
 
-void PhysicsEngine::unregisterCollisionLayer(
+void PhysicsEngine::UnregisterCollisionLayer(
     engine::component::TileLayerComponent* layer) {
   auto it = std::remove(collision_tile_layers_.begin(),
                         collision_tile_layers_.end(), layer);
   collision_tile_layers_.erase(it, collision_tile_layers_.end());
-  ENGINE_TRACE("碰撞瓦片图层注销完成。");
+  ENGINE_TRACE("Unregister collision tile layer complete.");
 }
 
 void PhysicsEngine::Update(float delta_time) {
@@ -58,7 +58,7 @@ void PhysicsEngine::Update(float delta_time) {
     pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
     pc->ClearForce();
 
-    resolveTileCollisions(pc, delta_time);
+    ResolveTileCollisions(pc, delta_time);
   }
 
   CheckObjectCollisions();
@@ -88,19 +88,17 @@ void PhysicsEngine::CheckObjectCollisions() {
   }
 }
 
-void PhysicsEngine::resolveTileCollisions(
+void PhysicsEngine::ResolveTileCollisions(
     engine::component::PhysicsComponent* pc, float delta_time) {
-  // 检查组件是否有效
   auto* obj = pc->GetOwner();
   if (!obj) return;
   auto* tc = obj->GetComponent<engine::component::TransformComponent>();
   auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
   if (!tc || !cc || !cc->IsActive() || cc->IsTrigger()) return;
-  auto world_aabb = cc->GetWorldAABB();  // 使用最小包围盒进行碰撞检测（简化）
+  auto world_aabb = cc->GetWorldAABB();
   auto obj_pos = world_aabb.position;
   auto obj_size = world_aabb.size;
   if (world_aabb.size.x <= 0.0f || world_aabb.size.y <= 0.0f) return;
-  // -- 检查结束, 正式开始处理 --
 
   auto tolerance =
       1.0f;  // 检查右边缘和下边缘时，需要减1像素，否则会检查到下一行/列的瓦片

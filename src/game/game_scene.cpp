@@ -31,8 +31,8 @@ void GameScene::Init() {
     auto* tile_layer_comp =
         main_layer_obj->GetComponent<engine::component::TileLayerComponent>();
     if (tile_layer_comp) {
-      context_.getPhysicsEngine().registerCollisionLayer(tile_layer_comp);
-      GAME_INFO("已将 'main' 层注册到物理引擎进行碰撞检测。");
+      context_.getPhysicsEngine().RegisterCollisionLayer(tile_layer_comp);
+      GAME_INFO("'main' layer registered to PhysicsEngine for collisions.");
     }
   }
 
@@ -88,17 +88,14 @@ void GameScene::TestObject() {
   auto* pc = test_object_->GetComponent<engine::component::PhysicsComponent>();
   if (!pc) return;
 
-  // 水平移动: 直接设置速度
   if (input_manager.IsActionDown("move_left")) {
     pc->velocity_.x = -100.0f;
   } else if (input_manager.IsActionDown("move_right")) {
     pc->velocity_.x = 100.0f;
   } else {
-    // 模拟摩擦力，让物体停下来
     pc->velocity_.x *= 0.9f;
   }
 
-  // 跳跃: 给予一个向上的瞬时速度
   if (input_manager.IsActionPressed("jump")) {
     pc->velocity_.y = -400.0f;
   }
