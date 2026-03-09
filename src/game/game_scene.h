@@ -22,7 +22,7 @@ class GameScene final : public engine::scene::Scene {
   void Clean() override;
 
  private:
-  void createTestObject();
+  void CreateTestObject();
   void TestObject();
 
   engine::object::GameObject* test_object_;

@@ -39,12 +39,12 @@ void PhysicsComponent::Init() {
         "物理组件初始化时，同一GameObject上没有找到TransformComponent组件。");
   }
   // 注册到PhysicsEngine
-  physics_engine_->registerComponent(this);
+  physics_engine_->RegisterComponent(this);
   spdlog::trace("物理组件初始化完成。");
 }
 
 void PhysicsComponent::Clean() {
-  physics_engine_->unregisterComponent(this);
+  physics_engine_->UnregisterComponent(this);
   spdlog::trace("物理组件清理完成。");
 }
 
