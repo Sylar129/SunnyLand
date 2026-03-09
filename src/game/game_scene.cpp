@@ -2,12 +2,14 @@
 
 #include "game/game_scene.h"
 
+#include "engine/component/collider_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/input/input_manager.h"
 #include "engine/object/game_object.h"
+#include "engine/physics/physics_engine.h"
 #include "engine/scene/level_loader.h"
 #include "log.h"
 
@@ -28,7 +30,10 @@ void GameScene::Init() {
   GAME_TRACE("Init GameScene '{}'", GetName());
 }
 
-void GameScene::Update(float delta_time) { Scene::Update(delta_time); }
+void GameScene::Update(float delta_time) {
+  Scene::Update(delta_time);
+  TestCollisionPairs();
+}
 
 void GameScene::Render() { Scene::Render(); }
 
@@ -43,16 +48,28 @@ void GameScene::CreateTestObject() {
   auto test_object =
       std::make_unique<engine::object::GameObject>("test_object");
   test_object_ = test_object.get();
-
   test_object->AddComponent<engine::component::TransformComponent>(
       glm::vec2(100.0f, 100.0f));
   test_object->AddComponent<engine::component::SpriteComponent>(
       "assets/textures/Props/big-crate.png", context_.getResourceManager());
-
   test_object->AddComponent<engine::component::PhysicsComponent>(
       &context_.getPhysicsEngine());
-
+  test_object->AddComponent<engine::component::ColliderComponent>(
+      std::make_unique<engine::physics::AABBCollider>(glm::vec2(32.0f, 32.0f)));
   AddGameObject(std::move(test_object));
+
+  // 物体2: 静止的箱子 (Circle)
+  auto test_object2 =
+      std::make_unique<engine::object::GameObject>("test_object2");
+  test_object2->AddComponent<engine::component::TransformComponent>(
+      glm::vec2(50.0f, 250.0f));  // 放在下落路径上
+  test_object2->AddComponent<engine::component::SpriteComponent>(
+      "assets/textures/Props/big-crate.png", context_.getResourceManager());
+  test_object2->AddComponent<engine::component::PhysicsComponent>(
+      &context_.getPhysicsEngine(), false);  // 不受重力
+  test_object2->AddComponent<engine::component::ColliderComponent>(
+      std::make_unique<engine::physics::CircleCollider>(16.0f));
+  AddGameObject(std::move(test_object2));
 }
 
 void GameScene::TestObject() {
@@ -74,6 +91,14 @@ void GameScene::TestObject() {
 
   if (input_manager.IsActionPressed("jump")) {
     physics_comp->SetVelocity(glm::vec2(physics_comp->GetVelocity().x, -400));
+  }
+}
+
+void GameScene::TestCollisionPairs() {
+  auto& collision_pairs = context_.getPhysicsEngine().getCollisionPairs();
+  for (auto& pair : collision_pairs) {
+    GAME_INFO("碰撞对: {} 和 {}", pair.first->GetName(),
+              pair.second->GetName());
   }
 }
 

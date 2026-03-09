@@ -24,6 +24,7 @@ class GameScene final : public engine::scene::Scene {
  private:
   void CreateTestObject();
   void TestObject();
+  void TestCollisionPairs();
 
   engine::object::GameObject* test_object_ = nullptr;
 };
