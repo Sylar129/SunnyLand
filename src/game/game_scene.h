@@ -22,6 +22,8 @@ class GameScene final : public engine::scene::Scene {
   void Clean() override;
 
  private:
+  void InitLevel();
+  void InitPlayer();
   void TestPlayer();
   void TestCollisionPairs();
 
