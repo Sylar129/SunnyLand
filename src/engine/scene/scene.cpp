@@ -7,6 +7,7 @@
 #include "engine/core/context.h"
 #include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
+#include "engine/render/camera.h"
 #include "engine/scene/scene_manager.h"
 #include "log.h"
 
@@ -34,6 +35,8 @@ void Scene::Update(float delta_time) {
   }
 
   context_.GetPhysicsEngine().Update(delta_time);
+
+  context_.GetCamera().Update(delta_time);
 
   for (auto it = game_objects_.begin(); it != game_objects_.end();) {
     auto& object = *it;

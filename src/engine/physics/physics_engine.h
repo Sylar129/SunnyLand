@@ -5,12 +5,14 @@
 #include <vector>
 
 #include "engine/object/game_object.h"
+#include "engine/utils/math.h"
 #include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
 
 namespace engine::component {
 class PhysicsComponent;
 class TileLayerComponent;
+enum class TileType;
 }
 
 namespace engine::physics {
@@ -33,6 +35,12 @@ class PhysicsEngine {
   const glm::vec2& GetGravity() const { return gravity_; }
   void SetMaxSpeed(float max_speed) { max_speed_ = max_speed; }
   float GetMaxSpeed() const { return max_speed_; }
+  void setWorldBounds(const engine::utils::Rect& world_bounds) {
+    world_bounds_ = world_bounds;
+  }  ///< @brief 设置世界边界
+  const std::optional<engine::utils::Rect>& getWorldBounds() const {
+    return world_bounds_;
+  }  ///< @brief 获取世界边界
 
   const auto& GetCollisionPairs() const { return collision_pairs_; };
 
@@ -43,9 +51,17 @@ class PhysicsEngine {
   void ResolveSolidObjectCollisions(engine::object::GameObject* move_obj,
                                     engine::object::GameObject* solid_obj);
 
+  float getTileHeightAtWidth(float width, engine::component::TileType type,
+                             glm::vec2 tile_size);
+
+  void applyWorldBounds(engine::component::PhysicsComponent*
+                            pc);  ///< @brief 应用世界边界，限制物体移动范围
+
   std::vector<engine::component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
   float max_speed_ = 500.0f;
+  std::optional<engine::utils::Rect>
+      world_bounds_;  ///< @brief 世界边界，用于限制物体移动范围
 
   std::vector<
       std::pair<engine::object::GameObject*, engine::object::GameObject*>>

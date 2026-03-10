@@ -2,6 +2,7 @@
 
 #include "engine/render/camera.h"
 
+#include "engine/component/transform_component.h"
 #include "engine/utils/math.h"
 #include "log.h"
 
@@ -21,8 +22,32 @@ void Camera::SetPosition(const glm::vec2& position) {
   ClampPosition();
 }
 
-void Camera::Update(float /* delta_time */) {
-  // TODO Auto-follow target
+void Camera::Update(float delta_time) {
+  if (target_ == nullptr) return;
+  glm::vec2 target_pos = target_->GetPosition();
+  glm::vec2 desired_position =
+      target_pos - viewport_size_ / 2.0f;  // 计算目标位置 (让目标位于视口中心)
+
+  // 计算当前位置与目标位置的距离
+  auto distance_ = glm::distance(position_, desired_position);
+  constexpr float SNAP_THRESHOLD =
+      1.0f;  // 设置一个距离阈值  (constexpr: 编译时常量，避免每次调用都计算)
+
+  if (distance_ < SNAP_THRESHOLD) {
+    // 如果距离小于阈值，直接吸附到目标位置
+    position_ = desired_position;
+  } else {
+    // 否则，使用线性插值平滑移动   glm::mix(a,b,t): 在向量 a 和 b
+    // 之间进行插值，t 是插值因子，范围在0到1之间。 公式: (b-a)*t + a;   t = 0
+    // 时结果为 a，t = 1 时结果为 b
+    position_ =
+        glm::mix(position_, desired_position, smooth_speed_ * delta_time);
+    position_ = glm::vec2(
+        glm::round(position_.x),
+        glm::round(position_.y));  // 四舍五入到整数,省略的话偶尔会出现画面割裂
+  }
+
+  ClampPosition();
 }
 
 void Camera::Move(const glm::vec2& offset) {
@@ -33,6 +58,10 @@ void Camera::Move(const glm::vec2& offset) {
 void Camera::SetLimitBounds(const engine::utils::Rect& bounds) {
   limit_bounds_ = bounds;
   ClampPosition();  // Apply limit immediately after setting bounds
+}
+
+void Camera::setTarget(engine::component::TransformComponent* target) {
+  target_ = target;
 }
 
 const glm::vec2& Camera::GetPosition() const { return position_; }
@@ -71,6 +100,10 @@ glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
 }
 
 glm::vec2 Camera::GetViewportSize() const { return viewport_size_; }
+
+engine::component::TransformComponent* Camera::getTarget() const {
+  return target_;
+}
 
 std::optional<engine::utils::Rect> Camera::GetLimitBounds() const {
   return limit_bounds_;

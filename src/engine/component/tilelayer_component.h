@@ -26,6 +26,13 @@ enum class TileType {
   EMPTY,
   NORMAL,
   SOLID,
+  UNISOLID,
+  SLOPE_0_1,  ///< @brief 斜坡瓦片，高度:左0  右1
+  SLOPE_1_0,  ///< @brief 斜坡瓦片，高度:左1  右0
+  SLOPE_0_2,  ///< @brief 斜坡瓦片，高度:左0  右1/2
+  SLOPE_2_1,  ///< @brief 斜坡瓦片，高度:左1/2右1
+  SLOPE_1_2,  ///< @brief 斜坡瓦片，高度:左1  右1/2
+  SLOPE_2_0,  ///< @brief 斜坡瓦片，高度:左1/2右0
 };
 
 struct TileInfo {
