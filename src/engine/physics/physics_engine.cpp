@@ -56,6 +56,8 @@ void PhysicsEngine::Update(float delta_time) {
     pc->ClearForce();
 
     ResolveTileCollisions(pc, delta_time);
+
+    ApplyWorldBounds(pc);
   }
 
   CheckObjectCollisions();
@@ -292,32 +294,31 @@ void PhysicsEngine::ResolveSolidObjectCollisions(
   }
 }
 
-float PhysicsEngine::getTileHeightAtWidth(float width,
+float PhysicsEngine::GetTileHeightAtWidth(float width,
                                           engine::component::TileType type,
                                           glm::vec2 tile_size) {
   auto rel_x = glm::clamp(width / tile_size.x, 0.0f, 1.0f);
   switch (type) {
-    case engine::component::TileType::SLOPE_0_1:  // 左0  右1
+    case engine::component::TileType::SLOPE_0_1:
       return rel_x * tile_size.y;
-    case engine::component::TileType::SLOPE_0_2:  // 左0  右1/2
+    case engine::component::TileType::SLOPE_0_2:
       return rel_x * tile_size.y * 0.5f;
-    case engine::component::TileType::SLOPE_2_1:  // 左1/2右1
+    case engine::component::TileType::SLOPE_2_1:
       return rel_x * tile_size.y * 0.5f + tile_size.y * 0.5f;
-    case engine::component::TileType::SLOPE_1_0:  // 左1  右0
+    case engine::component::TileType::SLOPE_1_0:
       return (1.0f - rel_x) * tile_size.y;
-    case engine::component::TileType::SLOPE_2_0:  // 左1/2右0
+    case engine::component::TileType::SLOPE_2_0:
       return (1.0f - rel_x) * tile_size.y * 0.5f;
-    case engine::component::TileType::SLOPE_1_2:  // 左1  右1/2
+    case engine::component::TileType::SLOPE_1_2:
       return (1.0f - rel_x) * tile_size.y * 0.5f + tile_size.y * 0.5f;
     default:
-      return 0.0f;  // 默认返回0，表示没有斜坡
+      return 0.0f;
   }
 }
 
-void PhysicsEngine::applyWorldBounds(engine::component::PhysicsComponent* pc) {
+void PhysicsEngine::ApplyWorldBounds(engine::component::PhysicsComponent* pc) {
   if (!pc || !world_bounds_) return;
 
-  // 只限定左、上、右边界，不限定下边界，以碰撞盒作为判断依据
   auto* obj = pc->GetOwner();
   auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
   auto* tc = obj->GetComponent<engine::component::TransformComponent>();
@@ -325,23 +326,19 @@ void PhysicsEngine::applyWorldBounds(engine::component::PhysicsComponent* pc) {
   auto obj_pos = world_aabb.position;
   auto obj_size = world_aabb.size;
 
-  // 检查左边界
   if (obj_pos.x < world_bounds_->position.x) {
     pc->velocity_.x = 0.0f;
     obj_pos.x = world_bounds_->position.x;
   }
-  // 检查上边界
   if (obj_pos.y < world_bounds_->position.y) {
     pc->velocity_.y = 0.0f;
     obj_pos.y = world_bounds_->position.y;
   }
-  // 检查右边界
   if (obj_pos.x + obj_size.x >
       world_bounds_->position.x + world_bounds_->size.x) {
     pc->velocity_.x = 0.0f;
     obj_pos.x = world_bounds_->position.x + world_bounds_->size.x - obj_size.x;
   }
-  // 更新物体位置(使用translate方法，新位置 - 旧位置)
   tc->Translate(obj_pos - world_aabb.position);
 }
 

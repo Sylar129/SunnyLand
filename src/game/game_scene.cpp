@@ -53,7 +53,7 @@ void GameScene::Init() {
   context_.GetCamera().SetLimitBounds(
       engine::utils::Rect(glm::vec2(0.0f), world_size));
 
-  context_.GetPhysicsEngine().setWorldBounds(
+  context_.GetPhysicsEngine().SetWorldBounds(
       engine::utils::Rect(glm::vec2(0.0f), world_size));
 
   Scene::Init();
