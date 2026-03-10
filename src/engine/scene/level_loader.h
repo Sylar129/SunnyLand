@@ -29,7 +29,7 @@ class LevelLoader final {
   void LoadTileLayer(const nlohmann::json& layer_json, Scene& scene);
   void LoadObjectLayer(const nlohmann::json& layer_json, Scene& scene);
 
-  void addAnimation(const nlohmann::json& anim_json,
+  void AddAnimation(const nlohmann::json& anim_json,
                     engine::component::AnimationComponent* ac,
                     const glm::vec2& sprite_size);
 
