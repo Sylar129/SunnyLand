@@ -54,6 +54,17 @@ set(TARGET_SOURCES
     src/engine/utils/assert.h
     src/engine/utils/math.h
     src/engine/utils/non_copyable.h
+    src/game/component/state/fall_state.cpp
+    src/game/component/state/fall_state.h
+    src/game/component/state/idle_state.cpp
+    src/game/component/state/idle_state.h
+    src/game/component/state/jump_state.cpp
+    src/game/component/state/jump_state.h
+    src/game/component/state/player_state.h
+    src/game/component/state/walk_state.cpp
+    src/game/component/state/walk_state.h
+    src/game/component/player_component.cpp
+    src/game/component/player_component.h
     src/game/game_scene.cpp
     src/game/game_scene.h
     src/log.cpp
