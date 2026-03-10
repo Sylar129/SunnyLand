@@ -13,17 +13,16 @@
 
 namespace game::component::state {
 
-void FallState::enter() {}
+void FallState::Enter() {}
 
-void FallState::exit() {}
+void FallState::Exit() {}
 
-std::unique_ptr<PlayerState> FallState::handleInput(
+std::unique_ptr<PlayerState> FallState::HandleInput(
     engine::core::Context& context) {
   auto input_manager = context.GetInputManager();
   auto physics_component = player_component_->getPhysicsComponent();
   auto sprite_component = player_component_->getSpriteComponent();
 
-  // 下落状态下可以左右移动
   if (input_manager.IsActionDown("move_left")) {
     if (physics_component->velocity_.x > 0.0f)
       physics_component->velocity_.x = 0.0f;
@@ -38,14 +37,12 @@ std::unique_ptr<PlayerState> FallState::handleInput(
   return nullptr;
 }
 
-std::unique_ptr<PlayerState> FallState::update(float, engine::core::Context&) {
-  // 限制最大速度(水平方向)
+std::unique_ptr<PlayerState> FallState::Update(float, engine::core::Context&) {
   auto physics_component = player_component_->getPhysicsComponent();
   auto max_speed = player_component_->getMaxSpeed();
   physics_component->velocity_.x =
       glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
 
-  // 如果下方有碰撞，则根据水平速度来决定 切换到 IdleState 或 WalkState
   if (physics_component->HasCollidedBelow()) {
     if (glm::abs(physics_component->velocity_.x) < 1.0f) {
       return std::make_unique<IdleState>(player_component_);

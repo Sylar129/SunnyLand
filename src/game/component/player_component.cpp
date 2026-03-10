@@ -49,18 +49,18 @@ void PlayerComponent::setState(std::unique_ptr<state::PlayerState> new_state) {
     return;
   }
   if (current_state_) {
-    current_state_->exit();
+    current_state_->Exit();
   }
 
   current_state_ = std::move(new_state);
   GAME_DEBUG("玩家组件正在切换到状态: {}", typeid(*current_state_).name());
-  current_state_->enter();
+  current_state_->Enter();
 }
 
 void PlayerComponent::HandleInput(engine::core::Context& context) {
   if (!current_state_) return;
 
-  auto next_state = current_state_->handleInput(context);
+  auto next_state = current_state_->HandleInput(context);
   if (next_state) {
     setState(std::move(next_state));
   }
@@ -69,7 +69,7 @@ void PlayerComponent::HandleInput(engine::core::Context& context) {
 void PlayerComponent::Update(float delta_time, engine::core::Context& context) {
   if (!current_state_) return;
 
-  auto next_state = current_state_->update(delta_time, context);
+  auto next_state = current_state_->Update(delta_time, context);
   if (next_state) {
     setState(std::move(next_state));
   }

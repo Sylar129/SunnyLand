@@ -13,23 +13,21 @@
 
 namespace game::component::state {
 
-void JumpState::enter() {
+void JumpState::Enter() {
   auto physics_component = player_component_->getPhysicsComponent();
-  physics_component->velocity_.y =
-      -player_component_->getJumpForce();  // 向上跳跃
-  GAME_DEBUG("PlayerComponent 进入 JumpState，设置初始垂直速度为: {}",
+  physics_component->velocity_.y = -player_component_->getJumpForce();
+  GAME_DEBUG("PlayerComponent entered JumpState with initial jump velocity: {}",
              physics_component->velocity_.y);
 }
 
-void JumpState::exit() {}
+void JumpState::Exit() {}
 
-std::unique_ptr<PlayerState> JumpState::handleInput(
+std::unique_ptr<PlayerState> JumpState::HandleInput(
     engine::core::Context& context) {
   auto input_manager = context.GetInputManager();
   auto physics_component = player_component_->getPhysicsComponent();
   auto sprite_component = player_component_->getSpriteComponent();
 
-  // 跳跃状态下可以左右移动
   if (input_manager.IsActionDown("move_left")) {
     if (physics_component->velocity_.x > 0.0f)
       physics_component->velocity_.x = 0.0f;
@@ -44,14 +42,12 @@ std::unique_ptr<PlayerState> JumpState::handleInput(
   return nullptr;
 }
 
-std::unique_ptr<PlayerState> JumpState::update(float, engine::core::Context&) {
-  // 限制最大速度(水平方向)
+std::unique_ptr<PlayerState> JumpState::Update(float, engine::core::Context&) {
   auto physics_component = player_component_->getPhysicsComponent();
   auto max_speed = player_component_->getMaxSpeed();
   physics_component->velocity_.x =
       glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
 
-  // 如果速度为正，切换到 FallState
   if (physics_component->velocity_.y > 0.0f) {
     return std::make_unique<FallState>(player_component_);
   }
