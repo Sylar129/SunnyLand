@@ -26,6 +26,13 @@ enum class TileType {
   EMPTY,
   NORMAL,
   SOLID,
+  UNISOLID,
+  SLOPE_0_1,  ///< @brief Slope tile, height: left 0,   right 1
+  SLOPE_1_0,  ///< @brief Slope tile, height: left 1,   right 0
+  SLOPE_0_2,  ///< @brief Slope tile, height: left 0,   right 0.5
+  SLOPE_2_1,  ///< @brief Slope tile, height: left 0.5, right 1
+  SLOPE_1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
+  SLOPE_2_0,  ///< @brief Slope tile, height: left 0.5, right 0
 };
 
 struct TileInfo {

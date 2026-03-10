@@ -2,6 +2,7 @@
 
 #include "engine/render/camera.h"
 
+#include "engine/component/transform_component.h"
 #include "engine/utils/math.h"
 #include "log.h"
 
@@ -21,8 +22,23 @@ void Camera::SetPosition(const glm::vec2& position) {
   ClampPosition();
 }
 
-void Camera::Update(float /* delta_time */) {
-  // TODO Auto-follow target
+void Camera::Update(float delta_time) {
+  if (target_ == nullptr) return;
+  glm::vec2 target_pos = target_->GetPosition();
+  glm::vec2 desired_position = target_pos - viewport_size_ / 2.0f;
+
+  auto distance_ = glm::distance(position_, desired_position);
+  constexpr float SNAP_THRESHOLD = 1.0f;
+
+  if (distance_ < SNAP_THRESHOLD) {
+    position_ = desired_position;
+  } else {
+    position_ =
+        glm::mix(position_, desired_position, smooth_speed_ * delta_time);
+    position_ = glm::vec2(glm::round(position_.x), glm::round(position_.y));
+  }
+
+  ClampPosition();
 }
 
 void Camera::Move(const glm::vec2& offset) {
@@ -32,29 +48,28 @@ void Camera::Move(const glm::vec2& offset) {
 
 void Camera::SetLimitBounds(const engine::utils::Rect& bounds) {
   limit_bounds_ = bounds;
-  ClampPosition();  // Apply limit immediately after setting bounds
+  ClampPosition();
+}
+
+void Camera::SetTarget(engine::component::TransformComponent* target) {
+  target_ = target;
 }
 
 const glm::vec2& Camera::GetPosition() const { return position_; }
 
 void Camera::ClampPosition() {
-  // Boundary check needs to ensure camera view (position to position +
-  // viewport_size) is within limit_bounds
-  if (limit_bounds_.has_value() && limit_bounds_->size.x > 0 &&
-      limit_bounds_->size.y > 0) {
-    // Calculate allowed camera position range
-    glm::vec2 min_cam_pos = limit_bounds_->position;
-    glm::vec2 max_cam_pos =
-        limit_bounds_->position + limit_bounds_->size - viewport_size_;
-
-    // Ensure max_cam_pos is not less than min_cam_pos (viewport may be larger
-    // than the world)
-    max_cam_pos.x = std::max(min_cam_pos.x, max_cam_pos.x);
-    max_cam_pos.y = std::max(min_cam_pos.y, max_cam_pos.y);
-
-    position_ = glm::clamp(position_, min_cam_pos, max_cam_pos);
+  if (!limit_bounds_.has_value() || limit_bounds_->size.x <= 0 ||
+      limit_bounds_->size.y <= 0) {
+    return;
   }
-  // If limit_bounds is invalid, do not apply limit
+  glm::vec2 min_cam_pos = limit_bounds_->position;
+  glm::vec2 max_cam_pos =
+      limit_bounds_->position + limit_bounds_->size - viewport_size_;
+
+  max_cam_pos.x = std::max(min_cam_pos.x, max_cam_pos.x);
+  max_cam_pos.y = std::max(min_cam_pos.y, max_cam_pos.y);
+
+  position_ = glm::clamp(position_, min_cam_pos, max_cam_pos);
 }
 
 glm::vec2 Camera::WorldToScreen(const glm::vec2& world_pos) const {
@@ -71,6 +86,10 @@ glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
 }
 
 glm::vec2 Camera::GetViewportSize() const { return viewport_size_; }
+
+engine::component::TransformComponent* Camera::GetTarget() const {
+  return target_;
+}
 
 std::optional<engine::utils::Rect> Camera::GetLimitBounds() const {
   return limit_bounds_;

@@ -27,9 +27,10 @@ class Component {
 
  protected:
   virtual void Init() {}
-  virtual void HandleInput(engine::core::Context& context) {}
-  virtual void Update(float delta_time, engine::core::Context& context) {}
-  virtual void Render(engine::core::Context& context) {}
+  virtual void HandleInput(engine::core::Context& /* context */) {}
+  virtual void Update(float /* delta_time */,
+                      engine::core::Context& /* context */) {}
+  virtual void Render(engine::core::Context& /* context */) {}
   virtual void Clean() {}
 
   engine::object::GameObject* owner_ = nullptr;

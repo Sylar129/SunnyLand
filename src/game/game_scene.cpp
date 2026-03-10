@@ -11,6 +11,7 @@
 #include "engine/input/input_manager.h"
 #include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
+#include "engine/render/camera.h"
 #include "engine/scene/level_loader.h"
 #include "engine/utils/assert.h"
 #include "log.h"
@@ -39,6 +40,21 @@ void GameScene::Init() {
 
   player_ = FindGameObjectByName("player");
   GAME_ASSERT(player_, "No Player!");
+
+  auto* player_transform =
+      player_->GetComponent<engine::component::TransformComponent>();
+  if (player_transform) {
+    context_.GetCamera().SetTarget(player_transform);
+  }
+
+  auto world_size =
+      main_layer_obj->GetComponent<engine::component::TileLayerComponent>()
+          ->GetWorldSize();
+  context_.GetCamera().SetLimitBounds(
+      engine::utils::Rect(glm::vec2(0.0f), world_size));
+
+  context_.GetPhysicsEngine().SetWorldBounds(
+      engine::utils::Rect(glm::vec2(0.0f), world_size));
 
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());

@@ -56,6 +56,8 @@ void PhysicsEngine::Update(float delta_time) {
     pc->ClearForce();
 
     ResolveTileCollisions(pc, delta_time);
+
+    ApplyWorldBounds(pc);
   }
 
   CheckObjectCollisions();
@@ -173,7 +175,7 @@ void PhysicsEngine::ResolveTileCollisions(
       // velocity
       if (tile_type_top == engine::component::TileType::SOLID ||
           tile_type_bottom == engine::component::TileType::SOLID) {
-        new_obj_pos.x = tile_x * layer->GetTileSize().x - obj_size.x;
+        new_obj_pos.x = tile_x * tile_size.x - obj_size.x;
         pc->velocity_.x = 0.0f;
       }
     } else if (ds.x < 0.0f) {
@@ -194,7 +196,7 @@ void PhysicsEngine::ResolveTileCollisions(
       // velocity
       if (tile_type_top == engine::component::TileType::SOLID ||
           tile_type_bottom == engine::component::TileType::SOLID) {
-        new_obj_pos.x = (tile_x + 1) * layer->GetTileSize().x;
+        new_obj_pos.x = (tile_x + 1) * tile_size.x;
         pc->velocity_.x = 0.0f;
       }
     }
@@ -216,9 +218,11 @@ void PhysicsEngine::ResolveTileCollisions(
 
       // If either corner hits a solid tile, clamp Y position and stop Y
       // velocity
-      if (tile_type_left == engine::component::TileType::SOLID ||
-          tile_type_right == engine::component::TileType::SOLID) {
-        new_obj_pos.y = tile_y * layer->GetTileSize().y - obj_size.y;
+      if (tile_type_left == component::TileType::SOLID ||
+          tile_type_right == component::TileType::SOLID ||
+          tile_type_left == component::TileType::UNISOLID ||
+          tile_type_right == component::TileType::UNISOLID) {
+        new_obj_pos.y = tile_y * tile_size.y - obj_size.y;
         pc->velocity_.y = 0.0f;
       }
     } else if (ds.y < 0.0f) {
@@ -239,7 +243,7 @@ void PhysicsEngine::ResolveTileCollisions(
       // velocity
       if (tile_type_left == engine::component::TileType::SOLID ||
           tile_type_right == engine::component::TileType::SOLID) {
-        new_obj_pos.y = (tile_y + 1) * layer->GetTileSize().y;
+        new_obj_pos.y = (tile_y + 1) * tile_size.y;
         pc->velocity_.y = 0.0f;
       }
     }
@@ -288,6 +292,54 @@ void PhysicsEngine::ResolveSolidObjectCollisions(
       if (move_pc->velocity_.y < 0.0f) move_pc->velocity_.y = 0.0f;
     }
   }
+}
+
+float PhysicsEngine::GetTileHeightAtWidth(float width,
+                                          engine::component::TileType type,
+                                          glm::vec2 tile_size) {
+  auto rel_x = glm::clamp(width / tile_size.x, 0.0f, 1.0f);
+  switch (type) {
+    case engine::component::TileType::SLOPE_0_1:
+      return rel_x * tile_size.y;
+    case engine::component::TileType::SLOPE_0_2:
+      return rel_x * tile_size.y * 0.5f;
+    case engine::component::TileType::SLOPE_2_1:
+      return rel_x * tile_size.y * 0.5f + tile_size.y * 0.5f;
+    case engine::component::TileType::SLOPE_1_0:
+      return (1.0f - rel_x) * tile_size.y;
+    case engine::component::TileType::SLOPE_2_0:
+      return (1.0f - rel_x) * tile_size.y * 0.5f;
+    case engine::component::TileType::SLOPE_1_2:
+      return (1.0f - rel_x) * tile_size.y * 0.5f + tile_size.y * 0.5f;
+    default:
+      return 0.0f;
+  }
+}
+
+void PhysicsEngine::ApplyWorldBounds(engine::component::PhysicsComponent* pc) {
+  if (!pc || !world_bounds_) return;
+
+  auto* obj = pc->GetOwner();
+  auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
+  auto* tc = obj->GetComponent<engine::component::TransformComponent>();
+  auto world_aabb = cc->GetWorldAABB();
+  auto obj_pos = world_aabb.position;
+  auto obj_size = world_aabb.size;
+
+  if (obj_pos.x < world_bounds_->position.x) {
+    pc->velocity_.x = 0.0f;
+    obj_pos.x = world_bounds_->position.x;
+  }
+  if (obj_pos.y < world_bounds_->position.y) {
+    pc->velocity_.y = 0.0f;
+    obj_pos.y = world_bounds_->position.y;
+  }
+  if (obj_pos.x + obj_size.x >
+      world_bounds_->position.x + world_bounds_->size.x) {
+    pc->velocity_.x = 0.0f;
+    obj_pos.x = world_bounds_->position.x + world_bounds_->size.x - obj_size.x;
+  }
+  tc->Translate(obj_pos - world_aabb.position);
 }
 
 }  // namespace engine::physics
