@@ -83,8 +83,7 @@ void GameScene::InitPlayer() {
   }
 }
 
-bool GameScene::InitEnemyAndItem() {
-  bool success = true;
+void GameScene::InitEnemyAndItem() {
   for (auto& game_object : game_objects_) {
     if (game_object->GetName() == "eagle") {
       if (auto* ac =
@@ -93,8 +92,8 @@ bool GameScene::InitEnemyAndItem() {
           ac) {
         ac->playAnimation("fly");
       } else {
-        GAME_ERROR("Eagle对象缺少 AnimationComponent，无法播放动画。");
-        success = false;
+        GAME_ERROR(
+            "Eagle object missing AnimationComponent, cannot play animation.");
       }
     }
     if (game_object->GetName() == "frog") {
@@ -104,8 +103,8 @@ bool GameScene::InitEnemyAndItem() {
           ac) {
         ac->playAnimation("idle");
       } else {
-        GAME_ERROR("Frog对象缺少 AnimationComponent，无法播放动画。");
-        success = false;
+        GAME_ERROR(
+            "Frog object missing AnimationComponent, cannot play animation.");
       }
     }
     if (game_object->GetName() == "opossum") {
@@ -115,8 +114,9 @@ bool GameScene::InitEnemyAndItem() {
           ac) {
         ac->playAnimation("walk");
       } else {
-        GAME_ERROR("Opossum对象缺少 AnimationComponent，无法播放动画。");
-        success = false;
+        GAME_ERROR(
+            "Opossum object missing AnimationComponent, cannot play "
+            "animation.");
       }
     }
     if (game_object->GetTag() == "item") {
@@ -126,12 +126,11 @@ bool GameScene::InitEnemyAndItem() {
           ac) {
         ac->playAnimation("idle");
       } else {
-        GAME_ERROR("Item对象缺少 AnimationComponent，无法播放动画。");
-        success = false;
+        GAME_ERROR(
+            "Item object missing AnimationComponent, cannot play animation.");
       }
     }
   }
-  return success;
 }
 
 }  // namespace game::scene
