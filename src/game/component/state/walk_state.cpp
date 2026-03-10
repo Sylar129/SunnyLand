@@ -21,8 +21,8 @@ void WalkState::Exit() {}
 std::unique_ptr<PlayerState> WalkState::HandleInput(
     engine::core::Context& context) {
   auto input_manager = context.GetInputManager();
-  auto physics_component = player_component_->getPhysicsComponent();
-  auto sprite_component = player_component_->getSpriteComponent();
+  auto physics_component = player_component_->GetPhysicsComponent();
+  auto sprite_component = player_component_->GetSpriteComponent();
 
   if (input_manager.IsActionPressed("jump")) {
     return std::make_unique<JumpState>(player_component_);
@@ -32,13 +32,13 @@ std::unique_ptr<PlayerState> WalkState::HandleInput(
     if (physics_component->velocity_.x > 0.0f) {
       physics_component->velocity_.x = 0.0f;
     }
-    physics_component->AddForce({-player_component_->getMoveForce(), 0.0f});
+    physics_component->AddForce({-player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(true);
   } else if (input_manager.IsActionDown("move_right")) {
     if (physics_component->velocity_.x < 0.0f) {
       physics_component->velocity_.x = 0.0f;
     }
-    physics_component->AddForce({player_component_->getMoveForce(), 0.0f});
+    physics_component->AddForce({player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(false);
   } else {
     return std::make_unique<IdleState>(player_component_);
@@ -47,8 +47,8 @@ std::unique_ptr<PlayerState> WalkState::HandleInput(
 }
 
 std::unique_ptr<PlayerState> WalkState::Update(float, engine::core::Context&) {
-  auto physics_component = player_component_->getPhysicsComponent();
-  auto max_speed = player_component_->getMaxSpeed();
+  auto physics_component = player_component_->GetPhysicsComponent();
+  auto max_speed = player_component_->GetMaxSpeed();
   physics_component->velocity_.x =
       glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
 

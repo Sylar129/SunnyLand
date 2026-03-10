@@ -31,8 +31,8 @@ std::unique_ptr<PlayerState> IdleState::HandleInput(
 }
 
 std::unique_ptr<PlayerState> IdleState::Update(float, engine::core::Context&) {
-  auto physics_component = player_component_->getPhysicsComponent();
-  auto friction_factor = player_component_->getFrictionFactor();
+  auto physics_component = player_component_->GetPhysicsComponent();
+  auto friction_factor = player_component_->SetFrictionFactor();
   physics_component->velocity_.x *= friction_factor;
 
   if (!physics_component->HasCollidedBelow()) {

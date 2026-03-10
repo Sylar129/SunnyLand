@@ -32,12 +32,12 @@ void PlayerComponent::Init() {
         sprite_component_ != nullptr);
   }
 
-  setState(std::make_unique<state::IdleState>(this));
+  SetState(std::make_unique<state::IdleState>(this));
 
   GAME_DEBUG("Init PlayerComponent successfully.");
 }
 
-void PlayerComponent::setState(std::unique_ptr<state::PlayerState> new_state) {
+void PlayerComponent::SetState(std::unique_ptr<state::PlayerState> new_state) {
   if (current_state_) {
     current_state_->Exit();
   }
@@ -51,7 +51,7 @@ void PlayerComponent::HandleInput(engine::core::Context& context) {
 
   auto next_state = current_state_->HandleInput(context);
   if (next_state) {
-    setState(std::move(next_state));
+    SetState(std::move(next_state));
   }
 }
 
@@ -60,7 +60,7 @@ void PlayerComponent::Update(float delta_time, engine::core::Context& context) {
 
   auto next_state = current_state_->Update(delta_time, context);
   if (next_state) {
-    setState(std::move(next_state));
+    SetState(std::move(next_state));
   }
 }
 
