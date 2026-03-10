@@ -26,7 +26,7 @@ class PlayerState {
 
   DISABLE_COPY_AND_MOVE(PlayerState);
 
-  void playAnimation(const std::string& animation_name);
+  void PlayAnimation(const std::string& animation_name);
 
  protected:
   virtual void Enter() = 0;

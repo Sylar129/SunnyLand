@@ -1,12 +1,12 @@
 // Copyright Sylar129
 
-#include "animation_component.h"
+#include "engine/component/animation_component.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../object/game_object.h"
-#include "../render/animation.h"
-#include "sprite_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/object/game_object.h"
+#include "engine/render/animation.h"
 
 namespace engine::component {
 

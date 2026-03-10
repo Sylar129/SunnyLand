@@ -13,7 +13,7 @@
 
 namespace game::component::state {
 
-void FallState::Enter() { playAnimation("fall"); }
+void FallState::Enter() { PlayAnimation("fall"); }
 
 void FallState::Exit() {}
 

@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "./component.h"
+#include "engine/component/component.h"
 
 namespace engine::render {
 class Animation;

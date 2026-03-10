@@ -1,10 +1,10 @@
 // Copyright Sylar129
 
-#include "animation.h"
+#include "engine/render/animation.h"
 
 #include <spdlog/spdlog.h>
 
-#include <glm/common.hpp>
+#include "glm/common.hpp"
 
 namespace engine::render {
 
