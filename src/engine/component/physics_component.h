@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include "component.h"
 #include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
@@ -39,6 +41,23 @@ class PhysicsComponent final : public Component {
   const glm::vec2& GetVelocity() const { return velocity_; }
   TransformComponent* GetTransform() const { return transform_; }
 
+  using CollisionFlag = uint8_t;
+  static constexpr CollisionFlag kCollidedBelow = 1 << 0;
+  static constexpr CollisionFlag kCollidedAbove = 1 << 1;
+  static constexpr CollisionFlag kCollidedLeft = 1 << 2;
+  static constexpr CollisionFlag kCollidedRight = 1 << 3;
+  void ResetCollisionFlag() { collision_flag_ = 0; }
+
+  void SetCollidedBelow() { collision_flag_ |= kCollidedBelow; }
+  void SetCollidedAbove() { collision_flag_ |= kCollidedAbove; }
+  void SetCollidedLeft() { collision_flag_ |= kCollidedLeft; }
+  void SetCollidedRight() { collision_flag_ |= kCollidedRight; }
+
+  bool HasCollidedBelow() const { return collision_flag_ & kCollidedBelow; }
+  bool HasCollidedAbove() const { return collision_flag_ & kCollidedAbove; }
+  bool HasCollidedLeft() const { return collision_flag_ & kCollidedLeft; }
+  bool HasCollidedRight() const { return collision_flag_ & kCollidedRight; }
+
   glm::vec2 velocity_ = {0.0f, 0.0f};
 
  private:
@@ -53,6 +72,8 @@ class PhysicsComponent final : public Component {
   float mass_ = 1.0f;
   bool use_gravity_ = true;
   bool enabled_ = true;
+
+  CollisionFlag collision_flag_;
 };
 
 }  // namespace engine::component

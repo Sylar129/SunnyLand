@@ -47,6 +47,8 @@ void PhysicsEngine::Update(float delta_time) {
       continue;
     }
 
+    pc->ResetCollisionFlag();
+
     if (pc->IsUseGravity()) {
       pc->AddForce(gravity_ * pc->GetMass());
     }
@@ -171,12 +173,23 @@ void PhysicsEngine::ResolveTileCollisions(
           floor((obj_pos.y + obj_size.y - tolerance) / tile_size.y));
       auto tile_type_bottom = layer->GetTileTypeAt({tile_x, tile_y_bottom});
 
-      // If either corner hits a solid tile, clamp X position and stop X
-      // velocity
       if (tile_type_top == engine::component::TileType::SOLID ||
           tile_type_bottom == engine::component::TileType::SOLID) {
         new_obj_pos.x = tile_x * tile_size.x - obj_size.x;
         pc->velocity_.x = 0.0f;
+        pc->SetCollidedRight();
+      } else {
+        auto width_right = new_obj_pos.x + obj_size.x - tile_x * tile_size.x;
+        auto height_right =
+            GetTileHeightAtWidth(width_right, tile_type_bottom, tile_size);
+        if (height_right > 0.0f) {
+          if (new_obj_pos.y >
+              (tile_y_bottom + 1) * tile_size.y - obj_size.y - height_right) {
+            new_obj_pos.y =
+                (tile_y_bottom + 1) * tile_size.y - obj_size.y - height_right;
+            pc->SetCollidedBelow();
+          }
+        }
       }
     } else if (ds.x < 0.0f) {
       // Object moving LEFT: check left edge of collider against solid tiles
@@ -192,12 +205,23 @@ void PhysicsEngine::ResolveTileCollisions(
           floor((obj_pos.y + obj_size.y - tolerance) / tile_size.y));
       auto tile_type_bottom = layer->GetTileTypeAt({tile_x, tile_y_bottom});
 
-      // If either corner hits a solid tile, clamp X position and stop X
-      // velocity
       if (tile_type_top == engine::component::TileType::SOLID ||
           tile_type_bottom == engine::component::TileType::SOLID) {
         new_obj_pos.x = (tile_x + 1) * tile_size.x;
         pc->velocity_.x = 0.0f;
+        pc->SetCollidedLeft();
+      } else {
+        auto width_left = new_obj_pos.x - tile_x * tile_size.x;
+        auto height_left =
+            GetTileHeightAtWidth(width_left, tile_type_bottom, tile_size);
+        if (height_left > 0.0f) {
+          if (new_obj_pos.y >
+              (tile_y_bottom + 1) * tile_size.y - obj_size.y - height_left) {
+            new_obj_pos.y =
+                (tile_y_bottom + 1) * tile_size.y - obj_size.y - height_left;
+            pc->SetCollidedBelow();
+          }
+        }
       }
     }
 
@@ -216,14 +240,29 @@ void PhysicsEngine::ResolveTileCollisions(
           floor((obj_pos.x + obj_size.x - tolerance) / tile_size.x));
       auto tile_type_right = layer->GetTileTypeAt({tile_x_right, tile_y});
 
-      // If either corner hits a solid tile, clamp Y position and stop Y
-      // velocity
-      if (tile_type_left == component::TileType::SOLID ||
-          tile_type_right == component::TileType::SOLID ||
-          tile_type_left == component::TileType::UNISOLID ||
-          tile_type_right == component::TileType::UNISOLID) {
+      if (tile_type_left == engine::component::TileType::SOLID ||
+          tile_type_right == engine::component::TileType::SOLID ||
+          tile_type_left == engine::component::TileType::UNISOLID ||
+          tile_type_right == engine::component::TileType::UNISOLID) {
         new_obj_pos.y = tile_y * tile_size.y - obj_size.y;
         pc->velocity_.y = 0.0f;
+        pc->SetCollidedBelow();
+      } else {
+        auto width_left = obj_pos.x - tile_x * tile_size.x;
+        auto width_right = obj_pos.x + obj_size.x - tile_x_right * tile_size.x;
+        auto height_left =
+            GetTileHeightAtWidth(width_left, tile_type_left, tile_size);
+        auto height_right =
+            GetTileHeightAtWidth(width_right, tile_type_right, tile_size);
+        auto height = glm::max(height_left, height_right);
+        if (height > 0.0f) {
+          if (new_obj_pos.y >
+              (tile_y + 1) * tile_size.y - obj_size.y - height) {
+            new_obj_pos.y = (tile_y + 1) * tile_size.y - obj_size.y - height;
+            pc->velocity_.y = 0.0f;
+            pc->SetCollidedBelow();
+          }
+        }
       }
     } else if (ds.y < 0.0f) {
       // Object moving UP: check top edge of collider against solid tiles
@@ -245,6 +284,7 @@ void PhysicsEngine::ResolveTileCollisions(
           tile_type_right == engine::component::TileType::SOLID) {
         new_obj_pos.y = (tile_y + 1) * tile_size.y;
         pc->velocity_.y = 0.0f;
+        pc->SetCollidedAbove();
       }
     }
   }
@@ -278,18 +318,30 @@ void PhysicsEngine::ResolveSolidObjectCollisions(
   if (overlap.x < overlap.y) {
     if (move_center.x < solid_center.x) {
       move_tc->Translate(glm::vec2(-overlap.x, 0.0f));
-      if (move_pc->velocity_.x > 0.0f) move_pc->velocity_.x = 0.0f;
+      if (move_pc->velocity_.x > 0.0f) {
+        move_pc->velocity_.x = 0.0f;
+        move_pc->SetCollidedRight();
+      }
     } else {
       move_tc->Translate(glm::vec2(overlap.x, 0.0f));
-      if (move_pc->velocity_.x < 0.0f) move_pc->velocity_.x = 0.0f;
+      if (move_pc->velocity_.x < 0.0f) {
+        move_pc->velocity_.x = 0.0f;
+        move_pc->SetCollidedLeft();
+      }
     }
   } else {
     if (move_center.y < solid_center.y) {
       move_tc->Translate(glm::vec2(0.0f, -overlap.y));
-      if (move_pc->velocity_.y > 0.0f) move_pc->velocity_.y = 0.0f;
+      if (move_pc->velocity_.y > 0.0f) {
+        move_pc->velocity_.y = 0.0f;
+        move_pc->SetCollidedBelow();
+      }
     } else {
       move_tc->Translate(glm::vec2(0.0f, overlap.y));
-      if (move_pc->velocity_.y < 0.0f) move_pc->velocity_.y = 0.0f;
+      if (move_pc->velocity_.y < 0.0f) {
+        move_pc->velocity_.y = 0.0f;
+        move_pc->SetCollidedAbove();
+      }
     }
   }
 }
@@ -329,15 +381,18 @@ void PhysicsEngine::ApplyWorldBounds(engine::component::PhysicsComponent* pc) {
   if (obj_pos.x < world_bounds_->position.x) {
     pc->velocity_.x = 0.0f;
     obj_pos.x = world_bounds_->position.x;
+    pc->SetCollidedLeft();
   }
   if (obj_pos.y < world_bounds_->position.y) {
     pc->velocity_.y = 0.0f;
     obj_pos.y = world_bounds_->position.y;
+    pc->SetCollidedAbove();
   }
   if (obj_pos.x + obj_size.x >
       world_bounds_->position.x + world_bounds_->size.x) {
     pc->velocity_.x = 0.0f;
     obj_pos.x = world_bounds_->position.x + world_bounds_->size.x - obj_size.x;
+    pc->SetCollidedRight();
   }
   tc->Translate(obj_pos - world_aabb.position);
 }
