@@ -41,21 +41,18 @@ void GameScene::Init() {
   player_ = FindGameObjectByName("player");
   GAME_ASSERT(player_, "No Player!");
 
-  // 相机跟随玩家
   auto* player_transform =
       player_->GetComponent<engine::component::TransformComponent>();
   if (player_transform) {
-    context_.GetCamera().setTarget(player_transform);
+    context_.GetCamera().SetTarget(player_transform);
   }
 
-  // 设置相机边界
   auto world_size =
       main_layer_obj->GetComponent<engine::component::TileLayerComponent>()
           ->GetWorldSize();
   context_.GetCamera().SetLimitBounds(
       engine::utils::Rect(glm::vec2(0.0f), world_size));
 
-  // 设置世界边界
   context_.GetPhysicsEngine().setWorldBounds(
       engine::utils::Rect(glm::vec2(0.0f), world_size));
 
