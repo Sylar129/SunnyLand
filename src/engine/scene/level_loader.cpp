@@ -222,7 +222,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         try {
           anim_json = nlohmann::json::parse(anim_string.value());
         } catch (const nlohmann::json::parse_error& e) {
-          ENGINE_ERROR("解析动画 JSON 字符串失败: {}", e.what());
+          ENGINE_ERROR("Parsing animation JSON failed for object '{}': {}",
+                       object_name, e.what());
           continue;
         }
         auto* ac =
@@ -240,28 +241,33 @@ void LevelLoader::AddAnimation(const nlohmann::json& anim_json,
                                engine::component::AnimationComponent* ac,
                                const glm::vec2& sprite_size) {
   if (!anim_json.is_object() || !ac) {
-    ENGINE_ERROR("无效的动画 JSON 或 AnimationComponent 指针。");
+    ENGINE_ERROR("Invalid animation JSON or AnimationComponent is null.");
     return;
   }
   for (const auto& anim : anim_json.items()) {
     const std::string& anim_name = anim.key();
     const auto& anim_info = anim.value();
     if (!anim_info.is_object()) {
-      ENGINE_WARN("动画 '{}' 的信息无效或为空。", anim_name);
+      ENGINE_WARN("Animation '{}' info is not a JSON object. Skipping.",
+                  anim_name);
       continue;
     }
     auto duration_ms = anim_info.value("duration", 100.0f);
     auto duration = duration_ms / 1000.0f;
     auto row = anim_info.value("row", 0);
     if (!anim_info.contains("frames") || !anim_info["frames"].is_array()) {
-      ENGINE_WARN("动画 '{}' 缺少 'frames' 数组。", anim_name);
+      ENGINE_WARN("Animation '{}' missing 'frames' array. Skipping.",
+                  anim_name);
       continue;
     }
     auto animation = std::make_unique<engine::render::Animation>(anim_name);
 
     for (const auto& frame : anim_info["frames"]) {
       if (!frame.is_number_integer()) {
-        ENGINE_WARN("动画 {} 中 frames 数组格式错误！", anim_name);
+        ENGINE_WARN(
+            "Animation '{}' has a non-integer frame index. Skipping this "
+            "frame.",
+            anim_name);
         continue;
         ;
       }

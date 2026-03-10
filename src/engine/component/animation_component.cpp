@@ -2,36 +2,32 @@
 
 #include "engine/component/animation_component.h"
 
-#include <spdlog/spdlog.h>
-
 #include "engine/component/sprite_component.h"
 #include "engine/object/game_object.h"
 #include "engine/render/animation.h"
+#include "engine/utils/assert.h"
+#include "log.h"
 
 namespace engine::component {
 
 AnimationComponent::~AnimationComponent() = default;
 
 void AnimationComponent::Init() {
-  if (!owner_) {
-    spdlog::error("AnimationComponent 没有所有者 GameObject！");
-    return;
-  }
+  ENGINE_ASSERT(owner_, "AnimationComponent must have an owner GameObject!");
+
   sprite_component_ = owner_->GetComponent<SpriteComponent>();
-  if (!sprite_component_) {
-    spdlog::error(
-        "GameObject '{}' 的 AnimationComponent 需要 "
-        "SpriteComponent，但未找到。",
-        owner_->GetName());
-    return;
-  }
+  ENGINE_ASSERT(
+      sprite_component_,
+      "AnimationComponent requires a SpriteComponent on the same GameObject!");
 }
 
 void AnimationComponent::Update(float delta_time, engine::core::Context&) {
   if (!is_playing_ || !current_animation_ || !sprite_component_ ||
       current_animation_->isEmpty()) {
-    spdlog::trace(
-        "AnimationComponent 更新时没有正在播放的动画或精灵组件为空。");
+    ENGINE_TRACE(
+        "AnimationComponent on GameObject '{}' is not playing or has no "
+        "animation.",
+        owner_->GetName());
     return;
   }
 
@@ -56,15 +52,15 @@ void AnimationComponent::addAnimation(
   if (!animation) return;
   std::string name = animation->getName();
   animations_[name] = std::move(animation);
-  spdlog::debug("已将动画 '{}' 添加到 GameObject '{}'", name,
-                owner_ ? owner_->GetName() : "未知");
+  ENGINE_DEBUG("Add animation '{}' to GameObject '{}'", name,
+               owner_->GetName());
 }
 
 void AnimationComponent::playAnimation(const std::string& name) {
   auto it = animations_.find(name);
   if (it == animations_.end() || !it->second) {
-    spdlog::warn("未找到 GameObject '{}' 的动画 '{}'", name,
-                 owner_ ? owner_->GetName() : "未知");
+    ENGINE_WARN("Animation '{}' not found in GameObject '{}'", name,
+                owner_->GetName());
     return;
   }
 
@@ -79,8 +75,8 @@ void AnimationComponent::playAnimation(const std::string& name) {
   if (sprite_component_ && !current_animation_->isEmpty()) {
     const auto& first_frame = current_animation_->getFrame(0.0f);
     sprite_component_->SetSourceRect(first_frame.source_rect);
-    spdlog::debug("GameObject '{}' 播放动画 '{}'",
-                  owner_ ? owner_->GetName() : "未知", name);
+    ENGINE_DEBUG("GameObject '{}' started playing animation '{}'",
+                 owner_->GetName(), name);
   }
 }
 
