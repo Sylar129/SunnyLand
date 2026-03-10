@@ -4,6 +4,7 @@
 
 #include <utility>
 
+#include "engine/component/animation_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
@@ -23,13 +24,12 @@ void PlayerComponent::Init() {
       owner_->GetComponent<engine::component::PhysicsComponent>();
   sprite_component_ =
       owner_->GetComponent<engine::component::SpriteComponent>();
+  animation_component_ =
+      owner_->GetComponent<engine::component::AnimationComponent>();
 
-  if (!transform_component_ || !physics_component_ || !sprite_component_) {
-    GAME_ERROR(
-        "Player missing required components! Transform: {}, Physics: {}, "
-        "Sprite: {}",
-        transform_component_ != nullptr, physics_component_ != nullptr,
-        sprite_component_ != nullptr);
+  if (!transform_component_ || !physics_component_ || !sprite_component_ ||
+      !animation_component_) {
+    GAME_ERROR("Player missing required components!");
   }
 
   SetState(std::make_unique<state::IdleState>(this));

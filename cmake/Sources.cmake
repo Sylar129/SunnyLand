@@ -1,6 +1,8 @@
 # Source files configuration
 
 set(TARGET_SOURCES
+    src/engine/component/animation_component.cpp
+    src/engine/component/animation_component.h
     src/engine/component/collider_component.cpp
     src/engine/component/collider_component.h
     src/engine/component/component.h
@@ -31,6 +33,8 @@ set(TARGET_SOURCES
     src/engine/physics/collision.h
     src/engine/physics/physics_engine.cpp
     src/engine/physics/physics_engine.h
+    src/engine/render/animation.cpp
+    src/engine/render/animation.h
     src/engine/render/camera.cpp
     src/engine/render/camera.h
     src/engine/render/renderer.cpp
@@ -60,6 +64,7 @@ set(TARGET_SOURCES
     src/game/component/state/idle_state.h
     src/game/component/state/jump_state.cpp
     src/game/component/state/jump_state.h
+    src/game/component/state/player_state.cpp
     src/game/component/state/player_state.h
     src/game/component/state/walk_state.cpp
     src/game/component/state/walk_state.h
