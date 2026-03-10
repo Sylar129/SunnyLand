@@ -1,6 +1,10 @@
+// Copyright Sylar129
+
 #pragma once
+
 #include <memory>
-#include <string>
+
+#include "engine/utils/non_copyable.h"
 
 namespace engine::core {
 class Context;
@@ -27,11 +31,7 @@ class PlayerState {
       : player_component_(player_component) {}
   virtual ~PlayerState() = default;
 
-  // 禁止拷贝和移动
-  PlayerState(const PlayerState&) = delete;
-  PlayerState& operator=(const PlayerState&) = delete;
-  PlayerState(PlayerState&&) = delete;
-  PlayerState& operator=(PlayerState&&) = delete;
+  DISABLE_COPY_AND_MOVE(PlayerState);
 
  protected:
   // 核心状态方法

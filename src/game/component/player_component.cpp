@@ -1,22 +1,22 @@
-#include "player_component.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "game/component/player_component.h"
 
 #include <typeinfo>
 #include <utility>
 
-#include "../../engine/component/physics_component.h"
-#include "../../engine/component/sprite_component.h"
-#include "../../engine/component/transform_component.h"
-#include "../../engine/input/input_manager.h"
-#include "../../engine/object/game_object.h"
-#include "state/idle_state.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/object/game_object.h"
+#include "game/component/state/idle_state.h"
+#include "log.h"
 
 namespace game::component {
 
 void PlayerComponent::Init() {
   if (!owner_) {
-    spdlog::error("PlayerComponent 没有所属游戏对象!");
+    GAME_ERROR("PlayerComponent 没有所属游戏对象!");
     return;
   }
 
@@ -30,7 +30,7 @@ void PlayerComponent::Init() {
 
   // 检查必要组件是否存在
   if (!transform_component_ || !physics_component_ || !sprite_component_) {
-    spdlog::error("Player 对象缺少必要组件！");
+    GAME_ERROR("Player 对象缺少必要组件！");
   }
 
   // 初始化状态机
@@ -38,14 +38,14 @@ void PlayerComponent::Init() {
   if (current_state_) {
     setState(std::move(current_state_));
   } else {
-    spdlog::error("初始化玩家状态失败（make_unique 返回空指针）！");
+    GAME_ERROR("初始化玩家状态失败（make_unique 返回空指针）！");
   }
-  spdlog::debug("PlayerComponent 初始化完成。");
+  GAME_DEBUG("PlayerComponent 初始化完成。");
 }
 
 void PlayerComponent::setState(std::unique_ptr<state::PlayerState> new_state) {
   if (!new_state) {
-    spdlog::warn("尝试设置空的玩家状态！");
+    GAME_WARN("尝试设置空的玩家状态！");
     return;
   }
   if (current_state_) {
@@ -53,7 +53,7 @@ void PlayerComponent::setState(std::unique_ptr<state::PlayerState> new_state) {
   }
 
   current_state_ = std::move(new_state);
-  spdlog::debug("玩家组件正在切换到状态: {}", typeid(*current_state_).name());
+  GAME_DEBUG("玩家组件正在切换到状态: {}", typeid(*current_state_).name());
   current_state_->enter();
 }
 

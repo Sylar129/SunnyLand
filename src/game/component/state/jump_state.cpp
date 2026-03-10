@@ -1,17 +1,15 @@
-#include "jump_state.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "game/component/state/jump_state.h"
 
-#include <glm/common.hpp>
-
-#include "../../../engine/component/physics_component.h"
-#include "../../../engine/component/sprite_component.h"
-#include "../../../engine/core/context.h"
-#include "../../../engine/input/input_manager.h"
-#include "../player_component.h"
-#include "fall_state.h"
-#include "idle_state.h"
-#include "walk_state.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "game/component/player_component.h"
+#include "game/component/state/fall_state.h"
+#include "glm/common.hpp"
+#include "log.h"
 
 namespace game::component::state {
 
@@ -19,8 +17,8 @@ void JumpState::enter() {
   auto physics_component = player_component_->getPhysicsComponent();
   physics_component->velocity_.y =
       -player_component_->getJumpForce();  // 向上跳跃
-  spdlog::debug("PlayerComponent 进入 JumpState，设置初始垂直速度为: {}",
-                physics_component->velocity_.y);
+  GAME_DEBUG("PlayerComponent 进入 JumpState，设置初始垂直速度为: {}",
+             physics_component->velocity_.y);
 }
 
 void JumpState::exit() {}

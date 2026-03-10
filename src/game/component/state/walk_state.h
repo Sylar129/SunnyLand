@@ -1,5 +1,8 @@
+// Copyright Sylar129
+
 #pragma once
-#include "player_state.h"
+
+#include "game/component/state/player_state.h"
 
 namespace game::component::state {
 

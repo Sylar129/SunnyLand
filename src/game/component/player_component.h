@@ -1,8 +1,12 @@
+// Copyright Sylar129
+
 #pragma once
+
 #include <memory>
 
-#include "../../engine/component/component.h"
-#include "state/player_state.h"
+#include "engine/component/component.h"
+#include "engine/utils/non_copyable.h"
+#include "game/component/state/player_state.h"
 
 namespace engine::input {
 class InputManager;
@@ -46,11 +50,7 @@ class PlayerComponent final : public engine::component::Component {
   PlayerComponent() = default;
   ~PlayerComponent() override = default;
 
-  // 禁止拷贝和移动
-  PlayerComponent(const PlayerComponent&) = delete;
-  PlayerComponent& operator=(const PlayerComponent&) = delete;
-  PlayerComponent(PlayerComponent&&) = delete;
-  PlayerComponent& operator=(PlayerComponent&&) = delete;
+  DISABLE_COPY_AND_MOVE(PlayerComponent);
 
   // setters and getters
   engine::component::TransformComponent* getTransformComponent() const {

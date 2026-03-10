@@ -1,14 +1,14 @@
-#include "idle_state.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "game/component/state/idle_state.h"
 
-#include "../../../engine/component/physics_component.h"
-#include "../../../engine/core/context.h"
-#include "../../../engine/input/input_manager.h"
-#include "../player_component.h"
-#include "fall_state.h"
-#include "jump_state.h"
-#include "walk_state.h"
+#include "engine/component/physics_component.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "game/component/player_component.h"
+#include "game/component/state/fall_state.h"
+#include "game/component/state/jump_state.h"
+#include "game/component/state/walk_state.h"
 
 namespace game::component::state {
 

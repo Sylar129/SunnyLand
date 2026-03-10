@@ -1,14 +1,15 @@
-#include "fall_state.h"
+// Copyright Sylar129
 
-#include <glm/common.hpp>
+#include "game/component/state/fall_state.h"
 
-#include "../../../engine/component/physics_component.h"
-#include "../../../engine/component/sprite_component.h"
-#include "../../../engine/core/context.h"
-#include "../../../engine/input/input_manager.h"
-#include "../player_component.h"
-#include "idle_state.h"
-#include "walk_state.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "game/component/player_component.h"
+#include "game/component/state/idle_state.h"
+#include "game/component/state/walk_state.h"
+#include "glm/common.hpp"
 
 namespace game::component::state {
 
