@@ -2,25 +2,21 @@
 
 #include "game/component/player_component.h"
 
-#include <typeinfo>
 #include <utility>
 
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
+#include "engine/utils/assert.h"
 #include "game/component/state/idle_state.h"
 #include "log.h"
 
 namespace game::component {
 
 void PlayerComponent::Init() {
-  if (!owner_) {
-    GAME_ERROR("PlayerComponent 没有所属游戏对象!");
-    return;
-  }
+  GAME_ASSERT(owner_, "player component must have an owner game object");
 
-  // 获取必要的组件
   transform_component_ =
       owner_->GetComponent<engine::component::TransformComponent>();
   physics_component_ =
@@ -28,32 +24,25 @@ void PlayerComponent::Init() {
   sprite_component_ =
       owner_->GetComponent<engine::component::SpriteComponent>();
 
-  // 检查必要组件是否存在
   if (!transform_component_ || !physics_component_ || !sprite_component_) {
-    GAME_ERROR("Player 对象缺少必要组件！");
+    GAME_ERROR(
+        "Player missing required components! Transform: {}, Physics: {}, "
+        "Sprite: {}",
+        transform_component_ != nullptr, physics_component_ != nullptr,
+        sprite_component_ != nullptr);
   }
 
-  // 初始化状态机
-  current_state_ = std::make_unique<state::IdleState>(this);
-  if (current_state_) {
-    setState(std::move(current_state_));
-  } else {
-    GAME_ERROR("初始化玩家状态失败（make_unique 返回空指针）！");
-  }
-  GAME_DEBUG("PlayerComponent 初始化完成。");
+  setState(std::make_unique<state::IdleState>(this));
+
+  GAME_DEBUG("Init PlayerComponent successfully.");
 }
 
 void PlayerComponent::setState(std::unique_ptr<state::PlayerState> new_state) {
-  if (!new_state) {
-    GAME_WARN("尝试设置空的玩家状态！");
-    return;
-  }
   if (current_state_) {
     current_state_->Exit();
   }
 
   current_state_ = std::move(new_state);
-  GAME_DEBUG("玩家组件正在切换到状态: {}", typeid(*current_state_).name());
   current_state_->Enter();
 }
 
