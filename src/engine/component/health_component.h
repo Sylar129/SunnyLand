@@ -25,9 +25,6 @@ class HealthComponent final : public engine::component::Component {
   void SetCurrentHealth(int current_health);
   void SetMaxHealth(int max_health);
   void SetInvincible(float duration);
-  void SetInvincibilityDuration(float duration) {
-    invincibility_duration_ = duration;
-  }
 
  protected:
   void Update(float, engine::core::Context&) override;

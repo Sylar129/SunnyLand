@@ -55,23 +55,17 @@ void PlayerComponent::SetState(std::unique_ptr<state::PlayerState> new_state) {
 }
 
 bool PlayerComponent::TakeDamage(int damage) {
-  if (is_dead_ || !health_component_ || damage <= 0) {
-    GAME_WARN(
-        "Player cannot take damage. is_dead: {}, health_component exists: {}, "
-        "damage: {}",
-        is_dead_, health_component_ != nullptr, damage);
+  if (is_dead_ || damage <= 0) {
+    GAME_WARN("Player cannot take damage. is_dead: {},  damage: {}", is_dead_,
+              damage);
     return false;
   }
 
   bool success = health_component_->TakeDamage(damage);
   if (!success) return false;
   if (health_component_->IsAlive()) {
-    GAME_DEBUG("Player takes damage: {}, health: {}/{}", damage,
-               health_component_->GetCurrentHealth(),
-               health_component_->GetMaxHealth());
     SetState(std::make_unique<state::HurtState>(this));
   } else {
-    GAME_DEBUG("Player is dead.");
     is_dead_ = true;
     SetState(std::make_unique<state::DeadState>(this));
   }

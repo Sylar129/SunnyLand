@@ -153,7 +153,7 @@ void PhysicsEngine::ResolveTileCollisions(
   // Calculate new position after applying displacement
   auto new_obj_pos = obj_pos + ds;
 
-  if (!cc->IsActive()) {  // 如果碰撞器未激活，直接让物体正常移动，然后返回。
+  if (!cc->IsActive()) {
     tc->Translate(ds);
     pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
     return;
