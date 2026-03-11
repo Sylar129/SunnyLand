@@ -6,6 +6,8 @@ set(TARGET_SOURCES
     src/engine/component/collider_component.cpp
     src/engine/component/collider_component.h
     src/engine/component/component.h
+    src/engine/component/health_component.cpp
+    src/engine/component/health_component.h
     src/engine/component/parallax_component.cpp
     src/engine/component/parallax_component.h
     src/engine/component/physics_component.cpp
@@ -57,8 +59,12 @@ set(TARGET_SOURCES
     src/engine/utils/assert.h
     src/engine/utils/math.h
     src/engine/utils/non_copyable.h
+    src/game/component/state/dead_state.cpp
+    src/game/component/state/dead_state.h
     src/game/component/state/fall_state.cpp
     src/game/component/state/fall_state.h
+    src/game/component/state/hurt_state.cpp
+    src/game/component/state/hurt_state.h
     src/game/component/state/idle_state.cpp
     src/game/component/state/idle_state.h
     src/game/component/state/jump_state.cpp

@@ -9,7 +9,6 @@
 #include "engine/component/component.h"
 #include "engine/render/sprite.h"
 #include "engine/utils/alignment.h"
-#include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
 
 namespace engine::resource {
@@ -34,7 +33,6 @@ class SpriteComponent final : public engine::component::Component {
       engine::resource::ResourceManager& resource_manager,
       engine::utils::Alignment alignment = engine::utils::Alignment::NONE);
   ~SpriteComponent() override = default;
-  DISABLE_COPY_AND_MOVE(SpriteComponent);
 
   void UpdateOffset();
 

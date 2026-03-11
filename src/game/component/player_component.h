@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
 #include "game/component/state/player_state.h"
 
 namespace engine::input {
@@ -16,6 +15,7 @@ class TransformComponent;
 class PhysicsComponent;
 class SpriteComponent;
 class AnimationComponent;
+class HealthComponent;
 }  // namespace engine::component
 
 namespace game::component::state {
@@ -31,8 +31,6 @@ class PlayerComponent final : public engine::component::Component {
   PlayerComponent() = default;
   ~PlayerComponent() override = default;
 
-  DISABLE_COPY_AND_MOVE(PlayerComponent);
-
   engine::component::TransformComponent* GetTransformComponent() const {
     return transform_component_;
   }
@@ -44,6 +42,9 @@ class PlayerComponent final : public engine::component::Component {
   }
   engine::component::AnimationComponent* GetAnimationComponent() const {
     return animation_component_;
+  }
+  engine::component::HealthComponent* getHealthComponent() const {
+    return health_component_;
   }
 
   void SetIsDead(bool is_dead) { is_dead_ = is_dead; }
@@ -58,8 +59,12 @@ class PlayerComponent final : public engine::component::Component {
   float SetFrictionFactor() const { return friction_factor_; }
   void SetJumpForce(float jump_force) { jump_force_ = jump_force; }
   float GetJumpForce() const { return jump_force_; }
+  void SetStunnedDuration(float duration) { stunned_duration_ = duration; }
+  float GetStunnedDuration() const { return stunned_duration_; }
 
   void SetState(std::unique_ptr<state::PlayerState> new_state);
+
+  bool TakeDamage(int damage);
 
  private:
   void Init() override;
@@ -71,6 +76,7 @@ class PlayerComponent final : public engine::component::Component {
   engine::component::SpriteComponent* sprite_component_ = nullptr;
   engine::component::PhysicsComponent* physics_component_ = nullptr;
   engine::component::AnimationComponent* animation_component_ = nullptr;
+  engine::component::HealthComponent* health_component_ = nullptr;
 
   std::unique_ptr<state::PlayerState> current_state_;
   bool is_dead_ = false;
@@ -79,6 +85,7 @@ class PlayerComponent final : public engine::component::Component {
   float max_speed_ = 120.0f;
   float friction_factor_ = 0.85f;
   float jump_force_ = 350.0f;
+  float stunned_duration_ = 0.4f;
 };
 
 }  // namespace game::component

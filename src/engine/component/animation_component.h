@@ -7,7 +7,6 @@
 #include <unordered_map>
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
 
 namespace engine::render {
 class Animation;
@@ -25,17 +24,15 @@ class AnimationComponent : public Component {
   AnimationComponent() = default;
   ~AnimationComponent() override;
 
-  DISABLE_COPY_AND_MOVE(AnimationComponent);
+  void AddAnimation(std::unique_ptr<engine::render::Animation> animation);
+  void PlayAnimation(const std::string& name);
+  void StopAnimation() { is_playing_ = false; }
 
-  void addAnimation(std::unique_ptr<engine::render::Animation> animation);
-  void playAnimation(const std::string& name);
-  void stopAnimation() { is_playing_ = false; }
-
-  std::string getCurrentAnimationName() const;
-  bool isPlaying() const { return is_playing_; }
-  bool isAnimationFinished() const;
-  bool isOneShotRemoval() const { return is_one_shot_removal_; }
-  void setOneShotRemoval(bool is_one_shot_removal) {
+  std::string GetCurrentAnimationName() const;
+  bool IsPlaying() const { return is_playing_; }
+  bool IsAnimationFinished() const;
+  bool IsOneShotRemoval() const { return is_one_shot_removal_; }
+  void SetOneShotRemoval(bool is_one_shot_removal) {
     is_one_shot_removal_ = is_one_shot_removal;
   }
 

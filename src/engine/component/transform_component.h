@@ -3,7 +3,6 @@
 #pragma once
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
 
 namespace engine::component {
@@ -15,7 +14,6 @@ class TransformComponent final : public Component {
   TransformComponent(glm::vec2 position = {0.0f, 0.0f},
                      glm::vec2 scale = {1.0f, 1.0f}, float rotation = 0.0f)
       : position_(position), scale_(scale), rotation_(rotation) {}
-  DISABLE_COPY_AND_MOVE(TransformComponent);
 
   glm::vec2 GetPosition() const { return position_; }
   void SetPosition(const glm::vec2& position) { position_ = position; }
