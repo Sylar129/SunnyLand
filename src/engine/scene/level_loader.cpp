@@ -283,7 +283,7 @@ void LevelLoader::AddAnimation(const nlohmann::json& anim_json,
                             sprite_size.x, sprite_size.y};
       animation->addFrame(src_rect, duration);
     }
-    ac->addAnimation(std::move(animation));
+    ac->AddAnimation(std::move(animation));
   }
 }
 

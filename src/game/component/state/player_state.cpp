@@ -17,7 +17,7 @@ void PlayerState::PlayAnimation(const std::string& animation_name) {
     return;
   }
 
-  animation_component->playAnimation(animation_name);
+  animation_component->PlayAnimation(animation_name);
 }
 
 }  // namespace game::component::state

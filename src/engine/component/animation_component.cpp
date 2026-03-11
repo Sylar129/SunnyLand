@@ -47,7 +47,7 @@ void AnimationComponent::Update(float delta_time, engine::core::Context&) {
   }
 }
 
-void AnimationComponent::addAnimation(
+void AnimationComponent::AddAnimation(
     std::unique_ptr<engine::render::Animation> animation) {
   if (!animation) return;
   std::string name = animation->getName();
@@ -56,7 +56,7 @@ void AnimationComponent::addAnimation(
                owner_->GetName());
 }
 
-void AnimationComponent::playAnimation(const std::string& name) {
+void AnimationComponent::PlayAnimation(const std::string& name) {
   auto it = animations_.find(name);
   if (it == animations_.end() || !it->second) {
     ENGINE_WARN("Animation '{}' not found in GameObject '{}'", name,
@@ -80,14 +80,14 @@ void AnimationComponent::playAnimation(const std::string& name) {
   }
 }
 
-std::string AnimationComponent::getCurrentAnimationName() const {
+std::string AnimationComponent::GetCurrentAnimationName() const {
   if (current_animation_) {
     return current_animation_->getName();
   }
   return "";
 }
 
-bool AnimationComponent::isAnimationFinished() const {
+bool AnimationComponent::IsAnimationFinished() const {
   if (!current_animation_ || current_animation_->isLooping()) {
     return false;
   }

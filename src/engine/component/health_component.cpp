@@ -23,8 +23,8 @@ void HealthComponent::Update(float delta_time, engine::core::Context&) {
   }
 }
 
-bool HealthComponent::takeDamage(int damage_amount) {
-  if (damage_amount <= 0 || !isAlive()) {
+bool HealthComponent::TakeDamage(int damage_amount) {
+  if (damage_amount <= 0 || !IsAlive()) {
     return false;
   }
 
@@ -35,8 +35,8 @@ bool HealthComponent::takeDamage(int damage_amount) {
   }
   current_health_ -= damage_amount;
   current_health_ = glm::max(0, current_health_);
-  if (isAlive() && invincibility_duration_ > 0.0f) {
-    setInvincible(invincibility_duration_);
+  if (IsAlive() && invincibility_duration_ > 0.0f) {
+    SetInvincible(invincibility_duration_);
   }
   ENGINE_DEBUG("游戏对象 '{}' 受到了 {} 点伤害，当前生命值: {}/{}。",
                owner_ ? owner_->GetName() : "Unknown", damage_amount,
@@ -44,8 +44,8 @@ bool HealthComponent::takeDamage(int damage_amount) {
   return true;
 }
 
-void HealthComponent::heal(int heal_amount) {
-  if (heal_amount <= 0 || !isAlive()) {
+void HealthComponent::Heal(int heal_amount) {
+  if (heal_amount <= 0 || !IsAlive()) {
     return;
   }
 
@@ -56,7 +56,7 @@ void HealthComponent::heal(int heal_amount) {
                current_health_, max_health_);
 }
 
-void HealthComponent::setInvincible(float duration) {
+void HealthComponent::SetInvincible(float duration) {
   if (duration > 0.0f) {
     is_invincible_ = true;
     invincibility_timer_ = duration;
@@ -70,12 +70,12 @@ void HealthComponent::setInvincible(float duration) {
   }
 }
 
-void HealthComponent::setMaxHealth(int max_health) {
+void HealthComponent::SetMaxHealth(int max_health) {
   max_health_ = glm::max(1, max_health);
   current_health_ = glm::min(current_health_, max_health_);
 }
 
-void HealthComponent::setCurrentHealth(int current_health) {
+void HealthComponent::SetCurrentHealth(int current_health) {
   current_health_ = glm::max(0, glm::min(current_health, max_health_));
 }
 

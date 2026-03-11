@@ -57,13 +57,13 @@ bool PlayerComponent::takeDamage(int damage) {
     return false;
   }
 
-  bool success = health_component_->takeDamage(damage);
+  bool success = health_component_->TakeDamage(damage);
   if (!success) return false;
   // --- 成功造成伤害了，根据是否存活决定状态切换
-  if (health_component_->isAlive()) {
+  if (health_component_->IsAlive()) {
     GAME_DEBUG("玩家受到了 {} 点伤害，当前生命值: {}/{}。", damage,
-               health_component_->getCurrentHealth(),
-               health_component_->getMaxHealth());
+               health_component_->GetCurrentHealth(),
+               health_component_->GetMaxHealth());
     // 切换到受伤状态
     SetState(std::make_unique<state::HurtState>(this));
   } else {

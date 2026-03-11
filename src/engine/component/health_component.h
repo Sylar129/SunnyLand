@@ -14,18 +14,18 @@ class HealthComponent final : public engine::component::Component {
                            float invincibility_duration = 2.0f);
   ~HealthComponent() override = default;
 
-  bool takeDamage(int damage_amount);
-  void heal(int heal_amount);
+  bool TakeDamage(int damage_amount);
+  void Heal(int heal_amount);
 
-  bool isAlive() const { return current_health_ > 0; }
-  bool isInvincible() const { return is_invincible_; }
-  int getCurrentHealth() const { return current_health_; }
-  int getMaxHealth() const { return max_health_; }
+  bool IsAlive() const { return current_health_ > 0; }
+  bool IsInvincible() const { return is_invincible_; }
+  int GetCurrentHealth() const { return current_health_; }
+  int GetMaxHealth() const { return max_health_; }
 
-  void setCurrentHealth(int current_health);
-  void setMaxHealth(int max_health);
-  void setInvincible(float duration);
-  void setInvincibilityDuration(float duration) {
+  void SetCurrentHealth(int current_health);
+  void SetMaxHealth(int max_health);
+  void SetInvincible(float duration);
+  void SetInvincibilityDuration(float duration) {
     invincibility_duration_ = duration;
   }
 

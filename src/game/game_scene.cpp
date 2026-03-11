@@ -93,7 +93,7 @@ void GameScene::InitEnemyAndItem() {
               game_object
                   ->GetComponent<engine::component::AnimationComponent>();
           ac) {
-        ac->playAnimation("fly");
+        ac->PlayAnimation("fly");
       } else {
         GAME_ERROR(
             "Eagle object missing AnimationComponent, cannot play animation.");
@@ -104,7 +104,7 @@ void GameScene::InitEnemyAndItem() {
               game_object
                   ->GetComponent<engine::component::AnimationComponent>();
           ac) {
-        ac->playAnimation("idle");
+        ac->PlayAnimation("idle");
       } else {
         GAME_ERROR(
             "Frog object missing AnimationComponent, cannot play animation.");
@@ -115,7 +115,7 @@ void GameScene::InitEnemyAndItem() {
               game_object
                   ->GetComponent<engine::component::AnimationComponent>();
           ac) {
-        ac->playAnimation("walk");
+        ac->PlayAnimation("walk");
       } else {
         GAME_ERROR(
             "Opossum object missing AnimationComponent, cannot play "
@@ -127,7 +127,7 @@ void GameScene::InitEnemyAndItem() {
               game_object
                   ->GetComponent<engine::component::AnimationComponent>();
           ac) {
-        ac->playAnimation("idle");
+        ac->PlayAnimation("idle");
       } else {
         GAME_ERROR(
             "Item object missing AnimationComponent, cannot play animation.");
