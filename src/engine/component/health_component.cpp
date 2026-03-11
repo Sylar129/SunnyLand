@@ -1,10 +1,10 @@
-#include "health_component.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/component/health_component.h"
 
-#include <glm/common.hpp>
-
-#include "../../engine/object/game_object.h"
+#include "engine/object/game_object.h"
+#include "glm/common.hpp"
+#include "log.h"
 
 namespace engine::component {
 
@@ -30,7 +30,7 @@ bool HealthComponent::takeDamage(int damage_amount) {
   }
 
   if (is_invincible_) {
-    spdlog::debug("游戏对象 '{}' 处于无敌状态，免疫了 {} 点伤害。",
+    ENGINE_DEBUG("游戏对象 '{}' 处于无敌状态，免疫了 {} 点伤害。",
                   owner_ ? owner_->GetName() : "Unknown", damage_amount);
     return false;  // 无敌状态，不受伤
   }
@@ -41,9 +41,9 @@ bool HealthComponent::takeDamage(int damage_amount) {
   if (isAlive() && invincibility_duration_ > 0.0f) {
     setInvincible(invincibility_duration_);
   }
-  spdlog::debug("游戏对象 '{}' 受到了 {} 点伤害，当前生命值: {}/{}。",
-                owner_ ? owner_->GetName() : "Unknown", damage_amount,
-                current_health_, max_health_);
+  ENGINE_DEBUG("游戏对象 '{}' 受到了 {} 点伤害，当前生命值: {}/{}。",
+               owner_ ? owner_->GetName() : "Unknown", damage_amount,
+               current_health_, max_health_);
   return true;  // 造成伤害，返回true
 }
 
@@ -55,23 +55,23 @@ void HealthComponent::heal(int heal_amount) {
   current_health_ += heal_amount;
   current_health_ =
       std::min(max_health_, current_health_);  // 防止超过最大生命值
-  spdlog::debug("游戏对象 '{}' 治疗了 {} 点，当前生命值: {}/{}。",
-                owner_ ? owner_->GetName() : "Unknown", heal_amount,
-                current_health_, max_health_);
+  ENGINE_DEBUG("游戏对象 '{}' 治疗了 {} 点，当前生命值: {}/{}。",
+               owner_ ? owner_->GetName() : "Unknown", heal_amount,
+               current_health_, max_health_);
 }
 
 void HealthComponent::setInvincible(float duration) {
   if (duration > 0.0f) {
     is_invincible_ = true;
     invincibility_timer_ = duration;
-    spdlog::debug("游戏对象 '{}' 进入无敌状态，持续 {} 秒。",
-                  owner_ ? owner_->GetName() : "Unknown", duration);
+    ENGINE_DEBUG("游戏对象 '{}' 进入无敌状态，持续 {} 秒。",
+                 owner_ ? owner_->GetName() : "Unknown", duration);
   } else {
     // 如果持续时间为 0 或负数，则立即取消无敌
     is_invincible_ = false;
     invincibility_timer_ = 0.0f;
-    spdlog::debug("游戏对象 '{}' 的无敌状态被手动移除。",
-                  owner_ ? owner_->GetName() : "Unknown");
+    ENGINE_DEBUG("游戏对象 '{}' 的无敌状态被手动移除。",
+                 owner_ ? owner_->GetName() : "Unknown");
   }
 }
 

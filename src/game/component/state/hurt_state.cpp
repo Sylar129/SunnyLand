@@ -1,17 +1,18 @@
-#include "hurt_state.h"
+// Copyright Sylar129
 
-#include "../player_component.h"
+#include "game/component/state/hurt_state.h"
+
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
-#include "fall_state.h"
-#include "idle_state.h"
-// ...
+#include "game/component/player_component.h"
+#include "game/component/state/fall_state.h"
+#include "game/component/state/idle_state.h"
 
 namespace game::component::state {
 
 void HurtState::Enter() {
-  PlayAnimation("hurt");  // 播放受伤动画
-  // --- 造成击退效果 ---
+  PlayAnimation("hurt");
+
   auto physics_component = player_component_->GetPhysicsComponent();
   auto sprite_component = player_component_->GetSpriteComponent();
   auto knockback_velocity = glm::vec2(-100.0f, -150.0f);  // 默认左上方击退
@@ -25,7 +26,6 @@ void HurtState::Enter() {
 void HurtState::Exit() {}
 
 std::unique_ptr<PlayerState> HurtState::HandleInput(engine::core::Context&) {
-  // 硬直期不能进行任何操控
   return nullptr;
 }
 

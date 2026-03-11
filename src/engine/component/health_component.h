@@ -1,5 +1,8 @@
+// Copyright Sylar129
+
 #pragma once
-#include "../../engine/component/component.h"
+
+#include "engine/component/component.h"
 
 namespace engine::component {
 
