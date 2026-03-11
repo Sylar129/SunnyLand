@@ -6,9 +6,6 @@
 
 namespace engine::component {
 
-/**
- * @brief 管理 GameObject 的生命值，处理伤害、治疗，并提供无敌帧功能。
- */
 class HealthComponent final : public engine::component::Component {
   friend class engine::object::GameObject;
 
@@ -28,12 +25,6 @@ class HealthComponent final : public engine::component::Component {
   explicit HealthComponent(int max_health = 1,
                            float invincibility_duration = 2.0f);
   ~HealthComponent() override = default;
-
-  // 禁止拷贝和移动
-  HealthComponent(const HealthComponent&) = delete;
-  HealthComponent& operator=(const HealthComponent&) = delete;
-  HealthComponent(HealthComponent&&) = delete;
-  HealthComponent& operator=(HealthComponent&&) = delete;
 
   /**
    * @brief 对 GameObject 施加伤害。

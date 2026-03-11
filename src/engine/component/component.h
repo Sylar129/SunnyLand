@@ -20,6 +20,8 @@ class Component {
  public:
   Component() = default;
   virtual ~Component() = default;
+
+  // Subclass by deault is also non-copyable and non-movable
   DISABLE_COPY_AND_MOVE(Component);
 
   void SetOwner(engine::object::GameObject* owner) { owner_ = owner; }

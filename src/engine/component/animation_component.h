@@ -7,7 +7,6 @@
 #include <unordered_map>
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
 
 namespace engine::render {
 class Animation;
@@ -24,8 +23,6 @@ class AnimationComponent : public Component {
  public:
   AnimationComponent() = default;
   ~AnimationComponent() override;
-
-  DISABLE_COPY_AND_MOVE(AnimationComponent);
 
   void addAnimation(std::unique_ptr<engine::render::Animation> animation);
   void playAnimation(const std::string& name);

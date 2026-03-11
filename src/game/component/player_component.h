@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
 #include "game/component/state/player_state.h"
 
 namespace engine::input {
@@ -31,8 +30,6 @@ class PlayerComponent final : public engine::component::Component {
  public:
   PlayerComponent() = default;
   ~PlayerComponent() override = default;
-
-  DISABLE_COPY_AND_MOVE(PlayerComponent);
 
   engine::component::TransformComponent* GetTransformComponent() const {
     return transform_component_;

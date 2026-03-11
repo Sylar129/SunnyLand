@@ -4,8 +4,7 @@
 
 #include <cstdint>
 
-#include "component.h"
-#include "engine/utils/non_copyable.h"
+#include "engine/component/component.h"
 #include "glm/vec2.hpp"
 
 namespace engine::physics {
@@ -22,8 +21,6 @@ class PhysicsComponent final : public Component {
   PhysicsComponent(engine::physics::PhysicsEngine* physics_engine,
                    bool use_gravity = true, float mass = 1.0f);
   ~PhysicsComponent() override = default;
-
-  DISABLE_COPY_AND_MOVE(PhysicsComponent);
 
   void AddForce(const glm::vec2& force) {
     if (enabled_) force_ += force;
