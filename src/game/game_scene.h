@@ -24,8 +24,7 @@ class GameScene final : public engine::scene::Scene {
  private:
   void InitLevel();
   void InitPlayer();
-  void TestPlayer();
-  void TestCollisionPairs();
+  void InitEnemyAndItem();
 
   engine::object::GameObject* player_ = nullptr;
 };

@@ -2,6 +2,7 @@
 
 #include "game/game_scene.h"
 
+#include "engine/component/animation_component.h"
 #include "engine/component/collider_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
@@ -28,21 +29,16 @@ GameScene::GameScene(const std::string& name, engine::core::Context& context,
 void GameScene::Init() {
   InitLevel();
   InitPlayer();
+  InitEnemyAndItem();
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());
 }
 
-void GameScene::Update(float delta_time) {
-  Scene::Update(delta_time);
-  TestCollisionPairs();
-}
+void GameScene::Update(float delta_time) { Scene::Update(delta_time); }
 
 void GameScene::Render() { Scene::Render(); }
 
-void GameScene::HandleInput() {
-  Scene::HandleInput();
-  TestPlayer();
-}
+void GameScene::HandleInput() { Scene::HandleInput(); }
 
 void GameScene::Clean() { Scene::Clean(); }
 
@@ -87,30 +83,53 @@ void GameScene::InitPlayer() {
   }
 }
 
-void GameScene::TestPlayer() {
-  if (!player_) return;
-  auto& input_manager = context_.GetInputManager();
-  auto* pc = player_->GetComponent<engine::component::PhysicsComponent>();
-  if (!pc) return;
-
-  if (input_manager.IsActionDown("move_left")) {
-    pc->velocity_.x = -100.0f;
-  } else if (input_manager.IsActionDown("move_right")) {
-    pc->velocity_.x = 100.0f;
-  } else {
-    pc->velocity_.x *= 0.9f;
-  }
-
-  if (input_manager.IsActionPressed("jump")) {
-    pc->velocity_.y = -400.0f;
-  }
-}
-
-void GameScene::TestCollisionPairs() {
-  auto& collision_pairs = context_.GetPhysicsEngine().GetCollisionPairs();
-  for (auto& pair : collision_pairs) {
-    GAME_INFO("Collision between: {} and {}", pair.first->GetName(),
-              pair.second->GetName());
+void GameScene::InitEnemyAndItem() {
+  for (auto& game_object : game_objects_) {
+    if (game_object->GetName() == "eagle") {
+      if (auto* ac =
+              game_object
+                  ->GetComponent<engine::component::AnimationComponent>();
+          ac) {
+        ac->playAnimation("fly");
+      } else {
+        GAME_ERROR(
+            "Eagle object missing AnimationComponent, cannot play animation.");
+      }
+    }
+    if (game_object->GetName() == "frog") {
+      if (auto* ac =
+              game_object
+                  ->GetComponent<engine::component::AnimationComponent>();
+          ac) {
+        ac->playAnimation("idle");
+      } else {
+        GAME_ERROR(
+            "Frog object missing AnimationComponent, cannot play animation.");
+      }
+    }
+    if (game_object->GetName() == "opossum") {
+      if (auto* ac =
+              game_object
+                  ->GetComponent<engine::component::AnimationComponent>();
+          ac) {
+        ac->playAnimation("walk");
+      } else {
+        GAME_ERROR(
+            "Opossum object missing AnimationComponent, cannot play "
+            "animation.");
+      }
+    }
+    if (game_object->GetTag() == "item") {
+      if (auto* ac =
+              game_object
+                  ->GetComponent<engine::component::AnimationComponent>();
+          ac) {
+        ac->playAnimation("idle");
+      } else {
+        GAME_ERROR(
+            "Item object missing AnimationComponent, cannot play animation.");
+      }
+    }
   }
 }
 

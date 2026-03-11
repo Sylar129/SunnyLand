@@ -14,7 +14,7 @@
 
 namespace game::component::state {
 
-void WalkState::Enter() {}
+void WalkState::Enter() { PlayAnimation("walk"); }
 
 void WalkState::Exit() {}
 

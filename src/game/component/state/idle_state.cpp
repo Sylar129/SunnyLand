@@ -12,7 +12,7 @@
 
 namespace game::component::state {
 
-void IdleState::Enter() {}
+void IdleState::Enter() { PlayAnimation("idle"); }
 
 void IdleState::Exit() {}
 
