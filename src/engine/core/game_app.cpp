@@ -2,10 +2,12 @@
 
 #include "engine/core/game_app.h"
 
+#include <fstream>
 #include <memory>
 
 #include "SDL3/SDL.h"
 #include "assert.h"
+#include "engine/core/config.h"
 #include "engine/core/context.h"
 #include "engine/core/time.h"
 #include "engine/physics/physics_engine.h"
@@ -69,8 +71,24 @@ bool GameApp::Init() {
 }
 
 bool GameApp::InitConfig() {
-  config_ = std::make_unique<engine::core::Config>("assets/config.json");
-  ENGINE_ASSERT(config_, "Failed to Init config!");
+  constexpr const char* filepath = "assets/config.json";
+  std::ifstream file(filepath);
+  if (!file.is_open()) {
+    ENGINE_WARN(
+        "Config file '{}' not found. Using default settings and creating "
+        "default config file.",
+        filepath);
+
+    std::ofstream output_file(filepath);
+    output_file << nlohmann::json(Config()).dump(4);
+
+    config_ = std::make_unique<engine::core::Config>();
+    ENGINE_TRACE("Init Config successfully.");
+    return true;
+  }
+
+  nlohmann::json j = nlohmann::json::parse(file);
+  config_ = std::make_unique<engine::core::Config>(j.get<Config>());
 
   ENGINE_TRACE("Init Config successfully.");
   return true;
@@ -83,8 +101,8 @@ bool GameApp::InitSDL() {
   }
 
   window_ =
-      SDL_CreateWindow(config_->window_title_.c_str(), config_->window_width_,
-                       config_->window_height_, SDL_WINDOW_RESIZABLE);
+      SDL_CreateWindow(config_->window.title.c_str(), config_->window.width,
+                       config_->window.height, SDL_WINDOW_RESIZABLE);
   if (window_ == nullptr) {
     ENGINE_ERROR("Failed to create window! Error: {}", SDL_GetError());
     return false;
@@ -96,14 +114,14 @@ bool GameApp::InitSDL() {
     return false;
   }
 
-  int vsync_mode = config_->vsync_enabled_ ? SDL_RENDERER_VSYNC_ADAPTIVE
+  int vsync_mode = config_->graphics.vsync ? SDL_RENDERER_VSYNC_ADAPTIVE
                                            : SDL_RENDERER_VSYNC_DISABLED;
   SDL_SetRenderVSync(sdl_renderer_, vsync_mode);
   ENGINE_TRACE("Setting VSync: {}",
-               config_->vsync_enabled_ ? "Enabled" : "Disabled");
+               config_->graphics.vsync ? "Enabled" : "Disabled");
 
-  SDL_SetRenderLogicalPresentation(sdl_renderer_, config_->window_width_ / 2,
-                                   config_->window_height_ / 2,
+  SDL_SetRenderLogicalPresentation(sdl_renderer_, config_->window.width / 2,
+                                   config_->window.height / 2,
                                    SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
   return true;
@@ -121,7 +139,7 @@ bool GameApp::InitRenderer() {
 
 bool GameApp::InitCamera() {
   camera_ = std::make_unique<engine::render::Camera>(
-      glm::vec2(config_->window_width_ / 2, config_->window_height_ / 2));
+      glm::vec2(config_->window.width / 2, config_->window.height / 2));
   ENGINE_ASSERT(camera_, "Failed to Init Camera!");
 
   ENGINE_TRACE("Camera initialized successfully.");
@@ -130,7 +148,7 @@ bool GameApp::InitCamera() {
 
 bool GameApp::InitTime() {
   time_ = std::make_unique<Time>();
-  time_->SetTargetFps(config_->target_fps_);
+  time_->SetTargetFps(config_->performance.target_fps);
 
   return true;
 }

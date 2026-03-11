@@ -10,7 +10,7 @@
 #include "glm/vec2.hpp"
 
 namespace engine::core {
-class Config;
+struct Config;
 }
 
 namespace engine::input {

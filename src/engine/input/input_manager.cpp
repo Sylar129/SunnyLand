@@ -121,7 +121,7 @@ void InputManager::InitializeMappings(const engine::core::Config* config) {
 
   ENGINE_ASSERT(config, "InputManager: Config is nullptr");
 
-  actions_to_keyname_map_ = config->input_mappings_;
+  actions_to_keyname_map_ = config->input_mappings;
   scancode_to_actions_map_.clear();
   mouse_button_to_actions_map_.clear();
   action_states_.clear();
