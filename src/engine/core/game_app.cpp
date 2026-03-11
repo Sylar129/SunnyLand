@@ -80,15 +80,25 @@ bool GameApp::InitConfig() {
         filepath);
 
     std::ofstream output_file(filepath);
-    output_file << nlohmann::json(Config()).dump(4);
+    if (output_file.is_open()) {
+      output_file << nlohmann::json(Config()).dump(4);
+    } else {
+      ENGINE_ERROR("Failed to create default config file at '{}'", filepath);
+    }
 
     config_ = std::make_unique<engine::core::Config>();
     ENGINE_TRACE("Init Config successfully.");
     return true;
   }
 
-  nlohmann::json j = nlohmann::json::parse(file);
-  config_ = std::make_unique<engine::core::Config>(j.get<Config>());
+  try {
+    nlohmann::json j = nlohmann::json::parse(file);
+    config_ = std::make_unique<engine::core::Config>(j.get<Config>());
+  } catch (const std::exception& e) {
+    ENGINE_ERROR("Error reading config file '{}': {}. Using default settings.",
+                 filepath, e.what());
+    config_ = std::make_unique<engine::core::Config>();
+  }
 
   ENGINE_TRACE("Init Config successfully.");
   return true;
@@ -102,7 +112,8 @@ bool GameApp::InitSDL() {
 
   window_ =
       SDL_CreateWindow(config_->window.title.c_str(), config_->window.width,
-                       config_->window.height, SDL_WINDOW_RESIZABLE);
+                       config_->window.height,
+                       config_->window.resizable ? SDL_WINDOW_RESIZABLE : 0);
   if (window_ == nullptr) {
     ENGINE_ERROR("Failed to create window! Error: {}", SDL_GetError());
     return false;
