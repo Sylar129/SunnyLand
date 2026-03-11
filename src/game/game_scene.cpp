@@ -38,7 +38,10 @@ void GameScene::Update(float delta_time) { Scene::Update(delta_time); }
 
 void GameScene::Render() { Scene::Render(); }
 
-void GameScene::HandleInput() { Scene::HandleInput(); }
+void GameScene::HandleInput() {
+  Scene::HandleInput();
+  testHealth();
+}
 
 void GameScene::Clean() { Scene::Clean(); }
 
@@ -130,6 +133,13 @@ void GameScene::InitEnemyAndItem() {
             "Item object missing AnimationComponent, cannot play animation.");
       }
     }
+  }
+}
+
+void GameScene::testHealth() {
+  auto input_manager = context_.GetInputManager();
+  if (input_manager.IsActionPressed("attack")) {
+    player_->GetComponent<game::component::PlayerComponent>()->takeDamage(1);
   }
 }
 

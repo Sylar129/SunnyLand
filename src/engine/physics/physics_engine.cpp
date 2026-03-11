@@ -134,7 +134,7 @@ void PhysicsEngine::ResolveTileCollisions(
   auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
 
   // Skip collision resolution if components missing, inactive, or is a trigger
-  if (!tc || !cc || !cc->IsActive() || cc->IsTrigger()) return;
+  if (!tc || !cc || cc->IsTrigger()) return;
 
   // Get the world-space AABB of the collider
   auto world_aabb = cc->GetWorldAABB();
@@ -152,6 +152,12 @@ void PhysicsEngine::ResolveTileCollisions(
   auto ds = pc->velocity_ * delta_time;
   // Calculate new position after applying displacement
   auto new_obj_pos = obj_pos + ds;
+
+  if (!cc->IsActive()) {  // 如果碰撞器未激活，直接让物体正常移动，然后返回。
+    tc->Translate(ds);
+    pc->velocity_ = glm::clamp(pc->velocity_, -max_speed_, max_speed_);
+    return;
+  }
 
   // Check collisions against each registered collision tile layer
   for (auto* layer : collision_tile_layers_) {

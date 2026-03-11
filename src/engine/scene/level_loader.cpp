@@ -7,6 +7,7 @@
 
 #include "engine/component/animation_component.h"
 #include "engine/component/collider_component.h"
+#include "engine/component/health_component.h"
 #include "engine/component/parallax_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
@@ -229,6 +230,12 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         auto* ac =
             game_object->AddComponent<engine::component::AnimationComponent>();
         AddAnimation(anim_json, ac, src_size);
+      }
+
+      auto health = GetTileProperty<int>(tile_json, "health");
+      if (health) {
+        game_object->AddComponent<engine::component::HealthComponent>(
+            health.value());
       }
 
       scene.AddGameObject(std::move(game_object));
