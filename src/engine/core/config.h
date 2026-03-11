@@ -6,67 +6,56 @@
 #include <unordered_map>
 #include <vector>
 
-#include "engine/utils/non_copyable.h"
-#include "nlohmann/json_fwd.hpp"
+#include "nlohmann/json.hpp"
 
 namespace engine::core {
 
-/**
- * @brief Manages application configuration settings.
- *
- * Provides default values for configuration items and supports
- * loading/saving configuration from/to JSON files.
- * Default values are used if loading fails or the file does not exist.
- */
-class Config final {
- public:
-  // --- Default configuration values --- (All public for easy extension)
-  // Window settings
-  std::string window_title_ = "SunnyLand";
-  int window_width_ = 1280;
-  int window_height_ = 720;
-  bool window_resizable_ = true;
+struct Config final {
+  struct Window {
+    std::string title = "SunnyLand";
+    int width = 1280;
+    int height = 720;
+    bool resizable = true;
+  };
 
-  // Graphics settings
-  bool vsync_enabled_ = true;  ///< @brief Whether to enable vertical sync
+  struct Graphics {
+    bool vsync = true;
+  };
 
-  // Performance settings
-  int target_fps_ = 144;  ///< @brief Target FPS setting, 0 means unlimited
+  struct Performance {
+    int target_fps = 144;  ///< @brief Target FPS setting, 0 means unlimited
+  };
 
-  // Audio settings
-  float music_volume_ = 0.5f;
-  float sound_volume_ = 0.5f;
+  struct Audio {
+    float music_volume = 0.5f;
+    float sound_volume = 0.5f;
+  };
 
-  // Maps action names to lists of SDL Scancode names
-  std::unordered_map<std::string, std::vector<std::string>> input_mappings_ = {
-      // Provides reasonable default values in case the config file fails to
-      // load or this section is missing
+  Window window;
+  Graphics graphics;
+  Performance performance;
+  Audio audio;
+
+  using InputMapping =
+      std::unordered_map<std::string, std::vector<std::string>>;
+  InputMapping input_mappings = {
       {"move_left", {"A", "Left"}}, {"move_right", {"D", "Right"}},
       {"move_up", {"W", "Up"}},     {"move_down", {"S", "Down"}},
       {"jump", {"J", "Space"}},     {"attack", {"K", "MouseLeft"}},
       {"pause", {"P", "Escape"}},
       // More default actions can be added here
   };
-
-  ///< @brief Constructor specifying the config file path.
-  explicit Config(const std::string& filepath);
-  DISABLE_COPY_AND_MOVE(Config);
-
-  ///< @brief Loads configuration from the specified JSON
-  ///< file. Returns true on success, false otherwise.
-  bool LoadFromFile(const std::string& filepath);
-
-  ///< @brief Saves current configuration to the specified
-  ///< JSON file. Returns true on success, false otherwise.
-  [[nodiscard]] bool SaveToFile(const std::string& filepath);
-
- private:
-  ///< @brief Deserializes configuration from a JSON object.
-  void FromJson(const nlohmann::json& j);
-
-  ///< @brief Converts current configuration to a JSON object
-  ///< (ordered).
-  nlohmann::ordered_json ToJson() const;
 };
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Window, title, width,
+                                                height, resizable);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Graphics, vsync);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Performance,
+                                                target_fps);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Audio, music_volume,
+                                                sound_volume);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config, window, graphics,
+                                                performance, audio,
+                                                input_mappings);
 
 }  // namespace engine::core
