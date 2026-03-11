@@ -32,10 +32,13 @@ void PlayerComponent::Init() {
   health_component_ =
       owner_->GetComponent<engine::component::HealthComponent>();
 
-  if (!transform_component_ || !physics_component_ || !sprite_component_ ||
-      !animation_component_ || !health_component_) {
-    GAME_ERROR("Player missing required components!");
-  }
+  GAME_ASSERT(transform_component_,
+              "PlayerComponent requires TransformComponent");
+  GAME_ASSERT(physics_component_, "PlayerComponent requires PhysicsComponent");
+  GAME_ASSERT(sprite_component_, "PlayerComponent requires SpriteComponent");
+  GAME_ASSERT(animation_component_,
+              "PlayerComponent requires AnimationComponent");
+  GAME_ASSERT(health_component_, "PlayerComponent requires HealthComponent");
 
   SetState(std::make_unique<state::IdleState>(this));
 
@@ -51,25 +54,25 @@ void PlayerComponent::SetState(std::unique_ptr<state::PlayerState> new_state) {
   current_state_->Enter();
 }
 
-bool PlayerComponent::takeDamage(int damage) {
+bool PlayerComponent::TakeDamage(int damage) {
   if (is_dead_ || !health_component_ || damage <= 0) {
-    GAME_WARN("玩家已死亡或却少必要组件，并未造成伤害。");
+    GAME_WARN(
+        "Player cannot take damage. is_dead: {}, health_component exists: {}, "
+        "damage: {}",
+        is_dead_, health_component_ != nullptr, damage);
     return false;
   }
 
   bool success = health_component_->TakeDamage(damage);
   if (!success) return false;
-  // --- 成功造成伤害了，根据是否存活决定状态切换
   if (health_component_->IsAlive()) {
-    GAME_DEBUG("玩家受到了 {} 点伤害，当前生命值: {}/{}。", damage,
+    GAME_DEBUG("Player takes damage: {}, health: {}/{}", damage,
                health_component_->GetCurrentHealth(),
                health_component_->GetMaxHealth());
-    // 切换到受伤状态
     SetState(std::make_unique<state::HurtState>(this));
   } else {
-    GAME_DEBUG("玩家死亡。");
+    GAME_DEBUG("Player is dead.");
     is_dead_ = true;
-    // 切换到死亡状态
     SetState(std::make_unique<state::DeadState>(this));
   }
   return true;

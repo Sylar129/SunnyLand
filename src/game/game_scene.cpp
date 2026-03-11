@@ -40,7 +40,7 @@ void GameScene::Render() { Scene::Render(); }
 
 void GameScene::HandleInput() {
   Scene::HandleInput();
-  testHealth();
+  TestHealth();
 }
 
 void GameScene::Clean() { Scene::Clean(); }
@@ -136,10 +136,10 @@ void GameScene::InitEnemyAndItem() {
   }
 }
 
-void GameScene::testHealth() {
+void GameScene::TestHealth() {
   auto input_manager = context_.GetInputManager();
   if (input_manager.IsActionPressed("attack")) {
-    player_->GetComponent<game::component::PlayerComponent>()->takeDamage(1);
+    player_->GetComponent<game::component::PlayerComponent>()->TakeDamage(1);
   }
 }
 

@@ -35,7 +35,7 @@ std::unique_ptr<PlayerState> HurtState::Update(float delta_time,
   if (physics_component->HasCollidedBelow()) {
     return std::make_unique<IdleState>(player_component_);
   }
-  if (stunned_timer_ > player_component_->getStunnedDuration()) {
+  if (stunned_timer_ > player_component_->GetStunnedDuration()) {
     return std::make_unique<FallState>(player_component_);
   }
   return nullptr;

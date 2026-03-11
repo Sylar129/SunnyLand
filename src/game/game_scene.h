@@ -25,7 +25,7 @@ class GameScene final : public engine::scene::Scene {
   void InitLevel();
   void InitPlayer();
   void InitEnemyAndItem();
-  void testHealth();  ///< @brief 测试生命值组件
+  void TestHealth();
 
   engine::object::GameObject* player_ = nullptr;
 };

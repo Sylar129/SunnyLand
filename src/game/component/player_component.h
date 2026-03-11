@@ -59,16 +59,12 @@ class PlayerComponent final : public engine::component::Component {
   float SetFrictionFactor() const { return friction_factor_; }
   void SetJumpForce(float jump_force) { jump_force_ = jump_force; }
   float GetJumpForce() const { return jump_force_; }
-  void setStunnedDuration(float duration) {
-    stunned_duration_ = duration;
-  }  ///< @brief 设置硬直时间
-  float getStunnedDuration() const {
-    return stunned_duration_;
-  }  ///< @brief 获取硬直时间
+  void SetStunnedDuration(float duration) { stunned_duration_ = duration; }
+  float GetStunnedDuration() const { return stunned_duration_; }
 
   void SetState(std::unique_ptr<state::PlayerState> new_state);
 
-  bool takeDamage(int damage);  ///< @brief 试图造成伤害，返回是否成功
+  bool TakeDamage(int damage);
 
  private:
   void Init() override;
@@ -89,8 +85,7 @@ class PlayerComponent final : public engine::component::Component {
   float max_speed_ = 120.0f;
   float friction_factor_ = 0.85f;
   float jump_force_ = 350.0f;
-  float stunned_duration_ =
-      0.4f;  ///< @brief 玩家被击中后的硬直时间（单位：秒）
+  float stunned_duration_ = 0.4f;
 };
 
 }  // namespace game::component

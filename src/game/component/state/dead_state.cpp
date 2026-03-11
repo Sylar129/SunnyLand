@@ -11,7 +11,7 @@
 namespace game::component::state {
 
 void DeadState::Enter() {
-  GAME_DEBUG("Player is dead.");
+  GAME_DEBUG("Player entering DeadState.");
   PlayAnimation("hurt");
 
   auto physics_component = player_component_->GetPhysicsComponent();
