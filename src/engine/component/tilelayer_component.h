@@ -33,6 +33,7 @@ enum class TileType {
   SLOPE_2_1,  ///< @brief Slope tile, height: left 0.5, right 1
   SLOPE_1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
   SLOPE_2_0,  ///< @brief Slope tile, height: left 0.5, right 0
+  HAZARD,     ///< @brief 危险瓦片（例如火焰、尖刺等）
 };
 
 struct TileInfo {

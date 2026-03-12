@@ -43,9 +43,20 @@ class PhysicsEngine {
   }
 
   const auto& GetCollisionPairs() const { return collision_pairs_; };
+  /// @brief 获取本帧检测到的所有瓦片触发事件。(此列表在每次 update 开始时清空)
+  const std::vector<
+      std::pair<engine::object::GameObject*, engine::component::TileType>>&
+  getTileTriggerEvents() const {
+    return tile_trigger_events_;
+  };
 
  private:
   void CheckObjectCollisions();
+  /**
+   * @brief
+   * 检测所有游戏对象与瓦片层的触发器类型瓦片碰撞，并记录触发事件。(位移处理完毕后再调用)
+   */
+  void checkTileTriggers();
   void ResolveTileCollisions(engine::component::PhysicsComponent* pc,
                              float delta_time);
   void ResolveSolidObjectCollisions(engine::object::GameObject* move_obj,
@@ -65,6 +76,11 @@ class PhysicsEngine {
       std::pair<engine::object::GameObject*, engine::object::GameObject*>>
       collision_pairs_;
   std::vector<engine::component::TileLayerComponent*> collision_tile_layers_;
+  /// @brief 存储本帧发生的瓦片触发事件 (GameObject*, 触发的瓦片类型, 每次
+  /// update 开始时清空)
+  std::vector<
+      std::pair<engine::object::GameObject*, engine::component::TileType>>
+      tile_trigger_events_;
 };
 
 }  // namespace engine::physics
