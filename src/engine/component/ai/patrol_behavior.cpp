@@ -1,15 +1,15 @@
 // Copyright Sylar129
 
-#include "patrol_behavior.h"
+#include "engine/component/ai/patrol_behavior.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../../../engine/component/animation_component.h"
-#include "../../../engine/component/physics_component.h"
-#include "../../../engine/component/sprite_component.h"
-#include "../../../engine/component/transform_component.h"
-#include "../../../engine/object/game_object.h"
-#include "../ai_component.h"
+#include "engine/component/ai_component.h"
+#include "engine/component/animation_component.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/object/game_object.h"
 
 namespace game::component::ai {
 
@@ -23,7 +23,7 @@ PatrolBehavior::PatrolBehavior(float min_x, float max_x, float speed)
   }
 }
 
-void PatrolBehavior::enter(AIComponent& ai_component) {
+void PatrolBehavior::Enter(AIComponent& ai_component) {
   // 播放动画 (进行 patrol 行为的对象应该有 'walk' 动画)
   if (auto* animation_component = ai_component.getAnimationComponent();
       animation_component) {
@@ -31,7 +31,7 @@ void PatrolBehavior::enter(AIComponent& ai_component) {
   }
 }
 
-void PatrolBehavior::update(float /*delta_time*/, AIComponent& ai_component) {
+void PatrolBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   // 获取必要的组件
   auto* physics_component = ai_component.getPhysicsComponent();
   auto* transform_component = ai_component.getTransformComponent();

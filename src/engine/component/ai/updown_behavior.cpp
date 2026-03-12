@@ -1,14 +1,14 @@
 // Copyright Sylar129
 
-#include "updown_behavior.h"
+#include "engine/component/ai/updown_behavior.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../../../engine/component/animation_component.h"
-#include "../../../engine/component/physics_component.h"
-#include "../../../engine/component/transform_component.h"
-#include "../../../engine/object/game_object.h"
-#include "../ai_component.h"
+#include "engine/component/ai_component.h"
+#include "engine/component/animation_component.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/object/game_object.h"
 
 namespace game::component::ai {
 
@@ -22,7 +22,7 @@ UpDownBehavior::UpDownBehavior(float min_y, float max_y, float speed)
   }
 }
 
-void UpDownBehavior::enter(AIComponent& ai_component) {
+void UpDownBehavior::Enter(AIComponent& ai_component) {
   // 播放动画 (进行 up-down 行为的对象应该有 'fly' 动画)
   if (auto* animation_component = ai_component.getAnimationComponent();
       animation_component) {
@@ -36,7 +36,7 @@ void UpDownBehavior::enter(AIComponent& ai_component) {
   }
 }
 
-void UpDownBehavior::update(float /*delta_time*/, AIComponent& ai_component) {
+void UpDownBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   // 获取必要的组件
   auto* physics_component = ai_component.getPhysicsComponent();
   auto* transform_component = ai_component.getTransformComponent();

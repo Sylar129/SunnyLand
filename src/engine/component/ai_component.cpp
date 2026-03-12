@@ -1,16 +1,16 @@
 // Copyright Sylar129
 
-#include "ai_component.h"
+#include "engine/component/ai_component.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../../engine/component/animation_component.h"
-#include "../../engine/component/health_component.h"
-#include "../../engine/component/physics_component.h"
-#include "../../engine/component/sprite_component.h"
-#include "../../engine/component/transform_component.h"
-#include "../../engine/object/game_object.h"
-#include "ai/ai_behavior.h"
+#include "engine/component/ai/ai_behavior.h"
+#include "engine/component/animation_component.h"
+#include "engine/component/health_component.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/object/game_object.h"
 
 namespace game::component {
 
@@ -41,7 +41,7 @@ void AIComponent::Init() {
 void AIComponent::Update(float delta_time, engine::core::Context&) {
   // 将更新委托给当前的行为策略
   if (current_behavior_) {
-    current_behavior_->update(delta_time, *this);
+    current_behavior_->Update(delta_time, *this);
   } else {
     spdlog::warn("GameObject '{}' 上的 AIComponent 没有设置行为。",
                  owner_ ? owner_->GetName() : "Unknown");
@@ -53,7 +53,7 @@ void AIComponent::setBehavior(std::unique_ptr<ai::AIBehavior> behavior) {
   spdlog::debug("GameObject '{}' 上的 AIComponent 设置了新的行为。",
                 owner_ ? owner_->GetName() : "Unknown");
   if (current_behavior_) {
-    current_behavior_->enter(*this);  // 调用新行为的 enter 方法
+    current_behavior_->Enter(*this);  // 调用新行为的 enter 方法
   }
 }
 

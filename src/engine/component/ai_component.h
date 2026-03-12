@@ -4,8 +4,8 @@
 
 #include <memory>
 
-#include "../../engine/component/component.h"
-#include "ai/ai_behavior.h"
+#include "engine/component/ai/ai_behavior.h"
+#include "engine/component/component.h"
 
 namespace game::component::ai {
 class AIBehavior;
@@ -28,26 +28,9 @@ namespace game::component {
 class AIComponent final : public engine::component::Component {
   friend class engine::object::GameObject;
 
- private:
-  std::unique_ptr<ai::AIBehavior> current_behavior_ =
-      nullptr;  ///< @brief 当前 AI 行为策略
-  /* 未来可添加一些敌人属性 */
-
-  // --- 缓存组件指针 ---
-  engine::component::TransformComponent* transform_component_ = nullptr;
-  engine::component::PhysicsComponent* physics_component_ = nullptr;
-  engine::component::SpriteComponent* sprite_component_ = nullptr;
-  engine::component::AnimationComponent* animation_component_ = nullptr;
-
  public:
   AIComponent() = default;
   ~AIComponent() override = default;
-
-  // 禁止拷贝和移动
-  AIComponent(const AIComponent&) = delete;
-  AIComponent& operator=(const AIComponent&) = delete;
-  AIComponent(AIComponent&&) = delete;
-  AIComponent& operator=(AIComponent&&) = delete;
 
   void setBehavior(std::unique_ptr<ai::AIBehavior>
                        behavior);  ///< @brief 设置当前 AI 行为策略
@@ -69,9 +52,18 @@ class AIComponent final : public engine::component::Component {
   }
 
  private:
-  // 核心循环方法
   void Init() override;
   void Update(float delta_time, engine::core::Context&) override;
+
+ private:
+  std::unique_ptr<ai::AIBehavior> current_behavior_ =
+      nullptr;  ///< @brief 当前 AI 行为策略
+
+  // --- 缓存组件指针 ---
+  engine::component::TransformComponent* transform_component_ = nullptr;
+  engine::component::PhysicsComponent* physics_component_ = nullptr;
+  engine::component::SpriteComponent* sprite_component_ = nullptr;
+  engine::component::AnimationComponent* animation_component_ = nullptr;
 };
 
 }  // namespace game::component

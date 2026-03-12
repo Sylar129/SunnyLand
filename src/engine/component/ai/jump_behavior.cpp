@@ -1,15 +1,15 @@
 // Copyright Sylar129
 
-#include "jump_behavior.h"
+#include "engine/component/ai/jump_behavior.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../../../engine/component/animation_component.h"
-#include "../../../engine/component/physics_component.h"
-#include "../../../engine/component/sprite_component.h"
-#include "../../../engine/component/transform_component.h"
-#include "../../../engine/object/game_object.h"
-#include "../ai_component.h"
+#include "engine/component/ai_component.h"
+#include "engine/component/animation_component.h"
+#include "engine/component/physics_component.h"
+#include "engine/component/sprite_component.h"
+#include "engine/component/transform_component.h"
+#include "engine/object/game_object.h"
 
 namespace game::component::ai {
 
@@ -38,7 +38,7 @@ JumpBehavior::JumpBehavior(float min_x, float max_x, glm::vec2 jump_vel,
   }
 }
 
-void JumpBehavior::update(float delta_time, AIComponent& ai_component) {
+void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
   // 获取必要的组件
   auto* physics_component = ai_component.getPhysicsComponent();
   auto* transform_component = ai_component.getTransformComponent();

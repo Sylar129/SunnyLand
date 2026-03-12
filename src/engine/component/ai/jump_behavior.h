@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include <glm/vec2.hpp>
-
-#include "ai_behavior.h"
+#include "engine/component/ai/ai_behavior.h"
+#include "glm/vec2.hpp"
 
 namespace game::component::ai {
 
@@ -16,14 +15,6 @@ namespace game::component::ai {
  */
 class JumpBehavior final : public AIBehavior {
   friend class game::component::AIComponent;
-
- private:
-  float patrol_min_x_ = 0.0f;  ///< @brief 巡逻范围的左边界
-  float patrol_max_x_ = 0.0f;  ///< @brief 巡逻范围的右边界
-  glm::vec2 jump_vel_ = glm::vec2(100.0f, -300.0f);  ///< @brief 跳跃速度
-  float jump_interval_ = 2.0f;  ///< @brief 跳跃间隔时间 (秒)
-  float jump_timer_ = 0.0f;     ///< @brief 距离下次跳跃的计时器
-  bool jumping_right_ = false;  ///< @brief 当前是否向右跳跃
 
  public:
   /**
@@ -38,14 +29,15 @@ class JumpBehavior final : public AIBehavior {
                float jump_interval = 2.0f);
   ~JumpBehavior() override = default;
 
-  // 禁止拷贝和移动
-  JumpBehavior(const JumpBehavior&) = delete;
-  JumpBehavior& operator=(const JumpBehavior&) = delete;
-  JumpBehavior(JumpBehavior&&) = delete;
-  JumpBehavior& operator=(JumpBehavior&&) = delete;
-
  private:
-  void update(float delta_time, AIComponent& ai_component) override;
+  void Update(float delta_time, AIComponent& ai_component) override;
+
+  float patrol_min_x_ = 0.0f;  ///< @brief 巡逻范围的左边界
+  float patrol_max_x_ = 0.0f;  ///< @brief 巡逻范围的右边界
+  glm::vec2 jump_vel_ = glm::vec2(100.0f, -300.0f);  ///< @brief 跳跃速度
+  float jump_interval_ = 2.0f;  ///< @brief 跳跃间隔时间 (秒)
+  float jump_timer_ = 0.0f;     ///< @brief 距离下次跳跃的计时器
+  bool jumping_right_ = false;  ///< @brief 当前是否向右跳跃
 };
 
 }  // namespace game::component::ai
