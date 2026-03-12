@@ -1,4 +1,7 @@
+// Copyright Sylar129
+
 #pragma once
+
 #include <glm/vec2.hpp>
 
 #include "ai_behavior.h"

@@ -1,5 +1,6 @@
-#ifndef GAME_COMPONENT_AI_UPDOWN_BEHAVIOR_H
-#define GAME_COMPONENT_AI_UPDOWN_BEHAVIOR_H
+// Copyright Sylar129
+
+#pragma once
 
 #include "ai_behavior.h"
 
@@ -41,4 +42,3 @@ class UpDownBehavior final : public AIBehavior {
 };
 
 }  // namespace game::component::ai
-#endif  // GAME_COMPONENT_AI_UPDOWN_BEHAVIOR_H

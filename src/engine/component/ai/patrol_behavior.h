@@ -1,4 +1,7 @@
+// Copyright Sylar129
+
 #pragma once
+
 #include "ai_behavior.h"
 
 namespace game::component::ai {

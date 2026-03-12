@@ -1,4 +1,7 @@
+// Copyright Sylar129
+
 #pragma once
+
 #include <memory>
 
 #include "../../engine/component/component.h"

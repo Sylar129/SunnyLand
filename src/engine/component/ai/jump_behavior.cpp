@@ -1,3 +1,5 @@
+// Copyright Sylar129
+
 #include "jump_behavior.h"
 
 #include <spdlog/spdlog.h>

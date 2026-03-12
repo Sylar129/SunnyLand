@@ -103,8 +103,7 @@ void GameScene::InitEnemyAndItem() {
             game_object->GetComponent<engine::component::TransformComponent>()
                 ->GetPosition()
                 .y;
-        auto y_min =
-            y_max - 80.0f;  // 让鹰的飞行范围 (当前位置与上方80像素 的区域)
+        auto y_min = y_max - 80.0f;
         ai_component->setBehavior(
             std::make_unique<game::component::ai::UpDownBehavior>(y_min,
                                                                   y_max));
@@ -119,8 +118,7 @@ void GameScene::InitEnemyAndItem() {
                 ->GetPosition()
                 .x -
             10.0f;
-        auto x_min =
-            x_max - 90.0f;  // 青蛙跳跃范围（右侧 - 10.0f 是为了增加稳定性）
+        auto x_min = x_max - 90.0f;
         ai_component->setBehavior(
             std::make_unique<game::component::ai::JumpBehavior>(x_min, x_max));
       }
@@ -133,7 +131,7 @@ void GameScene::InitEnemyAndItem() {
             game_object->GetComponent<engine::component::TransformComponent>()
                 ->GetPosition()
                 .x;
-        auto x_min = x_max - 200.0f;  // 负鼠巡逻范围
+        auto x_min = x_max - 200.0f;
         ai_component->setBehavior(
             std::make_unique<game::component::ai::PatrolBehavior>(x_min,
                                                                   x_max));

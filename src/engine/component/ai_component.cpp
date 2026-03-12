@@ -1,3 +1,5 @@
+// Copyright Sylar129
+
 #include "ai_component.h"
 
 #include <spdlog/spdlog.h>
