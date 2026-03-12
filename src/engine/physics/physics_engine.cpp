@@ -67,7 +67,7 @@ void PhysicsEngine::Update(float delta_time) {
 
   CheckObjectCollisions();
 
-  checkTileTriggers();
+  CheckTileTriggers();
 }
 
 void PhysicsEngine::CheckObjectCollisions() {
@@ -100,29 +100,22 @@ void PhysicsEngine::CheckObjectCollisions() {
   }
 }
 
-void PhysicsEngine::checkTileTriggers() {
+void PhysicsEngine::CheckTileTriggers() {
   for (auto* pc : components_) {
-    if (!pc || !pc->IsEnabled()) continue;  // 检查组件是否有效和启用
+    if (!pc || !pc->IsEnabled()) continue;
     auto* obj = pc->GetOwner();
     if (!obj) continue;
     auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
-    if (!cc || !cc->IsActive() || cc->IsTrigger())
-      continue;  // 如果游戏对象本就是触发器，则不需要检查瓦片触发事件
+    if (!cc || !cc->IsActive() || cc->IsTrigger()) continue;
 
-    // 获取物体的世界AABB
     auto world_aabb = cc->GetWorldAABB();
 
-    // 使用 set
-    // 来跟踪循环遍历中已经触发过的瓦片类型，防止重复添加（例如，玩家同时踩到两个尖刺，只需要受到一次伤害）
     std::set<engine::component::TileType> triggers_set;
 
-    // 遍历所有注册的碰撞瓦片层分别进行检测
     for (auto* layer : collision_tile_layers_) {
       if (!layer) continue;
       auto tile_size = layer->GetTileSize();
-      constexpr float tolerance =
-          1.0f;  // 检查右边缘和下边缘时，需要减1像素，否则会检查到下一行/列的瓦片
-      // 获取瓦片坐标范围
+      constexpr float tolerance = 1.0f;
       auto start_x =
           static_cast<int>(floor(world_aabb.position.x / tile_size.x));
       auto end_x = static_cast<int>(
@@ -134,23 +127,18 @@ void PhysicsEngine::checkTileTriggers() {
           ceil((world_aabb.position.y + world_aabb.size.y - tolerance) /
                tile_size.y));
 
-      // 遍历瓦片坐标范围进行检测
       for (int x = start_x; x < end_x; ++x) {
         for (int y = start_y; y < end_y; ++y) {
           auto tile_type = layer->GetTileTypeAt({x, y});
-          // 未来可以添加更多触发器类型的瓦片，目前只有 HAZARD 类型
           if (tile_type == engine::component::TileType::HAZARD) {
-            triggers_set.insert(
-                tile_type);  // 记录触发事件，set 保证每个瓦片类型只记录一次
+            triggers_set.insert(tile_type);
           }
         }
       }
-      // 遍历触发事件集合，添加到 tile_trigger_events_ 中
       for (const auto& type : triggers_set) {
         tile_trigger_events_.emplace_back(obj, type);
-        ENGINE_TRACE(
-            "tile_trigger_events_中 添加了 GameObject {} 和瓦片触发类型: {}",
-            obj->GetName(), static_cast<int>(type));
+        ENGINE_TRACE("tile_trigger_events_ Add GameObject {} with TileType {}",
+                     obj->GetName(), static_cast<int>(type));
       }
     }
   }
