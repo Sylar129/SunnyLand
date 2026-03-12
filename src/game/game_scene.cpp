@@ -2,10 +2,6 @@
 
 #include "game/game_scene.h"
 
-#include "engine/component/ai/jump_behavior.h"
-#include "engine/component/ai/patrol_behavior.h"
-#include "engine/component/ai/updown_behavior.h"
-#include "engine/component/ai_component.h"
 #include "engine/component/animation_component.h"
 #include "engine/component/collider_component.h"
 #include "engine/component/health_component.h"
@@ -21,6 +17,10 @@
 #include "engine/render/camera.h"
 #include "engine/scene/level_loader.h"
 #include "engine/utils/assert.h"
+#include "game/component/ai/jump_behavior.h"
+#include "game/component/ai/patrol_behavior.h"
+#include "game/component/ai/updown_behavior.h"
+#include "game/component/ai_component.h"
 #include "game/component/player_component.h"
 #include "log.h"
 

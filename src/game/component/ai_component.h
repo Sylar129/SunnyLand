@@ -4,8 +4,8 @@
 
 #include <memory>
 
-#include "engine/component/ai/ai_behavior.h"
 #include "engine/component/component.h"
+#include "game/component/ai/ai_behavior.h"
 
 namespace game::component::ai {
 class AIBehavior;
@@ -19,12 +19,6 @@ class AnimationComponent;
 
 namespace game::component {
 
-/**
- * @brief 负责管理 GameObject 的 AI 行为。
- *
- * 使用策略模式，持有一个具体的 AIBehavior 实例来执行实际的 AI 逻辑。
- * 提供对 GameObject 其他关键组件的访问。
- */
 class AIComponent final : public engine::component::Component {
   friend class engine::object::GameObject;
 
@@ -32,12 +26,10 @@ class AIComponent final : public engine::component::Component {
   AIComponent() = default;
   ~AIComponent() override = default;
 
-  void setBehavior(std::unique_ptr<ai::AIBehavior>
-                       behavior);  ///< @brief 设置当前 AI 行为策略
-  bool takeDamage(int damage);     ///< @brief 处理伤害逻辑，返回是否造成伤害
-  bool isAlive() const;            ///< @brief 检查对象是否存活
+  void setBehavior(std::unique_ptr<ai::AIBehavior> behavior);
+  bool takeDamage(int damage);
+  bool isAlive() const;
 
-  // --- Setters and Getters ---
   engine::component::TransformComponent* getTransformComponent() const {
     return transform_component_;
   }
@@ -56,10 +48,8 @@ class AIComponent final : public engine::component::Component {
   void Update(float delta_time, engine::core::Context&) override;
 
  private:
-  std::unique_ptr<ai::AIBehavior> current_behavior_ =
-      nullptr;  ///< @brief 当前 AI 行为策略
+  std::unique_ptr<ai::AIBehavior> current_behavior_ = nullptr;
 
-  // --- 缓存组件指针 ---
   engine::component::TransformComponent* transform_component_ = nullptr;
   engine::component::PhysicsComponent* physics_component_ = nullptr;
   engine::component::SpriteComponent* sprite_component_ = nullptr;

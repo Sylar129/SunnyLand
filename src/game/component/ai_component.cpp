@@ -1,16 +1,16 @@
 // Copyright Sylar129
 
-#include "engine/component/ai_component.h"
+#include "game/component/ai_component.h"
 
 #include <spdlog/spdlog.h>
 
-#include "engine/component/ai/ai_behavior.h"
 #include "engine/component/animation_component.h"
 #include "engine/component/health_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
+#include "game/component/ai/ai_behavior.h"
 
 namespace game::component {
 

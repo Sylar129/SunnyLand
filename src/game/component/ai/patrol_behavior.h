@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "engine/component/ai/ai_behavior.h"
+#include "game/component/ai/ai_behavior.h"
 
 namespace game::component::ai {
 
