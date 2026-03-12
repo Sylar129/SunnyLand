@@ -199,6 +199,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       auto tag = GetTileProperty<std::string>(tile_json, "tag");
       if (tag) {
         game_object->SetTag(tag.value());
+      } else if (tile_info.type == engine::component::TileType::HAZARD) {
+        game_object->SetTag("hazard");
       }
 
       auto gravity = GetTileProperty<bool>(tile_json, "gravity");
@@ -397,6 +399,10 @@ engine::component::TileType LevelLoader::GetTileType(
           ENGINE_ERROR("Unknown slope type: {}", slope_type);
           return engine::component::TileType::NORMAL;
         }
+      } else if (property.contains("name") && property["name"] == "hazard") {
+        auto is_hazard = property.value("value", false);
+        return is_hazard ? engine::component::TileType::HAZARD
+                         : engine::component::TileType::NORMAL;
       }
     }
   }

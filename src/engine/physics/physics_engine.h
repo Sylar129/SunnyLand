@@ -43,9 +43,11 @@ class PhysicsEngine {
   }
 
   const auto& GetCollisionPairs() const { return collision_pairs_; };
+  const auto& getTileTriggerEvents() const { return tile_trigger_events_; };
 
  private:
   void CheckObjectCollisions();
+  void CheckTileTriggers();
   void ResolveTileCollisions(engine::component::PhysicsComponent* pc,
                              float delta_time);
   void ResolveSolidObjectCollisions(engine::object::GameObject* move_obj,
@@ -65,6 +67,10 @@ class PhysicsEngine {
       std::pair<engine::object::GameObject*, engine::object::GameObject*>>
       collision_pairs_;
   std::vector<engine::component::TileLayerComponent*> collision_tile_layers_;
+
+  std::vector<
+      std::pair<engine::object::GameObject*, engine::component::TileType>>
+      tile_trigger_events_;
 };
 
 }  // namespace engine::physics

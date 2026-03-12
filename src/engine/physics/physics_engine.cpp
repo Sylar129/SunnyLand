@@ -2,6 +2,8 @@
 
 #include "engine/physics/physics_engine.h"
 
+#include <set>
+
 #include "engine/component/collider_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/tilelayer_component.h"
@@ -41,6 +43,7 @@ void PhysicsEngine::UnregisterCollisionLayer(
 
 void PhysicsEngine::Update(float delta_time) {
   collision_pairs_.clear();
+  tile_trigger_events_.clear();
 
   for (auto* pc : components_) {
     if (!pc->IsEnabled()) {
@@ -63,6 +66,8 @@ void PhysicsEngine::Update(float delta_time) {
   }
 
   CheckObjectCollisions();
+
+  CheckTileTriggers();
 }
 
 void PhysicsEngine::CheckObjectCollisions() {
@@ -90,6 +95,50 @@ void PhysicsEngine::CheckObjectCollisions() {
         } else {
           collision_pairs_.emplace_back(obj_a, obj_b);
         }
+      }
+    }
+  }
+}
+
+void PhysicsEngine::CheckTileTriggers() {
+  for (auto* pc : components_) {
+    if (!pc || !pc->IsEnabled()) continue;
+    auto* obj = pc->GetOwner();
+    if (!obj) continue;
+    auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
+    if (!cc || !cc->IsActive() || cc->IsTrigger()) continue;
+
+    auto world_aabb = cc->GetWorldAABB();
+
+    std::set<engine::component::TileType> triggers_set;
+
+    for (auto* layer : collision_tile_layers_) {
+      if (!layer) continue;
+      auto tile_size = layer->GetTileSize();
+      constexpr float tolerance = 1.0f;
+      auto start_x =
+          static_cast<int>(floor(world_aabb.position.x / tile_size.x));
+      auto end_x = static_cast<int>(
+          ceil((world_aabb.position.x + world_aabb.size.x - tolerance) /
+               tile_size.x));
+      auto start_y =
+          static_cast<int>(floor(world_aabb.position.y / tile_size.y));
+      auto end_y = static_cast<int>(
+          ceil((world_aabb.position.y + world_aabb.size.y - tolerance) /
+               tile_size.y));
+
+      for (int x = start_x; x < end_x; ++x) {
+        for (int y = start_y; y < end_y; ++y) {
+          auto tile_type = layer->GetTileTypeAt({x, y});
+          if (tile_type == engine::component::TileType::HAZARD) {
+            triggers_set.insert(tile_type);
+          }
+        }
+      }
+      for (const auto& type : triggers_set) {
+        tile_trigger_events_.emplace_back(obj, type);
+        ENGINE_TRACE("tile_trigger_events_ Add GameObject {} with TileType {}",
+                     obj->GetName(), static_cast<int>(type));
       }
     }
   }
