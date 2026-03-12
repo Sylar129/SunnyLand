@@ -13,7 +13,7 @@ namespace engine::component {
 class PhysicsComponent;
 class TileLayerComponent;
 enum class TileType;
-}  // namespace engine::component
+}
 
 namespace engine::physics {
 
