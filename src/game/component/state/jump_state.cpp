@@ -42,7 +42,6 @@ std::unique_ptr<PlayerState> JumpState::HandleInput(
     sprite_component->SetFlipped(false);
   }
 
-  // 如果按下上下键，且与梯子重合，则切换到 ClimbState
   if (physics_component->HasCollidedLadder() &&
       (input_manager.IsActionDown("move_up") ||
        input_manager.IsActionDown("move_down"))) {

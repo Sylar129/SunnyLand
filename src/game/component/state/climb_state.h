@@ -1,11 +1,12 @@
+// Copyright Sylar129
+
 #pragma once
-#include "player_state.h"
+
+#include "game/component/state/player_state.h"
 
 namespace game::component::state {
 
 class ClimbState final : public PlayerState {
-  friend class game::component::PlayerComponent;
-
  public:
   ClimbState(PlayerComponent* player_component)
       : PlayerState(player_component) {}

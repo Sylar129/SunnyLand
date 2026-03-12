@@ -23,17 +23,15 @@ std::unique_ptr<PlayerState> IdleState::HandleInput(
   auto input_manager = context.GetInputManager();
 
   auto physics_component = player_component_->GetPhysicsComponent();
-  // 如果按"move_up"键，且与梯子重合，则切换到 ClimbState
   if (physics_component->HasCollidedLadder() &&
       input_manager.IsActionDown("move_up")) {
     return std::make_unique<ClimbState>(player_component_);
   }
 
-  // 如果按下“move_down”且在梯子顶层，则切换到 ClimbState
   if (physics_component->isOnTopLadder() &&
       input_manager.IsActionDown("move_down")) {
-    // 需要向下移动一点，确保下一帧能与梯子碰撞（否则会切换回FallState）
-    player_component_->GetTransformComponent()->Translate(glm::vec2(0, 2.0f));
+    player_component_->GetTransformComponent()->Translate(
+        glm::vec2(0, 2.0f));  // A triky way
     return std::make_unique<ClimbState>(player_component_);
   }
 

@@ -34,7 +34,7 @@ enum class TileType {
   SLOPE_1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
   SLOPE_2_0,  ///< @brief Slope tile, height: left 0.5, right 0
   HAZARD,     ///< @brief damaging tile, e.g. spikes, lava, etc.
-  LADDER,     ///< @brief 梯子瓦片
+  LADDER,     ///< @brief ladder tile that allows climbing
 };
 
 struct TileInfo {

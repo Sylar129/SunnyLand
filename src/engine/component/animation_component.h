@@ -27,7 +27,7 @@ class AnimationComponent : public Component {
   void AddAnimation(std::unique_ptr<engine::render::Animation> animation);
   void PlayAnimation(const std::string& name);
   void StopAnimation() { is_playing_ = false; }
-  void resumeAnimation() { is_playing_ = true; }  ///< @brief 恢复当前动画播放。
+  void resumeAnimation() { is_playing_ = true; }
 
   std::string GetCurrentAnimationName() const;
   bool IsPlaying() const { return is_playing_; }
