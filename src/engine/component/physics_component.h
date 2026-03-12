@@ -52,14 +52,14 @@ class PhysicsComponent final : public Component {
   void SetCollidedLeft() { collision_flag_ |= kCollidedLeft; }
   void SetCollidedRight() { collision_flag_ |= kCollidedRight; }
   void SetCollidedLadder() { collision_flag_ |= kCollidedLadder; }
-  void setOnTopLadder() { collision_flag_ |= kIsOnTopLadder; }
+  void SetOnTopLadder() { collision_flag_ |= kIsOnTopLadder; }
 
   bool HasCollidedBelow() const { return collision_flag_ & kCollidedBelow; }
   bool HasCollidedAbove() const { return collision_flag_ & kCollidedAbove; }
   bool HasCollidedLeft() const { return collision_flag_ & kCollidedLeft; }
   bool HasCollidedRight() const { return collision_flag_ & kCollidedRight; }
   bool HasCollidedLadder() const { return collision_flag_ & kCollidedLadder; }
-  bool isOnTopLadder() const { return collision_flag_ & kIsOnTopLadder; }
+  bool IsOnTopLadder() const { return collision_flag_ & kIsOnTopLadder; }
 
   glm::vec2 velocity_ = {0.0f, 0.0f};
 

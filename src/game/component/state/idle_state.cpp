@@ -28,7 +28,7 @@ std::unique_ptr<PlayerState> IdleState::HandleInput(
     return std::make_unique<ClimbState>(player_component_);
   }
 
-  if (physics_component->isOnTopLadder() &&
+  if (physics_component->IsOnTopLadder() &&
       input_manager.IsActionDown("move_down")) {
     player_component_->GetTransformComponent()->Translate(
         glm::vec2(0, 2.0f));  // A triky way

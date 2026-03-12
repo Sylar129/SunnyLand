@@ -39,13 +39,13 @@ std::unique_ptr<PlayerState> ClimbState::HandleInput(
   auto is_down = input_manager.IsActionDown("move_down");
   auto is_left = input_manager.IsActionDown("move_left");
   auto is_right = input_manager.IsActionDown("move_right");
-  auto speed = player_component_->getClimbSpeed();
+  auto speed = player_component_->GetClimbSpeed();
 
   physics_component->velocity_.y = is_up ? -speed : is_down ? speed : 0.0f;
   physics_component->velocity_.x = is_left ? -speed : is_right ? speed : 0.0f;
 
   (is_up || is_down || is_left || is_right)
-      ? animation_component->resumeAnimation()
+      ? animation_component->ResumeAnimation()
       : animation_component->StopAnimation();
 
   if (input_manager.IsActionPressed("jump")) {
