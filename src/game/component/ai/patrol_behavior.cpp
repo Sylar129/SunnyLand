@@ -2,8 +2,6 @@
 
 #include "game/component/ai/patrol_behavior.h"
 
-#include <spdlog/spdlog.h>
-
 #include "engine/component/animation_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
@@ -16,16 +14,15 @@ namespace game::component::ai {
 PatrolBehavior::PatrolBehavior(float min_x, float max_x, float speed)
     : patrol_min_x_(min_x), patrol_max_x_(max_x), move_speed_(speed) {
   if (patrol_min_x_ >= patrol_max_x_) {
-    spdlog::error(
-        "PatrolBehavior：min_x ({}) 应小于 max_x ({})。行为可能不正确。", min_x,
-        max_x);
+    GAME_ERROR("PatrolBehavior：min_x ({}) 应小于 max_x ({})。行为可能不正确。",
+               min_x, max_x);
     patrol_min_x_ = patrol_max_x_;  // 修正为相等，避免逻辑错误
   }
 }
 
 void PatrolBehavior::Enter(AIComponent& ai_component) {
   // 播放动画 (进行 patrol 行为的对象应该有 'walk' 动画)
-  if (auto* animation_component = ai_component.getAnimationComponent();
+  if (auto* animation_component = ai_component.GetAnimationComponent();
       animation_component) {
     animation_component->PlayAnimation("walk");
   }
@@ -33,11 +30,11 @@ void PatrolBehavior::Enter(AIComponent& ai_component) {
 
 void PatrolBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   // 获取必要的组件
-  auto* physics_component = ai_component.getPhysicsComponent();
-  auto* transform_component = ai_component.getTransformComponent();
-  auto* sprite_component = ai_component.getSpriteComponent();
+  auto* physics_component = ai_component.GetPhysicsComponent();
+  auto* transform_component = ai_component.GetTransformComponent();
+  auto* sprite_component = ai_component.GetSpriteComponent();
   if (!physics_component || !transform_component || !sprite_component) {
-    spdlog::error("PatrolBehavior：缺少必要的组件，无法执行巡逻行为。");
+    GAME_ERROR("PatrolBehavior：缺少必要的组件，无法执行巡逻行为。");
     return;
   }
 

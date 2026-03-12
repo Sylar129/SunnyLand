@@ -2,8 +2,6 @@
 
 #include "game/component/ai/updown_behavior.h"
 
-#include <spdlog/spdlog.h>
-
 #include "engine/component/animation_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/transform_component.h"
@@ -15,22 +13,21 @@ namespace game::component::ai {
 UpDownBehavior::UpDownBehavior(float min_y, float max_y, float speed)
     : patrol_min_y_(min_y), patrol_max_y_(max_y), move_speed_(speed) {
   if (patrol_min_y_ >= patrol_max_y_) {
-    spdlog::error(
-        "UpDownBehavior：min_y ({}) 应小于 max_y ({})。行为可能不正确。", min_y,
-        max_y);
+    GAME_ERROR("UpDownBehavior：min_y ({}) 应小于 max_y ({})。行为可能不正确。",
+               min_y, max_y);
     patrol_min_y_ = patrol_max_y_;  // 修正为相等，避免逻辑错误
   }
 }
 
 void UpDownBehavior::Enter(AIComponent& ai_component) {
   // 播放动画 (进行 up-down 行为的对象应该有 'fly' 动画)
-  if (auto* animation_component = ai_component.getAnimationComponent();
+  if (auto* animation_component = ai_component.GetAnimationComponent();
       animation_component) {
     animation_component->PlayAnimation("fly");
   }
 
   // 禁用重力
-  if (auto* physics_component = ai_component.getPhysicsComponent();
+  if (auto* physics_component = ai_component.GetPhysicsComponent();
       physics_component) {
     physics_component->SetUseGravity(false);
   }
@@ -38,10 +35,10 @@ void UpDownBehavior::Enter(AIComponent& ai_component) {
 
 void UpDownBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   // 获取必要的组件
-  auto* physics_component = ai_component.getPhysicsComponent();
-  auto* transform_component = ai_component.getTransformComponent();
+  auto* physics_component = ai_component.GetPhysicsComponent();
+  auto* transform_component = ai_component.GetTransformComponent();
   if (!physics_component || !transform_component) {
-    spdlog::error("UpdownBehavior：缺少必要的组件，无法执行巡逻行为。");
+    GAME_ERROR("UpdownBehavior：缺少必要的组件，无法执行巡逻行为。");
     return;
   }
 

@@ -26,20 +26,20 @@ class AIComponent final : public engine::component::Component {
   AIComponent() = default;
   ~AIComponent() override = default;
 
-  void setBehavior(std::unique_ptr<ai::AIBehavior> behavior);
-  bool takeDamage(int damage);
-  bool isAlive() const;
+  void SetBehavior(std::unique_ptr<ai::AIBehavior> behavior);
+  bool TakeDamage(int damage);
+  bool IsAlive() const;
 
-  engine::component::TransformComponent* getTransformComponent() const {
+  engine::component::TransformComponent* GetTransformComponent() const {
     return transform_component_;
   }
-  engine::component::PhysicsComponent* getPhysicsComponent() const {
+  engine::component::PhysicsComponent* GetPhysicsComponent() const {
     return physics_component_;
   }
-  engine::component::SpriteComponent* getSpriteComponent() const {
+  engine::component::SpriteComponent* GetSpriteComponent() const {
     return sprite_component_;
   }
-  engine::component::AnimationComponent* getAnimationComponent() const {
+  engine::component::AnimationComponent* GetAnimationComponent() const {
     return animation_component_;
   }
 

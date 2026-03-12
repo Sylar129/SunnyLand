@@ -104,7 +104,7 @@ void GameScene::InitEnemyAndItem() {
                 ->GetPosition()
                 .y;
         auto y_min = y_max - 80.0f;
-        ai_component->setBehavior(
+        ai_component->SetBehavior(
             std::make_unique<game::component::ai::UpDownBehavior>(y_min,
                                                                   y_max));
       }
@@ -119,7 +119,7 @@ void GameScene::InitEnemyAndItem() {
                 .x -
             10.0f;
         auto x_min = x_max - 90.0f;
-        ai_component->setBehavior(
+        ai_component->SetBehavior(
             std::make_unique<game::component::ai::JumpBehavior>(x_min, x_max));
       }
     }
@@ -132,7 +132,7 @@ void GameScene::InitEnemyAndItem() {
                 ->GetPosition()
                 .x;
         auto x_min = x_max - 200.0f;
-        ai_component->setBehavior(
+        ai_component->SetBehavior(
             std::make_unique<game::component::ai::PatrolBehavior>(x_min,
                                                                   x_max));
       }

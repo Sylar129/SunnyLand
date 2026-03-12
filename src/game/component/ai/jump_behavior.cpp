@@ -2,8 +2,6 @@
 
 #include "game/component/ai/jump_behavior.h"
 
-#include <spdlog/spdlog.h>
-
 #include "engine/component/animation_component.h"
 #include "engine/component/physics_component.h"
 #include "engine/component/sprite_component.h"
@@ -20,33 +18,31 @@ JumpBehavior::JumpBehavior(float min_x, float max_x, glm::vec2 jump_vel,
       jump_vel_(jump_vel),
       jump_interval_(jump_interval) {
   if (patrol_min_x_ >= patrol_max_x_) {  // 确保巡逻范围是有效的
-    spdlog::error(
-        "JumpBehavior: min_x ({}) 应小于 max_x ({})。行为可能不正确。", min_x,
-        max_x);
+    GAME_ERROR("JumpBehavior: min_x ({}) 应小于 max_x ({})。行为可能不正确。",
+               min_x, max_x);
     patrol_min_x_ = patrol_max_x_;
   }
   if (jump_interval_ <= 0.0f) {  // 确保跳跃间隔是正数
-    spdlog::error("JumpBehavior: jump_interval ({}) 应为正数。已设置为 2.0f。",
-                  jump_interval);
+    GAME_ERROR("JumpBehavior: jump_interval ({}) 应为正数。已设置为 2.0f。",
+               jump_interval);
     jump_interval_ = 2.0f;
   }
   if (jump_vel_.y > 0) {  // 确保垂直跳跃速度是负数（向上）
-    spdlog::error(
-        "JumpBehavior: 垂直跳跃速度 ({}) 应为负数（向上）。已取相反数。",
-        jump_vel_.y);
+    GAME_ERROR("JumpBehavior: 垂直跳跃速度 ({}) 应为负数（向上）。已取相反数。",
+               jump_vel_.y);
     jump_vel_.y = -jump_vel_.y;
   }
 }
 
 void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
   // 获取必要的组件
-  auto* physics_component = ai_component.getPhysicsComponent();
-  auto* transform_component = ai_component.getTransformComponent();
-  auto* sprite_component = ai_component.getSpriteComponent();
-  auto* animation_component = ai_component.getAnimationComponent();
+  auto* physics_component = ai_component.GetPhysicsComponent();
+  auto* transform_component = ai_component.GetTransformComponent();
+  auto* sprite_component = ai_component.GetSpriteComponent();
+  auto* animation_component = ai_component.GetAnimationComponent();
   if (!physics_component || !transform_component || !sprite_component ||
       !animation_component) {
-    spdlog::error("JumpBehavior：缺少必要的组件，无法执行跳跃行为。");
+    GAME_ERROR("JumpBehavior：缺少必要的组件，无法执行跳跃行为。");
     return;
   }
 
