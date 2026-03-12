@@ -23,7 +23,7 @@ class Camera;
  *
  * Wraps SDL_Renderer and provides methods to clear screen, draw sprites, and
  * present the final image. Initializes on construction. Depends on valid
- * SDL_Renderer and ResourceManager. Construction failure throws an exception.
+ * SDL_Renderer and ResourceManager.
  */
 class Renderer final {
  private:
@@ -38,7 +38,6 @@ class Renderer final {
    *
    * @param sdl_renderer Pointer to valid SDL_Renderer. Cannot be null.
    * @param resource_manager Pointer to valid ResourceManager. Cannot be null.
-   * @throws std::runtime_error If any pointer is nullptr.
    */
   Renderer(SDL_Renderer* sdl_renderer,
            engine::resource::ResourceManager* resource_manager);

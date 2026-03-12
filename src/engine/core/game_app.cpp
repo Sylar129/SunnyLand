@@ -91,13 +91,13 @@ bool GameApp::InitConfig() {
     return true;
   }
 
-  try {
-    nlohmann::json j = nlohmann::json::parse(file);
-    config_ = std::make_unique<engine::core::Config>(j.get<Config>());
-  } catch (const std::exception& e) {
-    ENGINE_ERROR("Error reading config file '{}': {}. Using default settings.",
-                 filepath, e.what());
+  nlohmann::json json_data = nlohmann::json::parse(file, nullptr, false);
+  if (json_data.is_discarded()) {
+    ENGINE_ERROR("Error reading config file '{}'. Using default settings.",
+                 filepath);
     config_ = std::make_unique<engine::core::Config>();
+  } else {
+    config_ = std::make_unique<engine::core::Config>(json_data.get<Config>());
   }
 
   ENGINE_TRACE("Init Config successfully.");

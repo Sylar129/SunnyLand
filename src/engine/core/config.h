@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "nlohmann/json.hpp"
+#include "engine/utils/json_utils.h"
 
 namespace engine::core {
 
@@ -47,15 +47,14 @@ struct Config final {
   };
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Window, title, width,
-                                                height, resizable);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Graphics, vsync);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Performance,
-                                                target_fps);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Audio, music_volume,
-                                                sound_volume);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config, window, graphics,
-                                                performance, audio,
-                                                input_mappings);
+ENGINE_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Window, title, width,
+                                              height, resizable)
+ENGINE_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Graphics, vsync)
+ENGINE_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Performance, target_fps)
+ENGINE_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config::Audio, music_volume,
+                                              sound_volume)
+ENGINE_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Config, window, graphics,
+                                              performance, audio,
+                                              input_mappings)
 
 }  // namespace engine::core

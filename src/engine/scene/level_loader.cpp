@@ -21,6 +21,30 @@
 #include "log.h"
 #include "nlohmann/json.hpp"
 
+namespace {
+
+bool ParseJsonStream(std::istream& input, const std::string& source,
+                     nlohmann::json& json_data) {
+  json_data = nlohmann::json::parse(input, nullptr, false);
+  if (json_data.is_discarded()) {
+    ENGINE_ERROR("Parsing JSON failed: {}", source);
+    return false;
+  }
+  return true;
+}
+
+bool ParseJsonString(const std::string& input, const std::string& source,
+                     nlohmann::json& json_data) {
+  json_data = nlohmann::json::parse(input, nullptr, false);
+  if (json_data.is_discarded()) {
+    ENGINE_ERROR("Parsing JSON failed: {}", source);
+    return false;
+  }
+  return true;
+}
+
+}  // namespace
+
 namespace engine::scene {
 
 bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
@@ -33,10 +57,7 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
   }
 
   nlohmann::json json_data;
-  try {
-    file >> json_data;
-  } catch (const nlohmann::json::parse_error& e) {
-    ENGINE_ERROR("Parsing JSON failed: {}", e.what());
+  if (!ParseJsonStream(file, level_path, json_data)) {
     return false;
   }
 
@@ -220,11 +241,9 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       auto anim_string = GetTileProperty<std::string>(tile_json, "animation");
       if (anim_string) {
         nlohmann::json anim_json;
-        try {
-          anim_json = nlohmann::json::parse(anim_string.value());
-        } catch (const nlohmann::json::parse_error& e) {
-          ENGINE_ERROR("Parsing animation JSON failed for object '{}': {}",
-                       object_name, e.what());
+        if (!ParseJsonString(anim_string.value(),
+                             "animation for object '" + object_name + "'",
+                             anim_json)) {
           continue;
         }
         auto* ac =
@@ -294,7 +313,9 @@ void LevelLoader::LoadTileset(const std::string& tileset_path, int first_gid) {
   }
 
   nlohmann::json ts_json;
-  tileset_file >> ts_json;
+  if (!ParseJsonStream(tileset_file, tileset_path, ts_json)) {
+    return;
+  }
 
   ts_json["file_path"] = tileset_path;
   tileset_data_[first_gid] = std::move(ts_json);
@@ -364,7 +385,14 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
 std::string LevelLoader::ResolvePath(const std::string& relative_path,
                                      const std::string& file_path) const {
   auto map_dir = std::filesystem::path(file_path).parent_path();
-  auto final_path = std::filesystem::canonical(map_dir / relative_path);
+  std::error_code error_code;
+  auto final_path =
+      std::filesystem::weakly_canonical(map_dir / relative_path, error_code);
+  if (error_code) {
+    ENGINE_ERROR("Failed to resolve path '{}' from '{}': {}", relative_path,
+                 file_path, error_code.message());
+    return (map_dir / relative_path).lexically_normal().string();
+  }
   return final_path.string();
 }
 
