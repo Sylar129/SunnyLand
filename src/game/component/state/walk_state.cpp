@@ -7,6 +7,7 @@
 #include "engine/core/context.h"
 #include "engine/input/input_manager.h"
 #include "game/component/player_component.h"
+#include "game/component/state/climb_state.h"
 #include "game/component/state/fall_state.h"
 #include "game/component/state/idle_state.h"
 #include "game/component/state/jump_state.h"
@@ -43,6 +44,12 @@ std::unique_ptr<PlayerState> WalkState::HandleInput(
   } else {
     return std::make_unique<IdleState>(player_component_);
   }
+
+  if (physics_component->HasCollidedLadder() &&
+      input_manager.IsActionDown("move_up")) {
+    return std::make_unique<ClimbState>(player_component_);
+  }
+
   return nullptr;
 }
 

@@ -68,6 +68,8 @@ set(TARGET_SOURCES
     src/game/component/ai/updown_behavior.h
     src/game/component/ai_component.cpp
     src/game/component/ai_component.h
+    src/game/component/state/climb_state.cpp
+    src/game/component/state/climb_state.h
     src/game/component/state/dead_state.cpp
     src/game/component/state/dead_state.h
     src/game/component/state/fall_state.cpp

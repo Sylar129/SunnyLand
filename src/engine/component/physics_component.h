@@ -43,17 +43,23 @@ class PhysicsComponent final : public Component {
   static constexpr CollisionFlag kCollidedAbove = 1 << 1;
   static constexpr CollisionFlag kCollidedLeft = 1 << 2;
   static constexpr CollisionFlag kCollidedRight = 1 << 3;
+  static constexpr CollisionFlag kCollidedLadder = 1 << 4;
+  static constexpr CollisionFlag kIsOnTopLadder = 1 << 5;
   void ResetCollisionFlag() { collision_flag_ = 0; }
 
   void SetCollidedBelow() { collision_flag_ |= kCollidedBelow; }
   void SetCollidedAbove() { collision_flag_ |= kCollidedAbove; }
   void SetCollidedLeft() { collision_flag_ |= kCollidedLeft; }
   void SetCollidedRight() { collision_flag_ |= kCollidedRight; }
+  void SetCollidedLadder() { collision_flag_ |= kCollidedLadder; }
+  void SetOnTopLadder() { collision_flag_ |= kIsOnTopLadder; }
 
   bool HasCollidedBelow() const { return collision_flag_ & kCollidedBelow; }
   bool HasCollidedAbove() const { return collision_flag_ & kCollidedAbove; }
   bool HasCollidedLeft() const { return collision_flag_ & kCollidedLeft; }
   bool HasCollidedRight() const { return collision_flag_ & kCollidedRight; }
+  bool HasCollidedLadder() const { return collision_flag_ & kCollidedLadder; }
+  bool IsOnTopLadder() const { return collision_flag_ & kIsOnTopLadder; }
 
   glm::vec2 velocity_ = {0.0f, 0.0f};
 

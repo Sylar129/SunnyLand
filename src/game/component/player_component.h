@@ -53,6 +53,8 @@ class PlayerComponent final : public engine::component::Component {
   float GetMoveForce() const { return move_force_; }
   void SetMaxSpeed(float max_speed) { max_speed_ = max_speed; }
   float GetMaxSpeed() const { return max_speed_; }
+  void SetClimbSpeed(float climb_speed) { climb_speed_ = climb_speed; }
+  float GetClimbSpeed() const { return climb_speed_; }
   void SetFrictionFactor(float friction_factor) {
     friction_factor_ = friction_factor;
   }
@@ -83,6 +85,7 @@ class PlayerComponent final : public engine::component::Component {
 
   float move_force_ = 200.0f;
   float max_speed_ = 120.0f;
+  float climb_speed_ = 100.0f;
   float friction_factor_ = 0.85f;
   float jump_velocity_ = 350.0f;
   float stunned_duration_ = 0.4f;

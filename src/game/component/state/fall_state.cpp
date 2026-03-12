@@ -7,6 +7,7 @@
 #include "engine/core/context.h"
 #include "engine/input/input_manager.h"
 #include "game/component/player_component.h"
+#include "game/component/state/climb_state.h"
 #include "game/component/state/idle_state.h"
 #include "game/component/state/walk_state.h"
 #include "glm/common.hpp"
@@ -33,6 +34,12 @@ std::unique_ptr<PlayerState> FallState::HandleInput(
       physics_component->velocity_.x = 0.0f;
     physics_component->AddForce({player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(false);
+  }
+
+  if (physics_component->HasCollidedLadder() &&
+      (input_manager.IsActionDown("move_up") ||
+       input_manager.IsActionDown("move_down"))) {
+    return std::make_unique<ClimbState>(player_component_);
   }
   return nullptr;
 }

@@ -132,6 +132,8 @@ void PhysicsEngine::CheckTileTriggers() {
           auto tile_type = layer->GetTileTypeAt({x, y});
           if (tile_type == engine::component::TileType::HAZARD) {
             triggers_set.insert(tile_type);
+          } else if (tile_type == engine::component::TileType::LADDER) {
+            pc->SetCollidedLadder();
           }
         }
       }
@@ -302,6 +304,21 @@ void PhysicsEngine::ResolveTileCollisions(
         new_obj_pos.y = tile_y * tile_size.y - obj_size.y;
         pc->velocity_.y = 0.0f;
         pc->SetCollidedBelow();
+      } else if (tile_type_left == engine::component::TileType::LADDER &&
+                 tile_type_right == engine::component::TileType::LADDER) {
+        auto tile_type_up_l = layer->GetTileTypeAt({tile_x, tile_y - 1});
+        auto tile_type_up_r = layer->GetTileTypeAt({tile_x_right, tile_y - 1});
+        if (tile_type_up_r != engine::component::TileType::LADDER &&
+            tile_type_up_l != engine::component::TileType::LADDER) {
+          if (pc->IsUseGravity()) {
+            pc->SetOnTopLadder();
+            pc->SetCollidedBelow();
+            new_obj_pos.y = tile_y * layer->GetTileSize().y - obj_size.y;
+            pc->velocity_.y = 0.0f;
+          } else {
+            // climbing...
+          }
+        }
       } else {
         auto width_left = obj_pos.x - tile_x * tile_size.x;
         auto width_right = obj_pos.x + obj_size.x - tile_x_right * tile_size.x;
