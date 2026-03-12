@@ -1,6 +1,15 @@
 # Source files configuration
 
 set(TARGET_SOURCES
+    src/engine/component/ai/ai_behavior.h
+    src/engine/component/ai/jump_behavior.cpp
+    src/engine/component/ai/jump_behavior.h
+    src/engine/component/ai/patrol_behavior.cpp
+    src/engine/component/ai/patrol_behavior.h
+    src/engine/component/ai/updown_behavior.cpp
+    src/engine/component/ai/updown_behavior.h
+    src/engine/component/ai_component.cpp
+    src/engine/component/ai_component.h
     src/engine/component/animation_component.cpp
     src/engine/component/animation_component.h
     src/engine/component/collider_component.cpp

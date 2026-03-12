@@ -2,6 +2,10 @@
 
 #include "game/game_scene.h"
 
+#include "engine/component/ai/jump_behavior.h"
+#include "engine/component/ai/patrol_behavior.h"
+#include "engine/component/ai/updown_behavior.h"
+#include "engine/component/ai_component.h"
 #include "engine/component/animation_component.h"
 #include "engine/component/collider_component.h"
 #include "engine/component/health_component.h"
@@ -92,37 +96,47 @@ void GameScene::InitPlayer() {
 void GameScene::InitEnemyAndItem() {
   for (auto& game_object : game_objects_) {
     if (game_object->GetName() == "eagle") {
-      if (auto* ac =
-              game_object
-                  ->GetComponent<engine::component::AnimationComponent>();
-          ac) {
-        ac->PlayAnimation("fly");
-      } else {
-        GAME_ERROR(
-            "Eagle object missing AnimationComponent, cannot play animation.");
+      if (auto* ai_component =
+              game_object->AddComponent<game::component::AIComponent>();
+          ai_component) {
+        auto y_max =
+            game_object->GetComponent<engine::component::TransformComponent>()
+                ->GetPosition()
+                .y;
+        auto y_min =
+            y_max - 80.0f;  // 让鹰的飞行范围 (当前位置与上方80像素 的区域)
+        ai_component->setBehavior(
+            std::make_unique<game::component::ai::UpDownBehavior>(y_min,
+                                                                  y_max));
       }
     }
     if (game_object->GetName() == "frog") {
-      if (auto* ac =
-              game_object
-                  ->GetComponent<engine::component::AnimationComponent>();
-          ac) {
-        ac->PlayAnimation("idle");
-      } else {
-        GAME_ERROR(
-            "Frog object missing AnimationComponent, cannot play animation.");
+      if (auto* ai_component =
+              game_object->AddComponent<game::component::AIComponent>();
+          ai_component) {
+        auto x_max =
+            game_object->GetComponent<engine::component::TransformComponent>()
+                ->GetPosition()
+                .x -
+            10.0f;
+        auto x_min =
+            x_max - 90.0f;  // 青蛙跳跃范围（右侧 - 10.0f 是为了增加稳定性）
+        ai_component->setBehavior(
+            std::make_unique<game::component::ai::JumpBehavior>(x_min, x_max));
       }
     }
     if (game_object->GetName() == "opossum") {
-      if (auto* ac =
-              game_object
-                  ->GetComponent<engine::component::AnimationComponent>();
-          ac) {
-        ac->PlayAnimation("walk");
-      } else {
-        GAME_ERROR(
-            "Opossum object missing AnimationComponent, cannot play "
-            "animation.");
+      if (auto* ai_component =
+              game_object->AddComponent<game::component::AIComponent>();
+          ai_component) {
+        auto x_max =
+            game_object->GetComponent<engine::component::TransformComponent>()
+                ->GetPosition()
+                .x;
+        auto x_min = x_max - 200.0f;  // 负鼠巡逻范围
+        ai_component->setBehavior(
+            std::make_unique<game::component::ai::PatrolBehavior>(x_min,
+                                                                  x_max));
       }
     }
     if (game_object->GetTag() == "item") {
