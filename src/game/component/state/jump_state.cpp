@@ -15,7 +15,7 @@ namespace game::component::state {
 
 void JumpState::Enter() {
   auto physics_component = player_component_->GetPhysicsComponent();
-  physics_component->velocity_.y = -player_component_->GetJumpForce();
+  physics_component->velocity_.y = -player_component_->GetJumpVelocity();
   GAME_DEBUG("PlayerComponent entered JumpState with initial jump velocity: {}",
              physics_component->velocity_.y);
   PlayAnimation("jump");

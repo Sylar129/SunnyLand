@@ -17,6 +17,10 @@
 #include "engine/render/camera.h"
 #include "engine/scene/level_loader.h"
 #include "engine/utils/assert.h"
+#include "game/component/ai/jump_behavior.h"
+#include "game/component/ai/patrol_behavior.h"
+#include "game/component/ai/updown_behavior.h"
+#include "game/component/ai_component.h"
 #include "game/component/player_component.h"
 #include "log.h"
 
@@ -92,37 +96,45 @@ void GameScene::InitPlayer() {
 void GameScene::InitEnemyAndItem() {
   for (auto& game_object : game_objects_) {
     if (game_object->GetName() == "eagle") {
-      if (auto* ac =
-              game_object
-                  ->GetComponent<engine::component::AnimationComponent>();
-          ac) {
-        ac->PlayAnimation("fly");
-      } else {
-        GAME_ERROR(
-            "Eagle object missing AnimationComponent, cannot play animation.");
+      if (auto* ai_component =
+              game_object->AddComponent<game::component::AIComponent>();
+          ai_component) {
+        auto y_max =
+            game_object->GetComponent<engine::component::TransformComponent>()
+                ->GetPosition()
+                .y;
+        auto y_min = y_max - 80.0f;
+        ai_component->SetBehavior(
+            std::make_unique<game::component::ai::UpDownBehavior>(y_min,
+                                                                  y_max));
       }
     }
     if (game_object->GetName() == "frog") {
-      if (auto* ac =
-              game_object
-                  ->GetComponent<engine::component::AnimationComponent>();
-          ac) {
-        ac->PlayAnimation("idle");
-      } else {
-        GAME_ERROR(
-            "Frog object missing AnimationComponent, cannot play animation.");
+      if (auto* ai_component =
+              game_object->AddComponent<game::component::AIComponent>();
+          ai_component) {
+        auto x_max =
+            game_object->GetComponent<engine::component::TransformComponent>()
+                ->GetPosition()
+                .x -
+            10.0f;
+        auto x_min = x_max - 90.0f;
+        ai_component->SetBehavior(
+            std::make_unique<game::component::ai::JumpBehavior>(x_min, x_max));
       }
     }
     if (game_object->GetName() == "opossum") {
-      if (auto* ac =
-              game_object
-                  ->GetComponent<engine::component::AnimationComponent>();
-          ac) {
-        ac->PlayAnimation("walk");
-      } else {
-        GAME_ERROR(
-            "Opossum object missing AnimationComponent, cannot play "
-            "animation.");
+      if (auto* ai_component =
+              game_object->AddComponent<game::component::AIComponent>();
+          ai_component) {
+        auto x_max =
+            game_object->GetComponent<engine::component::TransformComponent>()
+                ->GetPosition()
+                .x;
+        auto x_min = x_max - 200.0f;
+        ai_component->SetBehavior(
+            std::make_unique<game::component::ai::PatrolBehavior>(x_min,
+                                                                  x_max));
       }
     }
     if (game_object->GetTag() == "item") {
