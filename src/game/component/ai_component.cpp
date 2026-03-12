@@ -28,7 +28,7 @@ void AIComponent::Init() {
 
   if (!transform_component_ || !physics_component_ || !sprite_component_ ||
       !animation_component_) {
-    GAME_ERROR("GameObject '{}' 上的 AIComponent 缺少必需的组件",
+    GAME_ERROR("GameObject '{}' AIComponent missing required components.",
                owner_->GetName());
   }
 }
@@ -37,15 +37,15 @@ void AIComponent::Update(float delta_time, engine::core::Context&) {
   if (current_behavior_) {
     current_behavior_->Update(delta_time, *this);
   } else {
-    GAME_WARN("GameObject '{}' 上的 AIComponent 没有设置行为。",
-              owner_ ? owner_->GetName() : "Unknown");
+    GAME_WARN("GameObject '{}' No AIBehavior set for AIComponent.",
+              owner_->GetName());
   }
 }
 
 void AIComponent::SetBehavior(std::unique_ptr<ai::AIBehavior> behavior) {
   current_behavior_ = std::move(behavior);
-  GAME_DEBUG("GameObject '{}' 上的 AIComponent 设置了新的行为。",
-             owner_ ? owner_->GetName() : "Unknown");
+  GAME_DEBUG("GameObject '{}' New AIBehavior set for AIComponent.",
+             owner_->GetName());
   if (current_behavior_) {
     current_behavior_->Enter(*this);
   }
