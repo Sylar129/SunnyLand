@@ -10,7 +10,7 @@ class GameObject;
 }
 
 namespace game::data {
-struct SessionData;
+class Session;
 }
 
 namespace game::scene {
@@ -19,7 +19,7 @@ class GameScene final : public engine::scene::Scene {
  public:
   GameScene(engine::core::Context& context,
             engine::scene::SceneManager& scene_manager,
-            std::shared_ptr<game::data::SessionData> data = nullptr);
+            std::shared_ptr<game::data::Session> session = nullptr);
 
   void Init() override;
   void Update(float delta_time) override;
@@ -51,8 +51,7 @@ class GameScene final : public engine::scene::Scene {
   void TestSaveAndLoad();
 
   engine::object::GameObject* player_ = nullptr;
-  std::shared_ptr<game::data::SessionData>
-      game_session_data_;  ///< @brief 场景间共享数据，因此用shared_ptr
+  std::shared_ptr<game::data::Session> game_session_;
 };
 
 }  // namespace game::scene

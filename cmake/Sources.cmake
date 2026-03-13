@@ -86,6 +86,8 @@ set(TARGET_SOURCES
     src/game/component/state/walk_state.h
     src/game/component/player_component.cpp
     src/game/component/player_component.h
+    src/game/data/session_data.cpp
+    src/game/data/session_data.h
     src/game/game_scene.cpp
     src/game/game_scene.h
     src/log.cpp

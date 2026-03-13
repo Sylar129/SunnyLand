@@ -30,11 +30,11 @@ namespace game::scene {
 
 GameScene::GameScene(engine::core::Context& context,
                      engine::scene::SceneManager& scene_manager,
-                     std::shared_ptr<game::data::SessionData> data)
+                     std::shared_ptr<game::data::Session> data)
     : Scene("GameScene", context, scene_manager),
-      game_session_data_(std::move(data)) {
-  if (!game_session_data_) {
-    game_session_data_ = std::make_shared<game::data::SessionData>();
+      game_session_(std::move(data)) {
+  if (!game_session_) {
+    game_session_ = std::make_shared<game::data::Session>();
     GAME_INFO("No SessionData provided, created default SessionData.");
   }
   GAME_TRACE("GameScene constructed");
@@ -65,7 +65,7 @@ void GameScene::Clean() { Scene::Clean(); }
 
 void GameScene::InitLevel() {
   engine::scene::LevelLoader level_loader;
-  auto level_path = game_session_data_->map_path;
+  auto level_path = game_session_->GetCurrentMapPath();
   if (!level_loader.LoadLevel(level_path, *this)) {
     GAME_ERROR("Load level '{}' failed!", level_path);
     return;
@@ -218,8 +218,8 @@ void GameScene::HandlePlayerDamage(int damage) {
   if (player_component->IsDead()) {
     GAME_INFO("Player {} is dead", player_->GetName());
   }
-  game_session_data_->current_health =
-      player_component->getHealthComponent()->GetCurrentHealth();
+  game_session_->SetCurrentHealth(
+      player_component->getHealthComponent()->GetCurrentHealth());
 }
 
 void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
@@ -249,7 +249,7 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
       GAME_INFO("Enemy {} defeated by player {}", enemy->GetName(),
                 player->GetName());
       enemy->SetNeedRemove(true);
-      game_session_data_->current_score += 10;
+      game_session_->AddScore(10);
 
       CreateEffect(enemy_center, enemy->GetTag());
     }
@@ -267,7 +267,7 @@ void GameScene::PlayerVSItemCollision(engine::object::GameObject* player,
   if (item->GetName() == "fruit") {
     player->GetComponent<engine::component::HealthComponent>()->Heal(1);
   } else if (item->GetName() == "gem") {
-    game_session_data_->current_score += 5;
+    game_session_->AddScore(5);
   }
   item->SetNeedRemove(true);
   auto item_aabb = item->GetComponent<engine::component::ColliderComponent>()
@@ -315,21 +315,21 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
 void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
   auto scene_name = trigger->GetName();
   auto map_path = LevelNameToPath(scene_name);
-  game_session_data_->map_path = map_path;  // 设置下一个关卡信息
+  game_session_->SetNextMapPath(map_path);
   auto next_scene = std::make_unique<game::scene::GameScene>(
-      context_, scene_manager_, game_session_data_);
+      context_, scene_manager_, game_session_);
   scene_manager_.RequestReplaceScene(std::move(next_scene));
 }
 
 void GameScene::TestSaveAndLoad() {
   auto input_manager = context_.GetInputManager();
   if (input_manager.IsActionPressed("attack")) {
-    saveToFile("assets/save.json", *game_session_data_);
+    game_session_->SaveToFile("assets/save.json");
   }
   if (input_manager.IsActionPressed("pause")) {
-    data::loadFromFile("assets/save.json", *game_session_data_);
-    GAME_INFO("Current health: {}", game_session_data_->current_health);
-    GAME_INFO("Current score: {}", game_session_data_->current_score);
+    game_session_->LoadFromFile("assets/save.json");
+    GAME_INFO("Current health: {}", game_session_->GetCurrentHealth());
+    GAME_INFO("Current score: {}", game_session_->GetCurrentScore());
   }
 }
 
