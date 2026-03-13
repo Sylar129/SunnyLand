@@ -59,7 +59,7 @@ std::unique_ptr<PlayerState> WalkState::Update(float, engine::core::Context&) {
   physics_component->velocity_.x =
       glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
 
-  if (!physics_component->HasCollidedBelow()) {
+  if (!player_component_->IsOnGround()) {
     return std::make_unique<FallState>(player_component_);
   }
 

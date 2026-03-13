@@ -72,6 +72,11 @@ bool PlayerComponent::TakeDamage(int damage) {
   return true;
 }
 
+bool PlayerComponent::IsOnGround() const {
+  return coyote_timer_ <= coyote_time_ ||
+         physics_component_->HasCollidedBelow();
+}
+
 void PlayerComponent::HandleInput(engine::core::Context& context) {
   if (!current_state_) return;
 
@@ -83,6 +88,26 @@ void PlayerComponent::HandleInput(engine::core::Context& context) {
 
 void PlayerComponent::Update(float delta_time, engine::core::Context& context) {
   if (!current_state_) return;
+
+  if (!physics_component_->HasCollidedBelow()) {
+    coyote_timer_ += delta_time;
+  } else {
+    coyote_timer_ = 0.0f;
+  }
+
+  if (health_component_->IsInvincible()) {
+    flash_timer_ += delta_time;
+    if (flash_timer_ >= 2 * flash_interval_) {
+      flash_timer_ -= 2 * flash_interval_;
+    }
+    if (flash_timer_ < flash_interval_) {
+      sprite_component_->SetHidden(true);
+    } else {
+      sprite_component_->SetHidden(false);
+    }
+  } else if (sprite_component_->IsHidden()) {
+    sprite_component_->SetHidden(false);
+  }
 
   auto next_state = current_state_->Update(delta_time, context);
   if (next_state) {

@@ -68,6 +68,8 @@ class PlayerComponent final : public engine::component::Component {
 
   bool TakeDamage(int damage);
 
+  bool IsOnGround() const;
+
  private:
   void Init() override;
   void HandleInput(engine::core::Context& context) override;
@@ -89,6 +91,12 @@ class PlayerComponent final : public engine::component::Component {
   float friction_factor_ = 0.85f;
   float jump_velocity_ = 350.0f;
   float stunned_duration_ = 0.4f;
+
+  static constexpr float coyote_time_ = 0.1f;
+  float coyote_timer_ = 0.0f;
+
+  static constexpr float flash_interval_ = 0.1f;
+  float flash_timer_ = 0.0f;
 };
 
 }  // namespace game::component
