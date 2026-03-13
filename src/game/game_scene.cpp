@@ -16,6 +16,7 @@
 #include "engine/render/animation.h"
 #include "engine/render/camera.h"
 #include "engine/scene/level_loader.h"
+#include "engine/scene/scene_manager.h"
 #include "engine/utils/assert.h"
 #include "game/component/ai/jump_behavior.h"
 #include "game/component/ai/patrol_behavior.h"
@@ -54,7 +55,11 @@ void GameScene::Clean() { Scene::Clean(); }
 
 void GameScene::InitLevel() {
   engine::scene::LevelLoader level_loader;
-  level_loader.LoadLevel("assets/maps/level1.tmj", *this);
+  auto level_path = LevelNameToPath(scene_name_);
+  if (!level_loader.LoadLevel(level_path, *this)) {
+    GAME_ERROR("Load level '{}' failed!", level_path);
+    return;
+  }
 
   auto* main_layer_obj = FindGameObjectByName("main");
   if (main_layer_obj) {
@@ -171,6 +176,10 @@ void GameScene::HandleObjectCollisions() {
     } else if (obj2->GetName() == "player" && obj1->GetTag() == "hazard") {
       obj2->GetComponent<game::component::PlayerComponent>()->TakeDamage(1);
       GAME_DEBUG("Player '{}' taking damage from hazard", obj2->GetName());
+    } else if (obj1->GetName() == "player" && obj2->GetTag() == "next_level") {
+      ToNextLevel(obj2);
+    } else if (obj2->GetName() == "player" && obj1->GetTag() == "next_level") {
+      ToNextLevel(obj1);
     }
   }
 }
@@ -276,6 +285,13 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
   animation_component->PlayAnimation("effect");
   SafeAddGameObject(std::move(effect_obj));
   GAME_DEBUG("Created effect: {}", tag);
+}
+
+void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
+  auto scene_name = trigger->GetName();
+  auto next_scene = std::make_unique<game::scene::GameScene>(
+      scene_name, context_, scene_manager_);
+  scene_manager_.RequestReplaceScene(std::move(next_scene));
 }
 
 }  // namespace game::scene

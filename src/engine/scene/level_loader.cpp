@@ -141,7 +141,39 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
     auto gid = object.value("gid", 0);
 
     if (gid == 0) {
-      // TODO: Handle shapes
+      if (object.value("point", false)) {
+        continue;
+      } else if (object.value("ellipse", false)) {
+        continue;
+      } else if (object.value("polygon", false)) {
+        continue;
+      } else {
+        const std::string& object_name = object.value("name", "Unnamed");
+        auto game_object =
+            std::make_unique<engine::object::GameObject>(object_name);
+        auto position =
+            glm::vec2(object.value("x", 0.0f), object.value("y", 0.0f));
+        auto dst_size = glm::vec2(object.value("width", 0.0f),
+                                  object.value("height", 0.0f));
+        auto rotation = object.value("rotation", 0.0f);
+        game_object->AddComponent<engine::component::TransformComponent>(
+            position, glm::vec2(1.0f), rotation);
+
+        auto collider =
+            std::make_unique<engine::physics::AABBCollider>(dst_size);
+        auto* cc =
+            game_object->AddComponent<engine::component::ColliderComponent>(
+                std::move(collider));
+        cc->SetTrigger(object.value("trigger", true));
+        game_object->AddComponent<engine::component::PhysicsComponent>(
+            &scene.GetContext().GetPhysicsEngine(), false);
+
+        if (auto tag = GetTileProperty<std::string>(object, "tag"); tag) {
+          game_object->SetTag(tag.value());
+        }
+        scene.AddGameObject(std::move(game_object));
+        ENGINE_INFO("Load object: '{}' completed.", object_name);
+      }
     } else {
       auto tile_info = GetTileInfoByGid(gid);
       if (tile_info.sprite.GetTextureId().empty()) {
