@@ -52,7 +52,7 @@ std::unique_ptr<PlayerState> IdleState::Update(float, engine::core::Context&) {
   auto friction_factor = player_component_->SetFrictionFactor();
   physics_component->velocity_.x *= friction_factor;
 
-  if (!physics_component->HasCollidedBelow()) {
+  if (!player_component_->IsOnGround()) {
     return std::make_unique<FallState>(player_component_);
   }
   return nullptr;
