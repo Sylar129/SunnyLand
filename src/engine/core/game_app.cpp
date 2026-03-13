@@ -62,8 +62,8 @@ bool GameApp::Init() {
   if (!InitContext()) return false;
   if (!InitSceneManager()) return false;
 
-  auto scene = std::make_unique<game::scene::GameScene>("level1", *context_,
-                                                        *scene_manager_);
+  auto scene =
+      std::make_unique<game::scene::GameScene>(*context_, *scene_manager_);
   scene_manager_->RequestPushScene(std::move(scene));
 
   is_running_ = true;

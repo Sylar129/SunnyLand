@@ -23,14 +23,21 @@
 #include "game/component/ai/updown_behavior.h"
 #include "game/component/ai_component.h"
 #include "game/component/player_component.h"
+#include "game/data/session_data.h"
 #include "log.h"
 
 namespace game::scene {
 
-GameScene::GameScene(const std::string& name, engine::core::Context& context,
-                     engine::scene::SceneManager& scene_manager)
-    : Scene(name, context, scene_manager) {
-  GAME_TRACE("Contructing GameScene '{}'", name);
+GameScene::GameScene(engine::core::Context& context,
+                     engine::scene::SceneManager& scene_manager,
+                     std::shared_ptr<game::data::SessionData> data)
+    : Scene("GameScene", context, scene_manager),
+      game_session_data_(std::move(data)) {
+  if (!game_session_data_) {
+    game_session_data_ = std::make_shared<game::data::SessionData>();
+    GAME_INFO("No SessionData provided, created default SessionData.");
+  }
+  GAME_TRACE("GameScene constructed");
 }
 
 void GameScene::Init() {
@@ -49,13 +56,16 @@ void GameScene::Update(float delta_time) {
 
 void GameScene::Render() { Scene::Render(); }
 
-void GameScene::HandleInput() { Scene::HandleInput(); }
+void GameScene::HandleInput() {
+  Scene::HandleInput();
+  TestSaveAndLoad();
+}
 
 void GameScene::Clean() { Scene::Clean(); }
 
 void GameScene::InitLevel() {
   engine::scene::LevelLoader level_loader;
-  auto level_path = LevelNameToPath(scene_name_);
+  auto level_path = game_session_data_->map_path;
   if (!level_loader.LoadLevel(level_path, *this)) {
     GAME_ERROR("Load level '{}' failed!", level_path);
     return;
@@ -192,11 +202,24 @@ void GameScene::HandleTileTriggers() {
     auto tile_type = event.second;
     if (tile_type == engine::component::TileType::HAZARD) {
       if (obj->GetName() == "player") {
-        obj->GetComponent<game::component::PlayerComponent>()->TakeDamage(1);
+        HandlePlayerDamage(1);
         GAME_DEBUG("Player '{}' taking damage from hazard", obj->GetName());
       }
     }
   }
+}
+
+void GameScene::HandlePlayerDamage(int damage) {
+  auto player_component =
+      player_->GetComponent<game::component::PlayerComponent>();
+  if (!player_component->TakeDamage(damage)) {
+    return;
+  }
+  if (player_component->IsDead()) {
+    GAME_INFO("Player {} is dead", player_->GetName());
+  }
+  game_session_data_->current_health =
+      player_component->getHealthComponent()->GetCurrentHealth();
 }
 
 void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
@@ -226,6 +249,8 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
       GAME_INFO("Enemy {} defeated by player {}", enemy->GetName(),
                 player->GetName());
       enemy->SetNeedRemove(true);
+      game_session_data_->current_score += 10;
+
       CreateEffect(enemy_center, enemy->GetTag());
     }
     player->GetComponent<engine::component::PhysicsComponent>()->velocity_.y =
@@ -233,7 +258,7 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
   } else {
     GAME_INFO("Enemy {} collided with player {}, causing damage",
               enemy->GetName(), player->GetName());
-    player->GetComponent<game::component::PlayerComponent>()->TakeDamage(1);
+    HandlePlayerDamage(1);
   }
 }
 
@@ -242,7 +267,7 @@ void GameScene::PlayerVSItemCollision(engine::object::GameObject* player,
   if (item->GetName() == "fruit") {
     player->GetComponent<engine::component::HealthComponent>()->Heal(1);
   } else if (item->GetName() == "gem") {
-    // TODO: add points
+    game_session_data_->current_score += 5;
   }
   item->SetNeedRemove(true);
   auto item_aabb = item->GetComponent<engine::component::ColliderComponent>()
@@ -289,9 +314,23 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
 
 void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
   auto scene_name = trigger->GetName();
+  auto map_path = LevelNameToPath(scene_name);
+  game_session_data_->map_path = map_path;  // 设置下一个关卡信息
   auto next_scene = std::make_unique<game::scene::GameScene>(
-      scene_name, context_, scene_manager_);
+      context_, scene_manager_, game_session_data_);
   scene_manager_.RequestReplaceScene(std::move(next_scene));
+}
+
+void GameScene::TestSaveAndLoad() {
+  auto input_manager = context_.GetInputManager();
+  if (input_manager.IsActionPressed("attack")) {
+    saveToFile("assets/save.json", *game_session_data_);
+  }
+  if (input_manager.IsActionPressed("pause")) {
+    data::loadFromFile("assets/save.json", *game_session_data_);
+    GAME_INFO("Current health: {}", game_session_data_->current_health);
+    GAME_INFO("Current score: {}", game_session_data_->current_score);
+  }
 }
 
 }  // namespace game::scene
