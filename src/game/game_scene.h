@@ -9,12 +9,17 @@ namespace engine::object {
 class GameObject;
 }
 
+namespace game::data {
+class Session;
+}
+
 namespace game::scene {
 
 class GameScene final : public engine::scene::Scene {
  public:
-  GameScene(const std::string& name, engine::core::Context& context,
-            engine::scene::SceneManager& scene_manager);
+  GameScene(engine::core::Context& context,
+            engine::scene::SceneManager& scene_manager,
+            std::shared_ptr<game::data::Session> session = nullptr);
 
   void Init() override;
   void Update(float delta_time) override;
@@ -29,6 +34,7 @@ class GameScene final : public engine::scene::Scene {
 
   void HandleObjectCollisions();
   void HandleTileTriggers();
+  void HandlePlayerDamage(int damage);
   void PlayerVSEnemyCollision(engine::object::GameObject* player,
                               engine::object::GameObject* enemy);
   void PlayerVSItemCollision(engine::object::GameObject* player,
@@ -42,7 +48,10 @@ class GameScene final : public engine::scene::Scene {
     return "assets/maps/" + level_name + ".tmj";
   }
 
+  void TestSaveAndLoad();
+
   engine::object::GameObject* player_ = nullptr;
+  std::shared_ptr<game::data::Session> game_session_;
 };
 
 }  // namespace game::scene
