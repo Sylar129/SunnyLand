@@ -54,20 +54,17 @@ class GameScene final : public engine::scene::Scene {
     return "assets/maps/" + level_name + ".tmj";
   }
 
-  // --- UI 相关函数 ---
-  void createScoreUI();   ///< @brief 创建得分UI
-  void createHealthUI();  ///< @brief 创建生命值UI (或最大生命值改变时重设)
-  void addScoreWithUI(int score);  ///< @brief 增加得分，同时更新UI
-  void healWithUI(int amount);     ///< @brief 增加生命，同时更新UI
-  void
-  updateHealthWithUI();  ///< @brief 更新生命值UI (只适用最大生命值不变的情况)
+  void CreateScoreUI();
+  void CreateHealthUI();
+  void AddScoreWithUI(int score);
+  void HealWithUI(int amount);
+  void UpdateHealthWithUI();
 
   engine::object::GameObject* player_ = nullptr;
   std::shared_ptr<game::data::Session> game_session_;
 
-  engine::ui::UILabel* score_label_ =
-      nullptr;  ///< @brief 得分标签 (生命周期由UIManager管理，因此使用裸指针)
-  engine::ui::UIPanel* health_panel_ = nullptr;  ///< @brief 生命值图标面板
+  engine::ui::UILabel* score_label_ = nullptr;
+  engine::ui::UIPanel* health_panel_ = nullptr;
 };
 
 }  // namespace game::scene
