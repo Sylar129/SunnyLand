@@ -12,6 +12,11 @@ namespace engine::core {
 class Context;
 }
 
+namespace engine::ui {
+class UIManager;
+
+}
+
 namespace engine::object {
 class GameObject;
 }
@@ -71,6 +76,7 @@ class Scene {
   std::string scene_name_;
   engine::core::Context& context_;
   engine::scene::SceneManager& scene_manager_;
+  std::unique_ptr<engine::ui::UIManager> ui_manager_;
   bool is_initialized_ = false;
   std::vector<std::unique_ptr<engine::object::GameObject>> game_objects_;
   std::vector<std::unique_ptr<engine::object::GameObject>> pending_additions_;
