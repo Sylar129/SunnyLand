@@ -54,12 +54,12 @@ void GameScene::Update(float delta_time) {
   HandleTileTriggers();
 }
 
-void GameScene::Render() { Scene::Render(); }
-
-void GameScene::HandleInput() {
-  Scene::HandleInput();
-  TestSaveAndLoad();
+void GameScene::Render() {
+  Scene::Render();
+  Test();
 }
+
+void GameScene::HandleInput() { Scene::HandleInput(); }
 
 void GameScene::Clean() { Scene::Clean(); }
 
@@ -321,16 +321,14 @@ void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
   scene_manager_.RequestReplaceScene(std::move(next_scene));
 }
 
-void GameScene::TestSaveAndLoad() {
-  auto input_manager = context_.GetInputManager();
-  if (input_manager.IsActionPressed("attack")) {
-    game_session_->SaveToFile("assets/save.json");
-  }
-  if (input_manager.IsActionPressed("pause")) {
-    game_session_->LoadFromFile("assets/save.json");
-    GAME_INFO("Current health: {}", game_session_->GetCurrentHealth());
-    GAME_INFO("Current score: {}", game_session_->GetCurrentScore());
-  }
+void GameScene::Test() {
+  auto& text_renderer = context_.GetTextRenderer();
+  const auto& camera = context_.GetCamera();
+  text_renderer.DrawUIText("UI Text", "assets/fonts/VonwaonBitmap-16px.ttf", 32,
+                           glm::vec2(100.0f), {0, 1.0f, 0, 1.0f});
+  text_renderer.DrawText(camera, "Map Text",
+                         "assets/fonts/VonwaonBitmap-16px.ttf", 32,
+                         glm::vec2(200.0f));
 }
 
 }  // namespace game::scene

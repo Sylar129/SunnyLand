@@ -7,6 +7,7 @@
 #include "engine/core/config.h"
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
+#include "engine/render/text_renderer.h"
 #include "engine/utils/non_copyable.h"
 
 struct SDL_Window;
@@ -15,6 +16,7 @@ struct SDL_Renderer;
 namespace engine::render {
 class Renderer;
 class Camera;
+class TextRenderer;
 }  // namespace engine::render
 
 namespace engine::resource {
@@ -47,6 +49,7 @@ class GameApp final {
   [[nodiscard]] bool InitSDL();
   [[nodiscard]] bool InitRenderer();
   [[nodiscard]] bool InitCamera();
+  [[nodiscard]] bool InitTextRenderer();
   [[nodiscard]] bool InitTime();
   [[nodiscard]] bool InitResourceManager();
   [[nodiscard]] bool InitInputManager();
@@ -66,6 +69,7 @@ class GameApp final {
   std::unique_ptr<resource::ResourceManager> resource_manager_;
   std::unique_ptr<engine::render::Renderer> renderer_;
   std::unique_ptr<engine::render::Camera> camera_;
+  std::unique_ptr<engine::render::TextRenderer> text_renderer_;
   std::unique_ptr<engine::core::Config> config_;
   std::unique_ptr<engine::input::InputManager> input_manager_;
   std::unique_ptr<engine::physics::PhysicsEngine> physics_engine_;
