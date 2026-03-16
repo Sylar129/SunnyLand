@@ -12,12 +12,12 @@ namespace engine::ui {
 UIElement::UIElement(const glm::vec2& position, const glm::vec2& size)
     : position_(position), size_(size) {}
 
-bool UIElement::handleInput(engine::core::Context& context) {
+bool UIElement::HandleInput(engine::core::Context& context) {
   if (!visible_) return false;
 
   for (auto it = children_.begin(); it != children_.end();) {
-    if (*it && !(*it)->isNeedRemove()) {
-      if ((*it)->handleInput(context)) return true;
+    if (*it && !(*it)->IsNeedRemove()) {
+      if ((*it)->HandleInput(context)) return true;
       ++it;
     } else {
       it = children_.erase(it);
@@ -26,12 +26,12 @@ bool UIElement::handleInput(engine::core::Context& context) {
   return false;
 }
 
-void UIElement::update(float delta_time, engine::core::Context& context) {
+void UIElement::Update(float delta_time, engine::core::Context& context) {
   if (!visible_) return;
 
   for (auto it = children_.begin(); it != children_.end();) {
-    if (*it && !(*it)->isNeedRemove()) {
-      (*it)->update(delta_time, context);
+    if (*it && !(*it)->IsNeedRemove()) {
+      (*it)->Update(delta_time, context);
       ++it;
     } else {
       it = children_.erase(it);
@@ -39,22 +39,22 @@ void UIElement::update(float delta_time, engine::core::Context& context) {
   }
 }
 
-void UIElement::render(engine::core::Context& context) {
+void UIElement::Render(engine::core::Context& context) {
   if (!visible_) return;
 
   for (const auto& child : children_) {
-    if (child) child->render(context);
+    if (child) child->Render(context);
   }
 }
 
-void UIElement::addChild(std::unique_ptr<UIElement> child) {
+void UIElement::AddChild(std::unique_ptr<UIElement> child) {
   if (child) {
-    child->setParent(this);
+    child->SetParent(this);
     children_.push_back(std::move(child));
   }
 }
 
-std::unique_ptr<UIElement> UIElement::removeChild(UIElement* child_ptr) {
+std::unique_ptr<UIElement> UIElement::RemoveChild(UIElement* child_ptr) {
   auto it = std::find_if(children_.begin(), children_.end(),
                          [child_ptr](const std::unique_ptr<UIElement>& p) {
                            return p.get() == child_ptr;
@@ -65,31 +65,31 @@ std::unique_ptr<UIElement> UIElement::removeChild(UIElement* child_ptr) {
   }
   std::unique_ptr<UIElement> removed_child = std::move(*it);
   children_.erase(it);
-  removed_child->setParent(nullptr);
+  removed_child->SetParent(nullptr);
   return removed_child;
 }
 
-void UIElement::removeAllChildren() {
+void UIElement::RemoveAllChildren() {
   for (auto& child : children_) {
-    child->setParent(nullptr);
+    child->SetParent(nullptr);
   }
   children_.clear();
 }
 
-glm::vec2 UIElement::getScreenPosition() const {
+glm::vec2 UIElement::GetScreenPosition() const {
   if (parent_) {
-    return parent_->getScreenPosition() + position_;
+    return parent_->GetScreenPosition() + position_;
   }
   return position_;
 }
 
-engine::utils::Rect UIElement::getBounds() const {
-  auto abs_pos = getScreenPosition();
+engine::utils::Rect UIElement::GetBounds() const {
+  auto abs_pos = GetScreenPosition();
   return engine::utils::Rect(abs_pos, size_);
 }
 
-bool UIElement::isPointInside(const glm::vec2& point) const {
-  auto bounds = getBounds();
+bool UIElement::IsPointInside(const glm::vec2& point) const {
+  auto bounds = GetBounds();
   return (point.x >= bounds.position.x &&
           point.x < (bounds.position.x + bounds.size.x) &&
           point.y >= bounds.position.y &&

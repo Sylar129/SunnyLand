@@ -51,7 +51,7 @@ void Scene::Update(float delta_time) {
     }
   }
 
-  ui_manager_->update(delta_time, context_);
+  ui_manager_->Update(delta_time, context_);
 
   ProcessPendingAdditions();
 }
@@ -64,7 +64,7 @@ void Scene::Render() {
     obj->Render(context_);
   }
 
-  ui_manager_->render(context_);
+  ui_manager_->Render(context_);
 }
 
 void Scene::HandleInput() {
@@ -72,7 +72,7 @@ void Scene::HandleInput() {
     return;
   }
 
-  if (ui_manager_->handleInput(context_)) return;
+  if (ui_manager_->HandleInput(context_)) return;
 
   for (auto it = game_objects_.begin(); it != game_objects_.end();) {
     auto& object = *it;

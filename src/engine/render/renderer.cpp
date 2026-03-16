@@ -168,7 +168,7 @@ void Renderer::DrawUISprite(const Sprite& sprite, const glm::vec2& position,
   }
 }
 
-void Renderer::drawUIFilledRect(const engine::utils::Rect& rect,
+void Renderer::DrawUIFilledRect(const engine::utils::Rect& rect,
                                 const engine::utils::FColor& color) {
   SetDrawColorFloat(color.r, color.g, color.b, color.a);
   SDL_FRect sdl_rect = {rect.position.x, rect.position.y, rect.size.x,

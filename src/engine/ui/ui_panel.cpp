@@ -15,15 +15,15 @@ UIPanel::UIPanel(const glm::vec2& position, const glm::vec2& size,
                position.x, position.y, size.x, size.y);
 }
 
-void UIPanel::render(engine::core::Context& context) {
+void UIPanel::Render(engine::core::Context& context) {
   if (!visible_) return;
 
   if (background_color_) {
-    context.GetRenderer().drawUIFilledRect(getBounds(),
+    context.GetRenderer().DrawUIFilledRect(GetBounds(),
                                            background_color_.value());
   }
 
-  UIElement::render(context);
+  UIElement::Render(context);
 }
 
 }  // namespace engine::ui

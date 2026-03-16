@@ -165,12 +165,12 @@ void GameScene::InitEnemyAndItem() {
 }
 
 void GameScene::InitUI() {
-  if (!ui_manager_->init(glm::vec2(640.0f, 360.0f))) {
+  if (!ui_manager_->Init(glm::vec2(640.0f, 360.0f))) {
     GAME_ERROR("Failed to initialize UIManager.");
     return;
   }
 
-  ui_manager_->addElement(std::make_unique<engine::ui::UIPanel>(
+  ui_manager_->AddElement(std::make_unique<engine::ui::UIPanel>(
       glm::vec2(100.0f, 100.0f), glm::vec2(200.0f, 200.0f),
       engine::utils::FColor{1.0f, 1.0f, 1.0f, 1.0f}));
 }

@@ -16,15 +16,15 @@ class UIPanel final : public UIElement {
                    const std::optional<engine::utils::FColor>&
                        background_color = std::nullopt);
 
-  void setBackgroundColor(
+  void SetBackgroundColor(
       const std::optional<engine::utils::FColor>& background_color) {
     background_color_ = background_color;
   }
-  const std::optional<engine::utils::FColor>& getBackgroundColor() const {
+  const std::optional<engine::utils::FColor>& GetBackgroundColor() const {
     return background_color_;
   }
 
-  void render(engine::core::Context& context) override;
+  void Render(engine::core::Context& context) override;
 
  private:
   std::optional<engine::utils::FColor> background_color_;

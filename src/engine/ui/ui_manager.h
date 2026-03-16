@@ -24,14 +24,14 @@ class UIManager final {
 
   DISABLE_COPY_AND_MOVE(UIManager);
 
-  [[nodiscard]] bool init(const glm::vec2& window_size);
-  void addElement(std::unique_ptr<UIElement> element);
-  UIPanel* getRootElement() const;
-  void clearElements();
+  [[nodiscard]] bool Init(const glm::vec2& window_size);
+  void AddElement(std::unique_ptr<UIElement> element);
+  UIPanel* GetRootElement() const;
+  void ClearElements();
 
-  bool handleInput(engine::core::Context&);
-  void update(float delta_time, engine::core::Context&);
-  void render(engine::core::Context&);
+  bool HandleInput(engine::core::Context&);
+  void Update(float delta_time, engine::core::Context&);
+  void Render(engine::core::Context&);
 
  private:
   std::unique_ptr<UIPanel> root_element_;

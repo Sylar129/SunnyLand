@@ -16,47 +16,47 @@ UIManager::UIManager() {
   ENGINE_TRACE("UIManager created with root UIPanel.");
 }
 
-bool UIManager::init(const glm::vec2& window_size) {
-  root_element_->setSize(window_size);
+bool UIManager::Init(const glm::vec2& window_size) {
+  root_element_->SetSize(window_size);
   ENGINE_TRACE("UIManager initialized with window size ({}, {})", window_size.x,
                window_size.y);
   return true;
 }
 
-void UIManager::addElement(std::unique_ptr<UIElement> element) {
+void UIManager::AddElement(std::unique_ptr<UIElement> element) {
   if (!root_element_) {
     ENGINE_TRACE("Cannot add UIElement because root_element_ is null.");
     return;
   }
-  root_element_->addChild(std::move(element));
+  root_element_->AddChild(std::move(element));
 }
 
-void UIManager::clearElements() {
+void UIManager::ClearElements() {
   if (root_element_) {
-    root_element_->removeAllChildren();
+    root_element_->RemoveAllChildren();
     ENGINE_TRACE("All UIElements removed from root UIPanel.");
   }
 }
 
-bool UIManager::handleInput(engine::core::Context& context) {
-  if (root_element_ && root_element_->isVisible()) {
-    if (root_element_->handleInput(context)) return true;
+bool UIManager::HandleInput(engine::core::Context& context) {
+  if (root_element_ && root_element_->IsVisible()) {
+    if (root_element_->HandleInput(context)) return true;
   }
   return false;
 }
 
-void UIManager::update(float delta_time, engine::core::Context& context) {
-  if (root_element_ && root_element_->isVisible()) {
-    root_element_->update(delta_time, context);
+void UIManager::Update(float delta_time, engine::core::Context& context) {
+  if (root_element_ && root_element_->IsVisible()) {
+    root_element_->Update(delta_time, context);
   }
 }
 
-void UIManager::render(engine::core::Context& context) {
-  if (root_element_ && root_element_->isVisible()) {
-    root_element_->render(context);
+void UIManager::Render(engine::core::Context& context) {
+  if (root_element_ && root_element_->IsVisible()) {
+    root_element_->Render(context);
   }
 }
 
-UIPanel* UIManager::getRootElement() const { return root_element_.get(); }
+UIPanel* UIManager::GetRootElement() const { return root_element_.get(); }
 
 }  // namespace engine::ui
