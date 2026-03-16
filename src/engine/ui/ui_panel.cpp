@@ -1,17 +1,18 @@
-#include "ui_panel.h"
+// Copyright Sylar129
 
-#include <SDL3/SDL_pixels.h>
-#include <spdlog/spdlog.h>
+#include "engine/ui/ui_panel.h"
 
-#include "../core/context.h"
-#include "../render/renderer.h"
+#include "engine/core/context.h"
+#include "engine/render/renderer.h"
+#include "log.h"
 
 namespace engine::ui {
 
 UIPanel::UIPanel(const glm::vec2& position, const glm::vec2& size,
                  const std::optional<engine::utils::FColor>& background_color)
     : UIElement(position, size), background_color_(background_color) {
-  spdlog::trace("UIPanel 构造完成。");
+  ENGINE_TRACE("UIPanel created at position ({}, {}) with size ({}, {})",
+               position.x, position.y, size.x, size.y);
 }
 
 void UIPanel::render(engine::core::Context& context) {
@@ -22,7 +23,7 @@ void UIPanel::render(engine::core::Context& context) {
                                            background_color_.value());
   }
 
-  UIElement::render(context);  // 调用基类渲染方法(绘制子节点)
+  UIElement::render(context);
 }
 
 }  // namespace engine::ui
