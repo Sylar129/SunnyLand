@@ -57,6 +57,7 @@ bool GameApp::Init() {
   if (!InitResourceManager()) return false;
   if (!InitRenderer()) return false;
   if (!InitCamera()) return false;
+  if (!InitTextRenderer()) return false;
   if (!InitInputManager()) return false;
   if (!InitPhysicsEngine()) return false;
   if (!InitContext()) return false;
@@ -157,6 +158,13 @@ bool GameApp::InitCamera() {
   return true;
 }
 
+bool GameApp::InitTextRenderer() {
+  text_renderer_ = std::make_unique<engine::render::TextRenderer>(
+      sdl_renderer_, resource_manager_.get());
+  ENGINE_TRACE("TextRenderer initialized successfully.");
+  return true;
+}
+
 bool GameApp::InitTime() {
   time_ = std::make_unique<Time>();
   time_->SetTargetFps(config_->performance.target_fps);
@@ -181,8 +189,8 @@ bool GameApp::InitInputManager() {
 
 bool GameApp::InitContext() {
   context_ = std::make_unique<engine::core::Context>(
-      *input_manager_, *renderer_, *camera_, *resource_manager_,
-      *physics_engine_);
+      *input_manager_, *renderer_, *camera_, *text_renderer_,
+      *resource_manager_, *physics_engine_);
   ENGINE_ASSERT(context_, "Failed to Init Context!");
 
   ENGINE_ERROR("Init Context successfully.");

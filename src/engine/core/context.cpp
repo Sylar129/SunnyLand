@@ -13,11 +13,13 @@ namespace engine::core {
 Context::Context(engine::input::InputManager& input_manager,
                  engine::render::Renderer& renderer,
                  engine::render::Camera& camera,
+                 engine::render::TextRenderer& text_renderer,
                  engine::resource::ResourceManager& resource_manager,
                  engine::physics::PhysicsEngine& physics_engine)
     : input_manager_(input_manager),
       renderer_(renderer),
       camera_(camera),
+      text_renderer_(text_renderer),
       resource_manager_(resource_manager),
       physics_engine_(physics_engine) {
   ENGINE_TRACE("Context has been initialized.");

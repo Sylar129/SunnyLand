@@ -48,7 +48,7 @@ class GameScene final : public engine::scene::Scene {
     return "assets/maps/" + level_name + ".tmj";
   }
 
-  void TestSaveAndLoad();
+  void Test();
 
   engine::object::GameObject* player_ = nullptr;
   std::shared_ptr<game::data::Session> game_session_;
