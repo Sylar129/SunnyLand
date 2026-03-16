@@ -9,6 +9,7 @@
 #include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
 #include "engine/scene/scene_manager.h"
+#include "engine/ui/ui_manager.h"
 #include "log.h"
 
 namespace engine::scene {
@@ -18,6 +19,7 @@ Scene::Scene(const std::string& name, engine::core::Context& context,
     : scene_name_(name),
       context_(context),
       scene_manager_(scene_manager),
+      ui_manager_(std::make_unique<engine::ui::UIManager>()),
       is_initialized_(false) {
   ENGINE_TRACE("Scene '{}' created.", scene_name_);
 }
@@ -49,6 +51,8 @@ void Scene::Update(float delta_time) {
     }
   }
 
+  ui_manager_->Update(delta_time, context_);
+
   ProcessPendingAdditions();
 }
 
@@ -59,12 +63,16 @@ void Scene::Render() {
   for (const auto& obj : game_objects_) {
     obj->Render(context_);
   }
+
+  ui_manager_->Render(context_);
 }
 
 void Scene::HandleInput() {
   if (!is_initialized_) {
     return;
   }
+
+  if (ui_manager_->HandleInput(context_)) return;
 
   for (auto it = game_objects_.begin(); it != game_objects_.end();) {
     auto& object = *it;

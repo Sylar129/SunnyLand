@@ -168,6 +168,17 @@ void Renderer::DrawUISprite(const Sprite& sprite, const glm::vec2& position,
   }
 }
 
+void Renderer::DrawUIFilledRect(const engine::utils::Rect& rect,
+                                const engine::utils::FColor& color) {
+  SetDrawColorFloat(color.r, color.g, color.b, color.a);
+  SDL_FRect sdl_rect = {rect.position.x, rect.position.y, rect.size.x,
+                        rect.size.y};
+  if (!SDL_RenderFillRect(renderer_, &sdl_rect)) {
+    ENGINE_ERROR("Failed to render filled rectangle: {}", SDL_GetError());
+  }
+  SetDrawColor(0, 0, 0, 1.0f);
+}
+
 void Renderer::SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
   if (!SDL_SetRenderDrawColor(renderer_, r, g, b, a)) {
     ENGINE_ERROR("Failed to set render draw color: {}", SDL_GetError());

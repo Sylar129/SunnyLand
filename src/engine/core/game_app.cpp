@@ -143,6 +143,8 @@ bool GameApp::InitRenderer() {
   renderer_ = std::make_unique<engine::render::Renderer>(
       sdl_renderer_, resource_manager_.get());
 
+  SDL_SetRenderDrawBlendMode(sdl_renderer_, SDL_BLENDMODE_BLEND);
+
   ENGINE_ASSERT(renderer_, "Failed to Init Renderer!");
 
   ENGINE_TRACE("Renderer initialized successfully.");

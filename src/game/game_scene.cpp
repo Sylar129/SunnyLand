@@ -10,13 +10,14 @@
 #include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
-#include "engine/input/input_manager.h"
 #include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/render/animation.h"
 #include "engine/render/camera.h"
 #include "engine/scene/level_loader.h"
 #include "engine/scene/scene_manager.h"
+#include "engine/ui/ui_manager.h"
+#include "engine/ui/ui_panel.h"
 #include "engine/utils/assert.h"
 #include "game/component/ai/jump_behavior.h"
 #include "game/component/ai/patrol_behavior.h"
@@ -44,6 +45,7 @@ void GameScene::Init() {
   InitLevel();
   InitPlayer();
   InitEnemyAndItem();
+  InitUI();
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());
 }
@@ -54,10 +56,7 @@ void GameScene::Update(float delta_time) {
   HandleTileTriggers();
 }
 
-void GameScene::Render() {
-  Scene::Render();
-  Test();
-}
+void GameScene::Render() { Scene::Render(); }
 
 void GameScene::HandleInput() { Scene::HandleInput(); }
 
@@ -164,6 +163,17 @@ void GameScene::InitEnemyAndItem() {
       }
     }
   }
+}
+
+void GameScene::InitUI() {
+  if (!ui_manager_->Init(glm::vec2(640.0f, 360.0f))) {
+    GAME_ERROR("Failed to initialize UIManager.");
+    return;
+  }
+
+  ui_manager_->AddElement(std::make_unique<engine::ui::UIPanel>(
+      glm::vec2(100.0f, 100.0f), glm::vec2(200.0f, 200.0f),
+      engine::utils::FColor{0.5f, 0.0f, 0.0f, 0.3f}));
 }
 
 void GameScene::HandleObjectCollisions() {
@@ -319,16 +329,6 @@ void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
   auto next_scene = std::make_unique<game::scene::GameScene>(
       context_, scene_manager_, game_session_);
   scene_manager_.RequestReplaceScene(std::move(next_scene));
-}
-
-void GameScene::Test() {
-  auto& text_renderer = context_.GetTextRenderer();
-  const auto& camera = context_.GetCamera();
-  text_renderer.DrawUIText("UI Text", "assets/fonts/VonwaonBitmap-16px.ttf", 32,
-                           glm::vec2(100.0f), {0, 1.0f, 0, 1.0f});
-  text_renderer.DrawText(camera, "Map Text",
-                         "assets/fonts/VonwaonBitmap-16px.ttf", 32,
-                         glm::vec2(200.0f));
 }
 
 }  // namespace game::scene

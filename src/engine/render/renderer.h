@@ -5,11 +5,13 @@
 #include <glm/glm.hpp>
 #include <optional>  // For std::optional
 
+#include "engine/utils/math.h"
 #include "engine/utils/non_copyable.h"
 #include "sprite.h"
 
 struct SDL_Renderer;
 struct SDL_FRect;
+struct SDL_FColor;
 
 namespace engine::resource {
 class ResourceManager;
@@ -82,6 +84,9 @@ class Renderer final {
    */
   void DrawUISprite(const Sprite& sprite, const glm::vec2& position,
                     const std::optional<glm::vec2>& size = std::nullopt);
+
+  void DrawUIFilledRect(const engine::utils::Rect& rect,
+                        const engine::utils::FColor& color);
 
   void Present();  ///< @brief Update screen, wraps SDL_RenderPresent function
   void ClearScreen();  ///< @brief Clear screen, wraps SDL_RenderClear function

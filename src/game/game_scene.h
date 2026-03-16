@@ -31,6 +31,7 @@ class GameScene final : public engine::scene::Scene {
   void InitLevel();
   void InitPlayer();
   void InitEnemyAndItem();
+  void InitUI();
 
   void HandleObjectCollisions();
   void HandleTileTriggers();
@@ -47,8 +48,6 @@ class GameScene final : public engine::scene::Scene {
   std::string LevelNameToPath(const std::string& level_name) const {
     return "assets/maps/" + level_name + ".tmj";
   }
-
-  void Test();
 
   engine::object::GameObject* player_ = nullptr;
   std::shared_ptr<game::data::Session> game_session_;

@@ -57,6 +57,12 @@ set(TARGET_SOURCES
     src/engine/scene/scene_manager.h
     src/engine/scene/scene.cpp
     src/engine/scene/scene.h
+    src/engine/ui/ui_element.cpp
+    src/engine/ui/ui_element.h
+    src/engine/ui/ui_manager.cpp
+    src/engine/ui/ui_manager.h
+    src/engine/ui/ui_panel.cpp
+    src/engine/ui/ui_panel.h
     src/engine/utils/alignment.h
     src/engine/utils/assert.h
     src/engine/utils/math.h
