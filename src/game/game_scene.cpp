@@ -398,7 +398,7 @@ void GameScene::AddScoreWithUI(int score) {
   game_session_->AddScore(score);
   auto score_text =
       "Score: " + std::to_string(game_session_->GetCurrentScore());
-  score_label_->setText(score_text);
+  score_label_->SetText(score_text);
 }
 
 void GameScene::HealWithUI(int amount) {
