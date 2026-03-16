@@ -45,6 +45,7 @@ void GameScene::Init() {
   InitLevel();
   InitPlayer();
   InitEnemyAndItem();
+  InitUI();
   Scene::Init();
   GAME_TRACE("Init GameScene '{}'", GetName());
 }
@@ -172,7 +173,7 @@ void GameScene::InitUI() {
 
   ui_manager_->AddElement(std::make_unique<engine::ui::UIPanel>(
       glm::vec2(100.0f, 100.0f), glm::vec2(200.0f, 200.0f),
-      engine::utils::FColor{1.0f, 1.0f, 1.0f, 1.0f}));
+      engine::utils::FColor{0.5f, 0.0f, 0.0f, 0.3f}));
 }
 
 void GameScene::HandleObjectCollisions() {
