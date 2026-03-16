@@ -1,9 +1,14 @@
+// Copyright Sylar129
+
 #pragma once
-#include "../render/sprite.h"
-#include "ui_element.h"
-#include <SDL3/SDL_rect.h>
+
 #include <optional>
 #include <string>
+
+#include "SDL3/SDL_rect.h"
+
+#include "engine/render/sprite.h"
+#include "engine/ui/ui_element.h"
 
 namespace engine::ui {
 
@@ -56,4 +61,4 @@ public:
   void setFlipped(bool flipped) { sprite_.SetFlipped(flipped); }
 };
 
-} // namespace engine::ui
+}  // namespace engine::ui

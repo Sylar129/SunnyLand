@@ -1,10 +1,12 @@
-#include "ui_image.h"
+// Copyright Sylar129
+
+#include "engine/ui/ui_image.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../core/context.h"
-#include "../render/renderer.h"
-#include "../render/sprite.h"
+#include "engine/core/context.h"
+#include "engine/render/renderer.h"
+#include "engine/render/sprite.h"
 
 namespace engine::ui {
 

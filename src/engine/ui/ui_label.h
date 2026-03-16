@@ -1,7 +1,10 @@
+// Copyright Sylar129
+
 #pragma once
-#include "../render/text_renderer.h"
-#include "../utils/math.h"
-#include "ui_element.h"
+
+#include "engine/render/text_renderer.h"
+#include "engine/ui/ui_element.h"
+#include "engine/utils/math.h"
 
 namespace engine::ui {
 

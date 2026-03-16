@@ -1,9 +1,11 @@
-#include "ui_label.h"
+// Copyright Sylar129
+
+#include "engine/ui/ui_label.h"
 
 #include <spdlog/spdlog.h>
 
-#include "../core/context.h"
-#include "../render/text_renderer.h"
+#include "engine/core/context.h"
+#include "engine/render/text_renderer.h"
 
 namespace engine::ui {
 
