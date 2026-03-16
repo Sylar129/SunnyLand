@@ -324,10 +324,9 @@ void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
 void GameScene::Test() {
   auto& text_renderer = context_.GetTextRenderer();
   const auto& camera = context_.GetCamera();
-  // UI和地图各渲染一次，测试是否正常
-  text_renderer.drawUIText("UI Text", "assets/fonts/VonwaonBitmap-16px.ttf", 32,
+  text_renderer.DrawUIText("UI Text", "assets/fonts/VonwaonBitmap-16px.ttf", 32,
                            glm::vec2(100.0f), {0, 1.0f, 0, 1.0f});
-  text_renderer.drawText(camera, "Map Text",
+  text_renderer.DrawText(camera, "Map Text",
                          "assets/fonts/VonwaonBitmap-16px.ttf", 32,
                          glm::vec2(200.0f));
 }
