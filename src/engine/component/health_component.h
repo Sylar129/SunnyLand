@@ -15,7 +15,7 @@ class HealthComponent final : public engine::component::Component {
   ~HealthComponent() override = default;
 
   bool TakeDamage(int damage_amount);
-  void Heal(int heal_amount);
+  int Heal(int heal_amount);
 
   bool IsAlive() const { return current_health_ > 0; }
   bool IsInvincible() const { return is_invincible_; }

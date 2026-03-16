@@ -16,6 +16,8 @@
 #include "engine/render/camera.h"
 #include "engine/scene/level_loader.h"
 #include "engine/scene/scene_manager.h"
+#include "engine/ui/ui_image.h"
+#include "engine/ui/ui_label.h"
 #include "engine/ui/ui_manager.h"
 #include "engine/ui/ui_panel.h"
 #include "engine/utils/assert.h"
@@ -171,9 +173,8 @@ void GameScene::InitUI() {
     return;
   }
 
-  ui_manager_->AddElement(std::make_unique<engine::ui::UIPanel>(
-      glm::vec2(100.0f, 100.0f), glm::vec2(200.0f, 200.0f),
-      engine::utils::FColor{0.5f, 0.0f, 0.0f, 0.3f}));
+  createScoreUI();
+  createHealthUI();
 }
 
 void GameScene::HandleObjectCollisions() {
@@ -191,10 +192,10 @@ void GameScene::HandleObjectCollisions() {
     } else if (obj2->GetName() == "player" && obj1->GetTag() == "item") {
       PlayerVSItemCollision(obj2, obj1);
     } else if (obj1->GetName() == "player" && obj2->GetTag() == "hazard") {
-      obj1->GetComponent<game::component::PlayerComponent>()->TakeDamage(1);
+      HandlePlayerDamage(1);
       GAME_DEBUG("Player '{}' taking damage from hazard", obj1->GetName());
     } else if (obj2->GetName() == "player" && obj1->GetTag() == "hazard") {
-      obj2->GetComponent<game::component::PlayerComponent>()->TakeDamage(1);
+      HandlePlayerDamage(1);
       GAME_DEBUG("Player '{}' taking damage from hazard", obj2->GetName());
     } else if (obj1->GetName() == "player" && obj2->GetTag() == "next_level") {
       ToNextLevel(obj2);
@@ -228,8 +229,7 @@ void GameScene::HandlePlayerDamage(int damage) {
   if (player_component->IsDead()) {
     GAME_INFO("Player {} is dead", player_->GetName());
   }
-  game_session_->SetCurrentHealth(
-      player_component->getHealthComponent()->GetCurrentHealth());
+  updateHealthWithUI();
 }
 
 void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
@@ -259,7 +259,7 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
       GAME_INFO("Enemy {} defeated by player {}", enemy->GetName(),
                 player->GetName());
       enemy->SetNeedRemove(true);
-      game_session_->AddScore(10);
+      addScoreWithUI(10);
 
       CreateEffect(enemy_center, enemy->GetTag());
     }
@@ -275,9 +275,9 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
 void GameScene::PlayerVSItemCollision(engine::object::GameObject* player,
                                       engine::object::GameObject* item) {
   if (item->GetName() == "fruit") {
-    player->GetComponent<engine::component::HealthComponent>()->Heal(1);
+    healWithUI(1);
   } else if (item->GetName() == "gem") {
-    game_session_->AddScore(5);
+    addScoreWithUI(5);
   }
   item->SetNeedRemove(true);
   auto item_aabb = item->GetComponent<engine::component::ColliderComponent>()
@@ -329,6 +329,88 @@ void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
   auto next_scene = std::make_unique<game::scene::GameScene>(
       context_, scene_manager_, game_session_);
   scene_manager_.RequestReplaceScene(std::move(next_scene));
+}
+
+void GameScene::createScoreUI() {
+  // 创建得分标签
+  auto score_text =
+      "Score: " + std::to_string(game_session_->GetCurrentScore());
+  auto score_label = std::make_unique<engine::ui::UILabel>(
+      context_.GetTextRenderer(), score_text,
+      "assets/fonts/VonwaonBitmap-16px.ttf", 16);
+  score_label_ = score_label.get();  // 成员变量赋值（获取裸指针）
+  auto screen_size = ui_manager_->GetRootElement()->GetSize();  // 获取屏幕尺寸
+  score_label_->SetPosition(glm::vec2(screen_size.x - 100.0f, 10.0f));
+  ui_manager_->AddElement(std::move(score_label));
+}
+
+void GameScene::createHealthUI() {
+  int max_health = game_session_->GetMaxHealth();
+  int current_health = game_session_->GetCurrentHealth();
+  float start_x = 10.0f;
+  float start_y = 10.0f;
+  float icon_width = 20.0f;
+  float icon_height = 18.0f;
+  float spacing = 5.0f;
+  std::string full_heart_tex = "assets/textures/UI/Heart.png";
+  std::string empty_heart_tex = "assets/textures/UI/Heart-bg.png";
+
+  // 创建一个默认的UIPanel (不需要背景色，因此大小无所谓，只用于定位)
+  auto health_panel = std::make_unique<engine::ui::UIPanel>();
+  health_panel_ = health_panel.get();  // 成员变量赋值（获取裸指针）
+
+  // --- 根据最大生命值，循环创建生命值图标(添加到UIPanel中) ---
+  for (int i = 0; i < max_health; ++i) {  // 创建背景图标
+    glm::vec2 icon_pos = {start_x + i * (icon_width + spacing), start_y};
+    glm::vec2 icon_size = {icon_width, icon_height};
+
+    auto bg_icon = std::make_unique<engine::ui::UIImage>(empty_heart_tex,
+                                                         icon_pos, icon_size);
+    health_panel_->AddChild(std::move(bg_icon));
+  }
+  for (int i = 0; i < current_health; ++i) {  // 创建前景图标
+    glm::vec2 icon_pos = {start_x + i * (icon_width + spacing), start_y};
+    glm::vec2 icon_size = {icon_width, icon_height};
+
+    auto fg_icon = std::make_unique<engine::ui::UIImage>(full_heart_tex,
+                                                         icon_pos, icon_size);
+    health_panel_->AddChild(std::move(fg_icon));
+  }
+  // 将UIPanel添加到UI管理器中
+  ui_manager_->AddElement(std::move(health_panel));
+}
+
+void GameScene::updateHealthWithUI() {
+  if (!player_ || !health_panel_) {
+    GAME_ERROR("玩家对象或 HealthPanel 不存在，无法更新生命值UI");
+    return;
+  }
+
+  // 获取当前生命值并更新游戏数据
+  auto current_health =
+      player_->GetComponent<engine::component::HealthComponent>()
+          ->GetCurrentHealth();
+  game_session_->SetCurrentHealth(current_health);
+  auto max_health = game_session_->GetMaxHealth();
+
+  // 前景图标是后添加的，因此设置后半段的可见性即可
+  for (auto i = max_health; i < max_health * 2; ++i) {
+    health_panel_->GetChildren()[i]->SetVisible(i - max_health <
+                                                current_health);
+  }
+}
+
+void GameScene::addScoreWithUI(int score) {
+  game_session_->AddScore(score);
+  auto score_text =
+      "Score: " + std::to_string(game_session_->GetCurrentScore());
+  GAME_INFO("得分: {}", score_text);
+  score_label_->setText(score_text);
+}
+
+void GameScene::healWithUI(int amount) {
+  player_->GetComponent<engine::component::HealthComponent>()->Heal(amount);
+  updateHealthWithUI();  // 更新生命值与UI
 }
 
 }  // namespace game::scene

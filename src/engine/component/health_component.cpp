@@ -44,15 +44,16 @@ bool HealthComponent::TakeDamage(int damage_amount) {
   return true;
 }
 
-void HealthComponent::Heal(int heal_amount) {
+int HealthComponent::Heal(int heal_amount) {
   if (heal_amount <= 0 || !IsAlive()) {
-    return;
+    return current_health_;
   }
 
   current_health_ += heal_amount;
   current_health_ = std::min(max_health_, current_health_);
   ENGINE_DEBUG("GameObject '{}' healed {} health, current health: {}/{}.",
                owner_->GetName(), heal_amount, current_health_, max_health_);
+  return current_health_;
 }
 
 void HealthComponent::SetInvincible(float duration) {
