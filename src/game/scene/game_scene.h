@@ -49,6 +49,7 @@ class GameScene final : public engine::scene::Scene {
   void CreateEffect(const glm::vec2& center_pos, const std::string& tag);
 
   void ToNextLevel(engine::object::GameObject* trigger);
+  void ShowEndScene(bool is_win);
 
   std::string LevelNameToPath(const std::string& level_name) const {
     return "assets/maps/" + level_name + ".tmj";

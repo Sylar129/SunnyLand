@@ -113,6 +113,8 @@ set(TARGET_SOURCES
     src/game/component/player_component.h
     src/game/data/session_data.cpp
     src/game/data/session_data.h
+    src/game/scene/end_scene.cpp
+    src/game/scene/end_scene.h
     src/game/scene/game_scene.cpp
     src/game/scene/game_scene.h
     src/game/scene/helps_scene.cpp
