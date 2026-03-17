@@ -23,6 +23,8 @@ set(TARGET_SOURCES
     src/engine/core/context.h
     src/engine/core/game_app.cpp
     src/engine/core/game_app.h
+    src/engine/core/game_state.cpp
+    src/engine/core/game_state.h
     src/engine/core/time.cpp
     src/engine/core/time.h
     src/engine/input/input_manager.cpp
@@ -115,6 +117,8 @@ set(TARGET_SOURCES
     src/game/scene/game_scene.h
     src/game/scene/helps_scene.cpp
     src/game/scene/helps_scene.h
+    src/game/scene/menu_scene.cpp
+    src/game/scene/menu_scene.h
     src/game/scene/title_scene.cpp
     src/game/scene/title_scene.h
     src/log.cpp

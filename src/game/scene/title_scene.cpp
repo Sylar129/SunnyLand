@@ -3,6 +3,7 @@
 #include "game/scene/title_scene.h"
 
 #include "engine/core/context.h"
+#include "engine/core/game_state.h"
 #include "engine/input/input_manager.h"
 #include "engine/render/camera.h"
 #include "engine/resource/resource_manager.h"
@@ -51,7 +52,8 @@ void TitleScene::Init() {
 
 void TitleScene::CreateUI() {
   GAME_TRACE("Creating TitleScene UI...");
-  auto window_size = glm::vec2(640.0f, 360.0f);
+  context_.getGameState().setState(engine::core::State::Title);
+  auto window_size = context_.getGameState().getLogicalSize();
 
   if (!ui_manager_->Init(window_size)) {
     GAME_ERROR("init UIManager failed!");
