@@ -5,9 +5,9 @@
 #include <map>
 #include <string>
 
-#include "engine/utils/math.h"
 #include "glm/vec2.hpp"
 #include "nlohmann/json.hpp"
+#include "utils/math.h"
 
 namespace engine::component {
 struct TileInfo;

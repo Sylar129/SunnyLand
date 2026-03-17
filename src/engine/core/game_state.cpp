@@ -2,8 +2,8 @@
 
 #include "engine/core/game_state.h"
 
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::core {
 

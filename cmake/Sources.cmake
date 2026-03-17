@@ -80,10 +80,6 @@ set(TARGET_SOURCES
     src/engine/ui/ui_manager.h
     src/engine/ui/ui_panel.cpp
     src/engine/ui/ui_panel.h
-    src/engine/utils/alignment.h
-    src/engine/utils/assert.h
-    src/engine/utils/math.h
-    src/engine/utils/non_copyable.h
     src/game/component/ai/ai_behavior.h
     src/game/component/ai/jump_behavior.cpp
     src/game/component/ai/jump_behavior.h
@@ -123,8 +119,12 @@ set(TARGET_SOURCES
     src/game/scene/menu_scene.h
     src/game/scene/title_scene.cpp
     src/game/scene/title_scene.h
-    src/log.cpp
-    src/log.h
+    src/utils/alignment.h
+    src/utils/assert.h
+    src/utils/log.cpp
+    src/utils/log.h
+    src/utils/math.h
+    src/utils/non_copyable.h
     src/main.cpp)
 
 set(TARGET_INCLUDE_DIRS src)

@@ -5,9 +5,9 @@
 #include <glm/glm.hpp>
 #include <optional>  // For std::optional
 
-#include "engine/utils/math.h"
-#include "engine/utils/non_copyable.h"
 #include "sprite.h"
+#include "utils/math.h"
+#include "utils/non_copyable.h"
 
 struct SDL_Renderer;
 struct SDL_FRect;

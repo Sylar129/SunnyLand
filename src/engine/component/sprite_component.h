@@ -8,8 +8,8 @@
 #include "SDL3/SDL_rect.h"
 #include "engine/component/component.h"
 #include "engine/render/sprite.h"
-#include "engine/utils/alignment.h"
 #include "glm/vec2.hpp"
+#include "utils/alignment.h"
 
 namespace engine::resource {
 class ResourceManager;

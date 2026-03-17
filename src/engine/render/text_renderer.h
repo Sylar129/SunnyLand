@@ -5,9 +5,9 @@
 #include <string>
 
 #include "SDL3/SDL_render.h"
-#include "engine/utils/math.h"
-#include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
+#include "utils/math.h"
+#include "utils/non_copyable.h"
 
 struct TTF_TextEngine;
 

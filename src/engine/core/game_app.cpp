@@ -5,7 +5,7 @@
 #include <fstream>
 #include <memory>
 
-#include "SDL3/SDL.h"
+#include "SDL3/SDL_init.h"
 #include "assert.h"
 #include "engine/core/config.h"
 #include "engine/core/context.h"
@@ -16,9 +16,9 @@
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
 #include "engine/scene/scene_manager.h"
-#include "engine/utils/assert.h"
 #include "game/scene/title_scene.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::core {
 

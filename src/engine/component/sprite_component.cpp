@@ -8,8 +8,8 @@
 #include "engine/object/game_object.h"
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::component {
 

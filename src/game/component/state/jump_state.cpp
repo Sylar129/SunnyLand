@@ -10,7 +10,7 @@
 #include "game/component/state/climb_state.h"
 #include "game/component/state/fall_state.h"
 #include "glm/common.hpp"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::state {
 

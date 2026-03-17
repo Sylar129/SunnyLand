@@ -11,7 +11,7 @@
 #include "engine/render/camera.h"
 #include "engine/scene/scene_manager.h"
 #include "engine/ui/ui_manager.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::scene {
 

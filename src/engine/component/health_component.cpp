@@ -4,7 +4,7 @@
 
 #include "engine/object/game_object.h"
 #include "glm/common.hpp"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::component {
 

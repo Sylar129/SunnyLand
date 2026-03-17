@@ -8,12 +8,12 @@
 #include "engine/ui/ui_button.h"
 #include "engine/ui/ui_label.h"
 #include "engine/ui/ui_manager.h"
-#include "engine/utils/assert.h"
-#include "engine/utils/math.h"
 #include "game/data/session_data.h"
 #include "game/scene/game_scene.h"
 #include "game/scene/title_scene.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
+#include "utils/math.h"
 
 namespace game::scene {
 

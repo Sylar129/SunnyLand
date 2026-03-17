@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "engine/object/game_object.h"
-#include "engine/utils/math.h"
-#include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
+#include "utils/math.h"
+#include "utils/non_copyable.h"
 
 namespace engine::component {
 class PhysicsComponent;

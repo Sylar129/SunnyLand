@@ -8,7 +8,7 @@
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
 #include "engine/render/text_renderer.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 struct SDL_Window;
 struct SDL_Renderer;

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace game::component {
 class AIComponent;

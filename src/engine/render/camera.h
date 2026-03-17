@@ -4,8 +4,8 @@
 
 #include <optional>
 
-#include "engine/utils/math.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/math.h"
+#include "utils/non_copyable.h"
 
 namespace engine::component {
 class TransformComponent;

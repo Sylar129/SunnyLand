@@ -10,7 +10,7 @@
 #include "game/component/state/fall_state.h"
 #include "game/component/state/idle_state.h"
 #include "game/component/state/jump_state.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::state {
 

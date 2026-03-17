@@ -18,8 +18,8 @@
 #include "engine/physics/collider.h"
 #include "engine/render/animation.h"
 #include "engine/scene/scene.h"
-#include "log.h"
 #include "nlohmann/json.hpp"
+#include "utils/log.h"
 
 namespace engine::scene {
 

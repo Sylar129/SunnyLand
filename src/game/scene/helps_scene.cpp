@@ -7,7 +7,7 @@
 #include "engine/scene/scene_manager.h"
 #include "engine/ui/ui_image.h"
 #include "engine/ui/ui_manager.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::scene {
 

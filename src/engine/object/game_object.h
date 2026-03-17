@@ -10,8 +10,8 @@
 #include <utility>
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
-#include "log.h"
+#include "utils/log.h"
+#include "utils/non_copyable.h"
 
 namespace engine::object {
 

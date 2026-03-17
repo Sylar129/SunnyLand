@@ -22,7 +22,6 @@
 #include "engine/ui/ui_label.h"
 #include "engine/ui/ui_manager.h"
 #include "engine/ui/ui_panel.h"
-#include "engine/utils/assert.h"
 #include "game/component/ai/jump_behavior.h"
 #include "game/component/ai/patrol_behavior.h"
 #include "game/component/ai/updown_behavior.h"
@@ -31,7 +30,8 @@
 #include "game/data/session_data.h"
 #include "game/scene/end_scene.h"
 #include "game/scene/menu_scene.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace game::scene {
 

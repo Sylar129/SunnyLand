@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "SDL3/SDL_rect.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace engine::render {
 

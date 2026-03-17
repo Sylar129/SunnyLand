@@ -7,8 +7,8 @@
 #include <unordered_map>
 
 #include "SDL3/SDL_render.h"
-#include "engine/utils/non_copyable.h"
 #include "glm/glm.hpp"
+#include "utils/non_copyable.h"
 
 namespace engine::resource {
 

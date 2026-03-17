@@ -4,7 +4,7 @@
 
 #include "engine/core/context.h"
 #include "engine/render/text_renderer.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::ui {
 

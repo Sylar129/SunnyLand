@@ -5,7 +5,7 @@
 #include <optional>
 
 #include "engine/ui/ui_element.h"
-#include "engine/utils/math.h"
+#include "utils/math.h"
 
 namespace engine::ui {
 

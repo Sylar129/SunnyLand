@@ -9,9 +9,9 @@
 #include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/physics/collision.h"
-#include "engine/utils/assert.h"
 #include "glm/common.hpp"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::physics {
 

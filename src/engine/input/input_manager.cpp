@@ -4,9 +4,9 @@
 
 #include "SDL3/SDL.h"
 #include "engine/core/config.h"
-#include "engine/utils/assert.h"
 #include "glm/vec2.hpp"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::input {
 

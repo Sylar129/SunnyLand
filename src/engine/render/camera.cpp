@@ -3,8 +3,8 @@
 #include "engine/render/camera.h"
 
 #include "engine/component/transform_component.h"
-#include "engine/utils/math.h"
-#include "log.h"
+#include "utils/log.h"
+#include "utils/math.h"
 
 namespace engine::render {
 

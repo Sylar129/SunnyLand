@@ -5,8 +5,8 @@
 #include "engine/core/context.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/render/renderer.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::component {
 

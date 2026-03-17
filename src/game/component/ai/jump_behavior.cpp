@@ -7,7 +7,7 @@
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "game/component/ai_component.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::ai {
 

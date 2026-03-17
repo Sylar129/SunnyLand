@@ -6,8 +6,8 @@
 
 #include "engine/component/component.h"
 #include "engine/physics/collider.h"
-#include "engine/utils/alignment.h"
-#include "engine/utils/math.h"
+#include "utils/alignment.h"
+#include "utils/math.h"
 
 namespace engine::component {
 class TransformComponent;

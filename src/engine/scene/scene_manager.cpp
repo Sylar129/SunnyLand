@@ -4,7 +4,7 @@
 
 #include "engine/core/context.h"
 #include "engine/scene/scene.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::scene {
 

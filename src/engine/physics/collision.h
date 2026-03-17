@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "engine/utils/math.h"
+#include "utils/math.h"
 
 namespace engine::component {
 class ColliderComponent;

@@ -4,7 +4,7 @@
 
 #include <cstdlib>
 
-#include "log.h"
+#include "utils/log.h"
 
 #ifdef NDEBUG
 #define DEBUG_BREAK() std::abort()

@@ -10,11 +10,11 @@
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
-#include "engine/utils/assert.h"
 #include "game/component/state/dead_state.h"
 #include "game/component/state/hurt_state.h"
 #include "game/component/state/idle_state.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace game::component {
 

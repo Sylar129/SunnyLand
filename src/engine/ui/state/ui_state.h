@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace engine::core {
 class Context;

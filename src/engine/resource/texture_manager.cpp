@@ -3,8 +3,8 @@
 #include "engine/resource/texture_manager.h"
 
 #include "SDL3_image/SDL_image.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::resource {
 TextureManager::TextureManager(SDL_Renderer* renderer) : renderer_(renderer) {

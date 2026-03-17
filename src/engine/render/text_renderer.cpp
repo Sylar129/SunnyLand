@@ -5,8 +5,8 @@
 #include "SDL3_ttf/SDL_ttf.h"
 #include "engine/render/camera.h"
 #include "engine/resource/resource_manager.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::render {
 

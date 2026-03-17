@@ -3,7 +3,7 @@
 #include "engine/core/time.h"
 
 #include "SDL3/SDL_timer.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::core {
 

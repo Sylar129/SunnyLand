@@ -6,8 +6,8 @@
 #include "SDL3_ttf/SDL_ttf.h"
 #include "audio_manager.h"
 #include "font_manager.h"
-#include "log.h"
 #include "texture_manager.h"
+#include "utils/log.h"
 
 namespace engine::resource {
 
