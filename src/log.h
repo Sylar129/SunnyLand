@@ -11,7 +11,7 @@ class Log {
   static void Init();
 
   static std::shared_ptr<spdlog::logger>& GetEngineLogger() {
-    return ENGINE_LOG_logger_;
+    return engine_logger_;
   }
 
   static std::shared_ptr<spdlog::logger>& GetGameLogger() {
@@ -19,7 +19,7 @@ class Log {
   }
 
  private:
-  static std::shared_ptr<spdlog::logger> ENGINE_LOG_logger_;
+  static std::shared_ptr<spdlog::logger> engine_logger_;
   static std::shared_ptr<spdlog::logger> game_logger_;
 };
 

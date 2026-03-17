@@ -1,5 +1,5 @@
-# AI-generated code.
 #!/usr/bin/env bash
+# AI-generated code.
 # format.sh — format C++ sources with clang-format and CMake files with cmake-format
 #
 # Usage:
