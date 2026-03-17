@@ -35,13 +35,13 @@ void EndScene::Init() {
 
   context_.GetGameState().SetState(engine::core::State::GameOver);
 
-  createUI();
+  CreateUI();
 
   Scene::Init();
   GAME_INFO("EndScene initialized");
 }
 
-void EndScene::createUI() {
+void EndScene::CreateUI() {
   auto window_size = context_.GetGameState().GetLogicalSize();
   if (!ui_manager_->Init(window_size)) {
     GAME_ERROR("EndScene failed to initialize UIManager!");
@@ -109,7 +109,7 @@ void EndScene::createUI() {
       context_, "assets/textures/UI/buttons/Back1.png",
       "assets/textures/UI/buttons/Back2.png",
       "assets/textures/UI/buttons/Back3.png", glm::vec2{buttons_x, buttons_y},
-      button_size, [this]() { this->onBackClick(); });
+      button_size, [this]() { this->OnBackClick(); });
   ui_manager_->AddElement(std::move(back_button));
 
   // Restart Button
@@ -119,17 +119,17 @@ void EndScene::createUI() {
       "assets/textures/UI/buttons/Restart2.png",
       "assets/textures/UI/buttons/Restart3.png",
       glm::vec2{buttons_x, buttons_y}, button_size,
-      [this]() { this->onRestartClick(); });
+      [this]() { this->OnRestartClick(); });
   ui_manager_->AddElement(std::move(restart_button));
 }
 
-void EndScene::onBackClick() {
+void EndScene::OnBackClick() {
   GAME_INFO("onBackClick");
   scene_manager_.RequestReplaceScene(
       std::make_unique<TitleScene>(context_, scene_manager_, session_data_));
 }
 
-void EndScene::onRestartClick() {
+void EndScene::OnRestartClick() {
   GAME_INFO("onRestartClick");
   session_data_ = nullptr;
   scene_manager_.RequestReplaceScene(

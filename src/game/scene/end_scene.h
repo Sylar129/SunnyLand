@@ -29,9 +29,9 @@ class EndScene final : public engine::scene::Scene {
   void Init() override;
 
  private:
-  void createUI();
-  void onBackClick();
-  void onRestartClick();
+  void CreateUI();
+  void OnBackClick();
+  void OnRestartClick();
 
  private:
   std::shared_ptr<game::data::Session> session_data_;
