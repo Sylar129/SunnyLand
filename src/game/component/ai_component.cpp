@@ -8,14 +8,14 @@
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
-#include "engine/utils/assert.h"
 #include "game/component/ai/ai_behavior.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace game::component {
 
 void AIComponent::Init() {
-  GAME_ASSERT(owner_, "PlayerComponent must have an owner GameObject");
+  GAME_LOG_ASSERT(owner_, "PlayerComponent must have an owner GameObject");
 
   transform_component_ =
       owner_->GetComponent<engine::component::TransformComponent>();
@@ -28,8 +28,8 @@ void AIComponent::Init() {
 
   if (!transform_component_ || !physics_component_ || !sprite_component_ ||
       !animation_component_) {
-    GAME_ERROR("GameObject '{}' AIComponent missing required components.",
-               owner_->GetName());
+    GAME_LOG_ERROR("GameObject '{}' AIComponent missing required components.",
+                   owner_->GetName());
   }
 }
 
@@ -37,15 +37,15 @@ void AIComponent::Update(float delta_time, engine::core::Context&) {
   if (current_behavior_) {
     current_behavior_->Update(delta_time, *this);
   } else {
-    GAME_WARN("GameObject '{}' No AIBehavior set for AIComponent.",
-              owner_->GetName());
+    GAME_LOG_WARN("GameObject '{}' No AIBehavior set for AIComponent.",
+                  owner_->GetName());
   }
 }
 
 void AIComponent::SetBehavior(std::unique_ptr<ai::AIBehavior> behavior) {
   current_behavior_ = std::move(behavior);
-  GAME_DEBUG("GameObject '{}' New AIBehavior set for AIComponent.",
-             owner_->GetName());
+  GAME_LOG_DEBUG("GameObject '{}' New AIBehavior set for AIComponent.",
+                 owner_->GetName());
   if (current_behavior_) {
     current_behavior_->Enter(*this);
   }

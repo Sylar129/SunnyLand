@@ -10,12 +10,12 @@
 #include "game/component/state/fall_state.h"
 #include "game/component/state/idle_state.h"
 #include "game/component/state/jump_state.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::state {
 
 void ClimbState::Enter() {
-  GAME_DEBUG("Enter ClimbState");
+  GAME_LOG_DEBUG("Enter ClimbState");
   PlayAnimation("climb");
   if (auto* physics = player_component_->GetPhysicsComponent(); physics) {
     physics->SetUseGravity(false);
@@ -23,7 +23,7 @@ void ClimbState::Enter() {
 }
 
 void ClimbState::Exit() {
-  GAME_DEBUG("Exit ClimbState");
+  GAME_LOG_DEBUG("Exit ClimbState");
   if (auto* physics = player_component_->GetPhysicsComponent(); physics) {
     physics->SetUseGravity(true);
   }
@@ -41,8 +41,8 @@ std::unique_ptr<PlayerState> ClimbState::HandleInput(
   auto is_right = input_manager.IsActionDown("move_right");
   auto speed = player_component_->GetClimbSpeed();
 
-  physics_component->velocity_.y = is_up ? -speed : is_down ? speed : 0.0f;
-  physics_component->velocity_.x = is_left ? -speed : is_right ? speed : 0.0f;
+  physics_component->SetVelocityY(is_up ? -speed : is_down ? speed : 0.0f);
+  physics_component->SetVelocityX(is_left ? -speed : is_right ? speed : 0.0f);
 
   (is_up || is_down || is_left || is_right)
       ? animation_component->ResumeAnimation()

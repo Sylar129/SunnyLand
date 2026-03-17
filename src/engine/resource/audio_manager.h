@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "SDL3_mixer/SDL_mixer.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace engine::resource {
 

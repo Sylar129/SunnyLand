@@ -11,7 +11,7 @@
 #include "engine/ui/ui_manager.h"
 #include "game/data/session_data.h"
 #include "game/scene/title_scene.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::scene {
 
@@ -21,23 +21,24 @@ MenuScene::MenuScene(engine::core::Context& context,
     : Scene("MenuScene", context, scene_manager),
       session_data_(std::move(session_data)) {
   if (!session_data_) {
-    GAME_ERROR("MenuScene session_data is null, creating default SessionData.");
+    GAME_LOG_ERROR(
+        "MenuScene session_data is null, creating default SessionData.");
   }
-  GAME_TRACE("MenuScene constructed");
+  GAME_LOG_TRACE("MenuScene constructed");
 }
 
 void MenuScene::Init() {
-  context_.GetGameState().SetState(engine::core::State::Paused);
+  context_.GetGameState().SetState(engine::core::State::kPaused);
   CreateUI();
 
   Scene::Init();
-  GAME_TRACE("MenuScene initialized");
+  GAME_LOG_TRACE("MenuScene initialized");
 }
 
 void MenuScene::CreateUI() {
   auto window_size = context_.GetGameState().GetLogicalSize();
   if (!ui_manager_->Init(window_size)) {
-    GAME_ERROR("MenuScene Failed to initialize UIManager!");
+    GAME_LOG_ERROR("MenuScene Failed to initialize UIManager!");
     return;
   }
 
@@ -100,36 +101,36 @@ void MenuScene::HandleInput() {
   Scene::HandleInput();
 
   if (context_.GetInputManager().IsActionPressed("pause")) {
-    GAME_DEBUG("Pause action detected in MenuScene, resuming game.");
+    GAME_LOG_DEBUG("Pause action detected in MenuScene, resuming game.");
     scene_manager_.RequestPopScene();
-    context_.GetGameState().SetState(engine::core::State::Playing);
+    context_.GetGameState().SetState(engine::core::State::kPlaying);
   }
 }
 
 void MenuScene::OnResumeClicked() {
-  GAME_DEBUG("OnResumeClicked");
+  GAME_LOG_DEBUG("OnResumeClicked");
   scene_manager_.RequestPopScene();
-  context_.GetGameState().SetState(engine::core::State::Playing);
+  context_.GetGameState().SetState(engine::core::State::kPlaying);
 }
 
 void MenuScene::OnSaveClicked() {
-  GAME_DEBUG("OnSaveClicked");
+  GAME_LOG_DEBUG("OnSaveClicked");
   if (session_data_ && session_data_->SaveToFile("assets/save.json")) {
-    GAME_DEBUG("Save game successfully to save.json.");
+    GAME_LOG_DEBUG("Save game successfully to save.json.");
   } else {
-    GAME_ERROR(
+    GAME_LOG_ERROR(
         "Failed to save game. SessionData is null or failed to write to file.");
   }
 }
 
 void MenuScene::OnBackClicked() {
-  GAME_DEBUG("OnBackClicked");
+  GAME_LOG_DEBUG("OnBackClicked");
   scene_manager_.RequestReplaceScene(
       std::make_unique<TitleScene>(context_, scene_manager_, session_data_));
 }
 
 void MenuScene::OnQuitClicked() {
-  GAME_DEBUG("OnQuitClicked");
+  GAME_LOG_DEBUG("OnQuitClicked");
   context_.GetInputManager().SetShouldQuit(true);
 }
 

@@ -8,12 +8,12 @@
 #include "engine/ui/ui_button.h"
 #include "engine/ui/ui_label.h"
 #include "engine/ui/ui_manager.h"
-#include "engine/utils/assert.h"
-#include "engine/utils/math.h"
 #include "game/data/session_data.h"
 #include "game/scene/game_scene.h"
 #include "game/scene/title_scene.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
+#include "utils/math.h"
 
 namespace game::scene {
 
@@ -22,8 +22,9 @@ EndScene::EndScene(engine::core::Context& context,
                    std::shared_ptr<game::data::Session> session_data)
     : engine::scene::Scene("EndScene", context, scene_manager),
       session_data_(std::move(session_data)) {
-  GAME_ASSERT(session_data_, "EndScene requires a valid SessionData pointer!");
-  GAME_TRACE("EndScene constructed, is_win: {}", session_data_->GetIsWin());
+  GAME_LOG_ASSERT(session_data_,
+                  "EndScene requires a valid SessionData pointer!");
+  GAME_LOG_TRACE("EndScene constructed, is_win: {}", session_data_->GetIsWin());
 }
 
 void EndScene::Init() {
@@ -31,27 +32,26 @@ void EndScene::Init() {
     return;
   }
 
-  context_.GetGameState().SetState(engine::core::State::GameOver);
+  context_.GetGameState().SetState(engine::core::State::kGameOver);
 
   CreateUI();
 
   Scene::Init();
-  GAME_INFO("EndScene initialized");
+  GAME_LOG_INFO("EndScene initialized");
 }
 
 void EndScene::CreateUI() {
   auto window_size = context_.GetGameState().GetLogicalSize();
   if (!ui_manager_->Init(window_size)) {
-    GAME_ERROR("EndScene failed to initialize UIManager!");
+    GAME_LOG_ERROR("EndScene failed to initialize UIManager!");
     return;
   }
   auto is_win = session_data_->GetIsWin();
 
   std::string main_message =
       is_win ? "YOU WIN! CONGRATS!" : "YOU DIED! TRY AGAIN!";
-  engine::utils::FColor message_color =
-      is_win ? engine::utils::FColor{0.0f, 1.0f, 0.0f, 1.0f}
-             : engine::utils::FColor{1.0f, 0.0f, 0.0f, 1.0f};
+  utils::FColor message_color = is_win ? utils::FColor{0.0f, 1.0f, 0.0f, 1.0f}
+                                       : utils::FColor{1.0f, 0.0f, 0.0f, 1.0f};
 
   auto main_label = std::make_unique<engine::ui::UILabel>(
       context_.GetTextRenderer(), main_message,
@@ -65,7 +65,7 @@ void EndScene::CreateUI() {
 
   int current_score = session_data_->GetCurrentScore();
   int high_score = session_data_->GetHighScore();
-  engine::utils::FColor score_color = {1.0f, 1.0f, 1.0f, 1.0f};
+  utils::FColor score_color = {1.0f, 1.0f, 1.0f, 1.0f};
   int score_font_size = 24;
 
   std::string score_text = "Score: " + std::to_string(current_score);
@@ -118,13 +118,13 @@ void EndScene::CreateUI() {
 }
 
 void EndScene::OnBackClick() {
-  GAME_INFO("onBackClick");
+  GAME_LOG_INFO("onBackClick");
   scene_manager_.RequestReplaceScene(
       std::make_unique<TitleScene>(context_, scene_manager_, session_data_));
 }
 
 void EndScene::OnRestartClick() {
-  GAME_INFO("onRestartClick");
+  GAME_LOG_INFO("onRestartClick");
   session_data_ = nullptr;
   scene_manager_.RequestReplaceScene(
       std::make_unique<GameScene>(context_, scene_manager_, session_data_));

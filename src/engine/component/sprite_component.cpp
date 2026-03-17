@@ -8,38 +8,37 @@
 #include "engine/object/game_object.h"
 #include "engine/render/renderer.h"
 #include "engine/resource/resource_manager.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::component {
 
 SpriteComponent::SpriteComponent(
-    const std::string& texture_id,
-    engine::resource::ResourceManager& resource_manager,
-    engine::utils::Alignment alignment,
-    const std::optional<SDL_FRect>& source_rect_opt, bool is_flipped)
+    const std::string& texture_id, resource::ResourceManager& resource_manager,
+    utils::Alignment alignment, const std::optional<SDL_FRect>& source_rect_opt,
+    bool is_flipped)
     : resource_manager_(resource_manager),
       sprite_(texture_id, source_rect_opt, is_flipped),
       alignment_(alignment) {
-  ENGINE_TRACE("Creating SpriteComponent, texture id: {}", texture_id);
+  ENGINE_LOG_TRACE("Creating SpriteComponent, texture id: {}", texture_id);
 }
 
-SpriteComponent::SpriteComponent(
-    engine::render::Sprite&& sprite,
-    engine::resource::ResourceManager& resource_manager,
-    engine::utils::Alignment alignment)
+SpriteComponent::SpriteComponent(render::Sprite&& sprite,
+                                 resource::ResourceManager& resource_manager,
+                                 utils::Alignment alignment)
     : resource_manager_(resource_manager),
       sprite_(std::move(sprite)),
       alignment_(alignment) {
-  ENGINE_TRACE("Creating SpriteComponent, texture id: {}",
-               sprite_.GetTextureId());
+  ENGINE_LOG_TRACE("Creating SpriteComponent, texture id: {}",
+                   sprite_.GetTextureId());
 }
 
 void SpriteComponent::Init() {
-  ENGINE_ASSERT(owner_, "SpriteComponent does not have an owner GameObject!");
+  ENGINE_LOG_ASSERT(owner_,
+                    "SpriteComponent does not have an owner GameObject!");
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_WARN(
+    ENGINE_LOG_WARN(
         "The SpriteComponent in GameObject '{}' does not have a "
         "TransformComponent ",
         owner_->GetName());
@@ -50,7 +49,7 @@ void SpriteComponent::Init() {
   UpdateOffset();
 }
 
-void SpriteComponent::SetAlignment(engine::utils::Alignment anchor) {
+void SpriteComponent::SetAlignment(utils::Alignment anchor) {
   alignment_ = anchor;
   UpdateOffset();
 }
@@ -62,41 +61,41 @@ void SpriteComponent::UpdateOffset() {
   }
   auto scale = transform_->GetScale();
   switch (alignment_) {
-    case engine::utils::Alignment::TOP_LEFT:
+    case utils::Alignment::kTopLeft:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::TOP_CENTER:
+    case utils::Alignment::kTopCenter:
       offset_ = glm::vec2{-sprite_size_.x / 2.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::TOP_RIGHT:
+    case utils::Alignment::kTopRight:
       offset_ = glm::vec2{-sprite_size_.x, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER_LEFT:
+    case utils::Alignment::kCenterLeft:
       offset_ = glm::vec2{0.0f, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER:
+    case utils::Alignment::kCenter:
       offset_ =
           glm::vec2{-sprite_size_.x / 2.0f, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER_RIGHT:
+    case utils::Alignment::kCenterRight:
       offset_ = glm::vec2{-sprite_size_.x, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_LEFT:
+    case utils::Alignment::kBottomLeft:
       offset_ = glm::vec2{0.0f, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_CENTER:
+    case utils::Alignment::kBottomCenter:
       offset_ = glm::vec2{-sprite_size_.x / 2.0f, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_RIGHT:
+    case utils::Alignment::kBottomRight:
       offset_ = glm::vec2{-sprite_size_.x, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::NONE:
+    case utils::Alignment::kNone:
     default:
       break;
   }
 }
 
-void SpriteComponent::Render(engine::core::Context& context) {
+void SpriteComponent::Render(core::Context& context) {
   if (is_hidden_ || !transform_) {
     return;
   }

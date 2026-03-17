@@ -5,9 +5,9 @@
 #include <glm/glm.hpp>
 #include <optional>  // For std::optional
 
-#include "engine/utils/math.h"
-#include "engine/utils/non_copyable.h"
 #include "sprite.h"
+#include "utils/math.h"
+#include "utils/non_copyable.h"
 
 struct SDL_Renderer;
 struct SDL_FRect;
@@ -28,12 +28,6 @@ class Camera;
  * SDL_Renderer and ResourceManager. Construction failure throws an exception.
  */
 class Renderer final {
- private:
-  SDL_Renderer* renderer_ =
-      nullptr;  ///< @brief Non-owning pointer to SDL_Renderer
-  engine::resource::ResourceManager* resource_manager_ =
-      nullptr;  ///< @brief Non-owning pointer to ResourceManager
-
  public:
   /**
    * @brief Constructor
@@ -43,7 +37,7 @@ class Renderer final {
    * @throws std::runtime_error If any pointer is nullptr.
    */
   Renderer(SDL_Renderer* sdl_renderer,
-           engine::resource::ResourceManager* resource_manager);
+           resource::ResourceManager* resource_manager);
   DISABLE_COPY_AND_MOVE(Renderer);
 
   /**
@@ -85,35 +79,22 @@ class Renderer final {
   void DrawUISprite(const Sprite& sprite, const glm::vec2& position,
                     const std::optional<glm::vec2>& size = std::nullopt);
 
-  void DrawUIFilledRect(const engine::utils::Rect& rect,
-                        const engine::utils::FColor& color);
+  void DrawUIFilledRect(const utils::Rect& rect, const utils::FColor& color);
 
-  void Present();  ///< @brief Update screen, wraps SDL_RenderPresent function
-  void ClearScreen();  ///< @brief Clear screen, wraps SDL_RenderClear function
+  void Present();
+  void ClearScreen();
 
-  void SetDrawColor(
-      Uint8 r, Uint8 g, Uint8 b,
-      Uint8 a = 255);  ///< @brief Set draw color, wraps SDL_SetRenderDrawColor
-                       ///< function, using Uint8 type
-  void SetDrawColorFloat(float r, float g, float b,
-                         float a = 1.0f);  ///< @brief Set draw color, wraps
-                                           ///< SDL_SetRenderDrawColorFloat
-                                           ///< function, using float type
+  void SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+  void SetDrawColorFloat(float r, float g, float b, float a = 1.0f);
 
-  SDL_Renderer* GetSDLRenderer() const {
-    return renderer_;
-  }  ///< @brief Get underlying SDL_Renderer pointer
+  SDL_Renderer* GetSDLRenderer() const { return renderer_; }
 
  private:
-  std::optional<SDL_FRect> GetSpriteSrcRect(
-      const Sprite&
-          sprite);  ///< @brief
-                    ///< Get sprite's source rectangle for rendering. Returns
-                    ///< std::nullopt on error and skips drawing
-  bool IsRectInViewport(
-      const Camera& camera,
-      const SDL_FRect& rect);  ///< @brief Check if rectangle is within viewport
-                               ///< for viewport clipping
+  std::optional<SDL_FRect> GetSpriteSrcRect(const Sprite& sprite);
+  bool IsRectInViewport(const Camera& camera, const SDL_FRect& rect);
+
+  SDL_Renderer* renderer_ = nullptr;
+  resource::ResourceManager* resource_manager_ = nullptr;
 };
 
 }  // namespace engine::render

@@ -7,7 +7,7 @@
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "game/component/ai_component.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::ai {
 
@@ -35,7 +35,7 @@ void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
   auto* animation_component = ai_component.GetAnimationComponent();
   if (!physics_component || !transform_component || !sprite_component ||
       !animation_component) {
-    GAME_ERROR(
+    GAME_LOG_ERROR(
         "JumpBehavior missing required components. Cannot execute behavior.");
     return;
   }
@@ -43,7 +43,7 @@ void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
   auto is_on_ground = physics_component->HasCollidedBelow();
   if (is_on_ground) {
     jump_timer_ += delta_time;
-    physics_component->velocity_.x = 0.0f;
+    physics_component->SetVelocityX(0.0f);
 
     if (jump_timer_ >= jump_interval_) {
       jump_timer_ = 0.0f;
@@ -57,7 +57,7 @@ void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
         jumping_right_ = true;
       }
       auto jump_vel_x = jumping_right_ ? jump_vel_.x : -jump_vel_.x;
-      physics_component->velocity_ = {jump_vel_x, jump_vel_.y};
+      physics_component->SetVelocity({jump_vel_x, jump_vel_.y});
       animation_component->PlayAnimation("jump");
       sprite_component->SetFlipped(jumping_right_);
 

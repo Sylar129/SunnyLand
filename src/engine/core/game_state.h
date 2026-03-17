@@ -9,16 +9,16 @@
 namespace engine::core {
 
 enum class State {
-  Title,
-  Playing,
-  Paused,
-  GameOver,
+  kTitle,
+  kPlaying,
+  kPaused,
+  kGameOver,
 };
 
 class GameState final {
  public:
   explicit GameState(SDL_Window* window, SDL_Renderer* renderer,
-                     State initial_state = State::Title);
+                     State initial_state = State::kTitle);
 
   State GetCurrentState() const { return current_state_; }
   void SetState(State new_state);
@@ -27,15 +27,15 @@ class GameState final {
   glm::vec2 GetLogicalSize() const;
   void SetLogicalSize(const glm::vec2& new_size);
 
-  bool IsInTitle() const { return current_state_ == State::Title; }
-  bool IsPlaying() const { return current_state_ == State::Playing; }
-  bool IsPaused() const { return current_state_ == State::Paused; }
-  bool IsGameOver() const { return current_state_ == State::GameOver; }
+  bool IsInTitle() const { return current_state_ == State::kTitle; }
+  bool IsPlaying() const { return current_state_ == State::kPlaying; }
+  bool IsPaused() const { return current_state_ == State::kPaused; }
+  bool IsGameOver() const { return current_state_ == State::kGameOver; }
 
  private:
   SDL_Window* window_ = nullptr;
   SDL_Renderer* renderer_ = nullptr;
-  State current_state_ = State::Title;
+  State current_state_ = State::kTitle;
 };
 
 }  // namespace engine::core

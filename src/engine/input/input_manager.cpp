@@ -4,21 +4,21 @@
 
 #include "SDL3/SDL.h"
 #include "engine/core/config.h"
-#include "engine/utils/assert.h"
 #include "glm/vec2.hpp"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::input {
 
 InputManager::InputManager(SDL_Renderer* sdl_renderer,
-                           const engine::core::Config* config)
+                           const core::Config* config)
     : sdl_renderer_(sdl_renderer) {
-  ENGINE_ASSERT(sdl_renderer_, "InputManager: SDL_Renderer is nullptr");
+  ENGINE_LOG_ASSERT(sdl_renderer_, "InputManager: SDL_Renderer is nullptr");
 
   InitializeMappings(config);
   SDL_GetMouseState(&mouse_position_.x, &mouse_position_.y);
-  ENGINE_TRACE("Initial mouse position: ({}, {})", mouse_position_.x,
-               mouse_position_.y);
+  ENGINE_LOG_TRACE("Initial mouse position: ({}, {})", mouse_position_.x,
+                   mouse_position_.y);
 }
 
 void InputManager::Update() {
@@ -116,10 +116,10 @@ glm::vec2 InputManager::GetLogicalMousePosition() const {
   return logical_pos;
 }
 
-void InputManager::InitializeMappings(const engine::core::Config* config) {
-  ENGINE_TRACE("Initializint input mappings...");
+void InputManager::InitializeMappings(const core::Config* config) {
+  ENGINE_LOG_TRACE("Initializing input mappings...");
 
-  ENGINE_ASSERT(config, "InputManager: Config is nullptr");
+  ENGINE_LOG_ASSERT(config, "InputManager: Config is nullptr");
 
   actions_to_keyname_map_ = config->input_mappings;
   scancode_to_actions_map_.clear();
@@ -128,41 +128,41 @@ void InputManager::InitializeMappings(const engine::core::Config* config) {
 
   if (actions_to_keyname_map_.find("MouseLeftClick") ==
       actions_to_keyname_map_.end()) {
-    ENGINE_DEBUG(
+    ENGINE_LOG_DEBUG(
         "No action 'MouseLeftClick' in Config. Adding default mapping "
         "'MouseLeft'.");
     actions_to_keyname_map_["MouseLeftClick"] = {"MouseLeft"};
   }
   if (actions_to_keyname_map_.find("MouseRightClick") ==
       actions_to_keyname_map_.end()) {
-    ENGINE_DEBUG(
+    ENGINE_LOG_DEBUG(
         "No action 'MouseRightClick' in Config. Adding default mapping "
         "'MouseRight'.");
     actions_to_keyname_map_["MouseRightClick"] = {"MouseRight"};
   }
   for (const auto& [action_name, key_names] : actions_to_keyname_map_) {
     action_states_[action_name] = ActionState::INACTIVE;
-    ENGINE_TRACE("mapping action: {}", action_name);
+    ENGINE_LOG_TRACE("mapping action: {}", action_name);
     for (const std::string& key_name : key_names) {
       SDL_Scancode scancode = ScancodeFromString(key_name);
       Uint8 mouse_button = MouseButtonUint8FromString(key_name);
 
       if (scancode != SDL_SCANCODE_UNKNOWN) {
         scancode_to_actions_map_[scancode].push_back(action_name);
-        ENGINE_TRACE("  Mapping keyboard: {} (Scancode: {}) to Action: {}",
-                     key_name, static_cast<int>(scancode), action_name);
+        ENGINE_LOG_TRACE("  Mapping keyboard: {} (Scancode: {}) to Action: {}",
+                         key_name, static_cast<int>(scancode), action_name);
       } else if (mouse_button != 0) {
         mouse_button_to_actions_map_[mouse_button].push_back(action_name);
-        ENGINE_TRACE(
-            "  Mappding mouse button: {} (Button ID: {}) to Action: {}",
+        ENGINE_LOG_TRACE(
+            "  Mapping mouse button: {} (Button ID: {}) to Action: {}",
             key_name, static_cast<int>(mouse_button), action_name);
       } else {
-        ENGINE_WARN("Unknown key or button: '{}' for action: '{}'.", key_name,
-                    action_name);
+        ENGINE_LOG_WARN("Unknown key or button: '{}' for action: '{}'.",
+                        key_name, action_name);
       }
     }
   }
-  ENGINE_TRACE("Initialize input mappings successfully.");
+  ENGINE_LOG_TRACE("Initialize input mappings successfully.");
 }
 
 SDL_Scancode InputManager::ScancodeFromString(const std::string& key_name) {
@@ -183,7 +183,7 @@ void InputManager::UpdateActionState(const std::string& action_name,
                                      bool is_repeat_event) {
   auto it = action_states_.find(action_name);
   if (it == action_states_.end()) {
-    ENGINE_WARN("Trying to update unregistered action: {}", action_name);
+    ENGINE_LOG_WARN("Trying to update unregistered action: {}", action_name);
     return;
   }
 

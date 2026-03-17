@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 
-#include "engine/utils/non_copyable.h"
 #include "glm/glm.hpp"
+#include "utils/non_copyable.h"
 
 struct SDL_Renderer;
 struct SDL_Texture;

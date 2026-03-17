@@ -4,8 +4,8 @@
 
 #include <memory>
 
-#include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
+#include "utils/non_copyable.h"
 
 namespace engine::core {
 class Context;
@@ -29,9 +29,9 @@ class UIManager final {
   UIPanel* GetRootElement() const;
   void ClearElements();
 
-  bool HandleInput(engine::core::Context&);
-  void Update(float delta_time, engine::core::Context&);
-  void Render(engine::core::Context&);
+  bool HandleInput(core::Context&);
+  void Update(float delta_time, core::Context&);
+  void Render(core::Context&);
 
  private:
   std::unique_ptr<UIPanel> root_element_;

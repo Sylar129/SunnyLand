@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 
-namespace engine::utils {
+namespace utils {
 
 struct Rect {
   glm::vec2 position;
@@ -18,4 +18,4 @@ struct FColor {
   float a;
 };
 
-}  // namespace engine::utils
+}  // namespace utils

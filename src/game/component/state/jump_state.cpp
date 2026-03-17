@@ -10,15 +10,16 @@
 #include "game/component/state/climb_state.h"
 #include "game/component/state/fall_state.h"
 #include "glm/common.hpp"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::state {
 
 void JumpState::Enter() {
   auto physics_component = player_component_->GetPhysicsComponent();
-  physics_component->velocity_.y = -player_component_->GetJumpVelocity();
-  GAME_DEBUG("PlayerComponent entered JumpState with initial jump velocity: {}",
-             physics_component->velocity_.y);
+  physics_component->SetVelocityY(-player_component_->GetJumpVelocity());
+  GAME_LOG_DEBUG(
+      "PlayerComponent entered JumpState with initial jump velocity: {}",
+      physics_component->GetVelocity().y);
   PlayAnimation("jump");
 }
 
@@ -31,13 +32,13 @@ std::unique_ptr<PlayerState> JumpState::HandleInput(
   auto sprite_component = player_component_->GetSpriteComponent();
 
   if (input_manager.IsActionDown("move_left")) {
-    if (physics_component->velocity_.x > 0.0f)
-      physics_component->velocity_.x = 0.0f;
+    if (physics_component->GetVelocity().x > 0.0f)
+      physics_component->SetVelocityX(0.0f);
     physics_component->AddForce({-player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(true);
   } else if (input_manager.IsActionDown("move_right")) {
-    if (physics_component->velocity_.x < 0.0f)
-      physics_component->velocity_.x = 0.0f;
+    if (physics_component->GetVelocity().x < 0.0f)
+      physics_component->SetVelocityX(0.0f);
     physics_component->AddForce({player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(false);
   }
@@ -54,10 +55,10 @@ std::unique_ptr<PlayerState> JumpState::HandleInput(
 std::unique_ptr<PlayerState> JumpState::Update(float, engine::core::Context&) {
   auto physics_component = player_component_->GetPhysicsComponent();
   auto max_speed = player_component_->GetMaxSpeed();
-  physics_component->velocity_.x =
-      glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
+  physics_component->SetVelocityX(
+      glm::clamp(physics_component->GetVelocity().x, -max_speed, max_speed));
 
-  if (physics_component->velocity_.y >= 0.0f) {
+  if (physics_component->GetVelocity().y >= 0.0f) {
     return std::make_unique<FallState>(player_component_);
   }
 

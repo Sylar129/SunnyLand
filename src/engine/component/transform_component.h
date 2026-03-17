@@ -8,7 +8,7 @@
 namespace engine::component {
 
 class TransformComponent final : public Component {
-  friend class engine::object::GameObject;
+  friend class object::GameObject;
 
  public:
   TransformComponent(glm::vec2 position = {0.0f, 0.0f},
@@ -25,7 +25,7 @@ class TransformComponent final : public Component {
   void SetScale(const glm::vec2& scale);
 
  private:
-  void Update(float, engine::core::Context&) override {}
+  void Update(float, core::Context&) override {}
 
   glm::vec2 position_ = {0.0f, 0.0f};
   glm::vec2 scale_ = {1.0f, 1.0f};

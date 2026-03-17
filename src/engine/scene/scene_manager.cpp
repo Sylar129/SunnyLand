@@ -4,16 +4,17 @@
 
 #include "engine/core/context.h"
 #include "engine/scene/scene.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::scene {
 
-SceneManager::SceneManager(engine::core::Context& context) : context_(context) {
-  ENGINE_TRACE("SceneManager initialized successfully.");
+SceneManager::SceneManager(core::Context& context) : context_(context) {
+  ENGINE_LOG_TRACE("SceneManager initialized successfully.");
 }
 
 SceneManager::~SceneManager() {
-  ENGINE_TRACE("SceneManager is being destroyed. Cleaning up scene stack...");
+  ENGINE_LOG_TRACE(
+      "SceneManager is being destroyed. Cleaning up scene stack...");
   Close();
 }
 
@@ -46,10 +47,10 @@ void SceneManager::HandleInput() {
 }
 
 void SceneManager::Close() {
-  ENGINE_TRACE("Closing SceneManager and cleaning up all scenes...");
+  ENGINE_LOG_TRACE("Closing SceneManager and cleaning up all scenes...");
   while (!scene_stack_.empty()) {
     if (scene_stack_.back()) {
-      ENGINE_DEBUG("Cleaning scene '{}'", scene_stack_.back()->GetName());
+      ENGINE_LOG_DEBUG("Cleaning scene '{}'", scene_stack_.back()->GetName());
       scene_stack_.back()->Clean();
     }
     scene_stack_.pop_back();
@@ -92,10 +93,10 @@ void SceneManager::ProcessPendingActions() {
 
 void SceneManager::PushScene(std::unique_ptr<Scene>&& scene) {
   if (!scene) {
-    ENGINE_WARN("Trying to push an empty scene.");
+    ENGINE_LOG_WARN("Trying to push an empty scene.");
     return;
   }
-  ENGINE_DEBUG("Pushing scene '{}' to stack.", scene->GetName());
+  ENGINE_LOG_DEBUG("Pushing scene '{}' to stack.", scene->GetName());
 
   if (!scene->IsInitialized()) {
     scene->Init();
@@ -106,10 +107,11 @@ void SceneManager::PushScene(std::unique_ptr<Scene>&& scene) {
 
 void SceneManager::PopScene() {
   if (scene_stack_.empty()) {
-    ENGINE_WARN("Trying to pop scene from an empty stack.");
+    ENGINE_LOG_WARN("Trying to pop scene from an empty stack.");
     return;
   }
-  ENGINE_DEBUG("Poping scene '{}' from stack.", scene_stack_.back()->GetName());
+  ENGINE_LOG_DEBUG("Popping scene '{}' from stack.",
+                   scene_stack_.back()->GetName());
 
   if (scene_stack_.back()) {
     scene_stack_.back()->Clean();
@@ -119,11 +121,17 @@ void SceneManager::PopScene() {
 
 void SceneManager::ReplaceScene(std::unique_ptr<Scene>&& scene) {
   if (!scene) {
-    ENGINE_WARN("Trying to replace with an empty scene.");
+    ENGINE_LOG_WARN("Trying to replace with an empty scene.");
     return;
   }
-  ENGINE_DEBUG("Replacing scene '{}' with scene '{}'.",
-               scene_stack_.back()->GetName(), scene->GetName());
+  if (scene_stack_.empty()) {
+    ENGINE_LOG_WARN(
+        "Scene stack is empty. ReplaceScene will push the new scene instead.");
+    PushScene(std::move(scene));
+    return;
+  }
+  ENGINE_LOG_DEBUG("Replacing scene '{}' with scene '{}'.",
+                   scene_stack_.back()->GetName(), scene->GetName());
 
   while (!scene_stack_.empty()) {
     if (scene_stack_.back()) {

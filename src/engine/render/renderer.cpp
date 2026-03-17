@@ -6,26 +6,26 @@
 #include "engine/render/camera.h"
 #include "engine/render/sprite.h"
 #include "engine/resource/resource_manager.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::render {
 
 // Constructor: Performs initialization, adds ResourceManager
 Renderer::Renderer(SDL_Renderer* sdl_renderer,
-                   engine::resource::ResourceManager* resource_manager)
+                   resource::ResourceManager* resource_manager)
     : renderer_(sdl_renderer), resource_manager_(resource_manager) {
-  ENGINE_TRACE("Constructing Renderer...");
+  ENGINE_LOG_TRACE("Constructing Renderer...");
 
-  ENGINE_ASSERT(
+  ENGINE_LOG_ASSERT(
       renderer_,
       "Renderer construction failed: provided SDL_Renderer pointer is null.");
-  ENGINE_ASSERT(resource_manager_,
-                "Renderer construction failed: provided ResourceManager "
-                "pointer is null.");
+  ENGINE_LOG_ASSERT(resource_manager_,
+                    "Renderer construction failed: provided ResourceManager "
+                    "pointer is null.");
 
   SetDrawColor(0, 0, 0, 255);
-  ENGINE_TRACE("Renderer construction successful.");
+  ENGINE_LOG_TRACE("Renderer construction successful.");
 }
 
 void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
@@ -33,14 +33,14 @@ void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
                           double angle) {
   auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return;
   }
 
   auto src_rect = GetSpriteSrcRect(sprite);
   if (!src_rect.has_value()) {
-    ENGINE_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                 sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get sprite's source rectangle, ID: {}",
+                     sprite.GetTextureId());
     return;
   }
 
@@ -57,17 +57,17 @@ void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
   if (!IsRectInViewport(camera,
                         dest_rect)) {  // Viewport clipping: if sprite is
                                        // outside viewport, do not draw
-    // ENGINE_INFO("Sprite is outside viewport range, ID: {}",
+    // ENGINE_LOG_INFO("Sprite is outside viewport range, ID: {}",
     //             sprite.GetTextureId());
     return;
   }
 
   // Execute drawing (default rotation center is the sprite's center)
   if (!SDL_RenderTextureRotated(
-          renderer_, texture, &src_rect.value(), &dest_rect, angle, NULL,
+          renderer_, texture, &src_rect.value(), &dest_rect, angle, nullptr,
           sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
-    ENGINE_ERROR("Failed to render rotated texture (ID: {}): {}",
-                 sprite.GetTextureId(), SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to render rotated texture (ID: {}): {}",
+                     sprite.GetTextureId(), SDL_GetError());
   }
 }
 
@@ -77,14 +77,14 @@ void Renderer::DrawParallax(const Camera& camera, const Sprite& sprite,
                             const glm::bvec2& repeat, const glm::vec2& scale) {
   auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return;
   }
 
   auto src_rect = GetSpriteSrcRect(sprite);
   if (!src_rect.has_value()) {
-    ENGINE_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                 sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get sprite's source rectangle, ID: {}",
+                     sprite.GetTextureId());
     return;
   }
 
@@ -125,8 +125,8 @@ void Renderer::DrawParallax(const Camera& camera, const Sprite& sprite,
     for (float x = start.x; x < stop.x; x += scaled_tex_w) {
       SDL_FRect dest_rect = {x, y, scaled_tex_w, scaled_tex_h};
       if (!SDL_RenderTexture(renderer_, texture, nullptr, &dest_rect)) {
-        ENGINE_ERROR("Failed to render parallax texture (ID: {}): {}",
-                     sprite.GetTextureId(), SDL_GetError());
+        ENGINE_LOG_ERROR("Failed to render parallax texture (ID: {}): {}",
+                         sprite.GetTextureId(), SDL_GetError());
         return;
       }
     }
@@ -137,14 +137,14 @@ void Renderer::DrawUISprite(const Sprite& sprite, const glm::vec2& position,
                             const std::optional<glm::vec2>& size) {
   auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return;
   }
 
   auto src_rect = GetSpriteSrcRect(sprite);
   if (!src_rect.has_value()) {
-    ENGINE_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                 sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get sprite's source rectangle, ID: {}",
+                     sprite.GetTextureId());
     return;
   }
 
@@ -163,37 +163,37 @@ void Renderer::DrawUISprite(const Sprite& sprite, const glm::vec2& position,
   if (!SDL_RenderTextureRotated(
           renderer_, texture, &src_rect.value(), &dest_rect, 0.0, nullptr,
           sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
-    ENGINE_ERROR("Failed to render UI Sprite (ID: {}): {}",
-                 sprite.GetTextureId(), SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to render UI Sprite (ID: {}): {}",
+                     sprite.GetTextureId(), SDL_GetError());
   }
 }
 
-void Renderer::DrawUIFilledRect(const engine::utils::Rect& rect,
-                                const engine::utils::FColor& color) {
+void Renderer::DrawUIFilledRect(const utils::Rect& rect,
+                                const utils::FColor& color) {
   SetDrawColorFloat(color.r, color.g, color.b, color.a);
   SDL_FRect sdl_rect = {rect.position.x, rect.position.y, rect.size.x,
                         rect.size.y};
   if (!SDL_RenderFillRect(renderer_, &sdl_rect)) {
-    ENGINE_ERROR("Failed to render filled rectangle: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to render filled rectangle: {}", SDL_GetError());
   }
-  SetDrawColor(0, 0, 0, 1.0f);
+  SetDrawColor(0, 0, 0, 255);
 }
 
 void Renderer::SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
   if (!SDL_SetRenderDrawColor(renderer_, r, g, b, a)) {
-    ENGINE_ERROR("Failed to set render draw color: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to set render draw color: {}", SDL_GetError());
   }
 }
 
 void Renderer::SetDrawColorFloat(float r, float g, float b, float a) {
   if (!SDL_SetRenderDrawColorFloat(renderer_, r, g, b, a)) {
-    ENGINE_ERROR("Failed to set render draw color: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to set render draw color: {}", SDL_GetError());
   }
 }
 
 void Renderer::ClearScreen() {
   if (!SDL_RenderClear(renderer_)) {
-    ENGINE_ERROR("Failed to clear renderer: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to clear renderer: {}", SDL_GetError());
   }
 }
 
@@ -202,7 +202,7 @@ void Renderer::Present() { SDL_RenderPresent(renderer_); }
 std::optional<SDL_FRect> Renderer::GetSpriteSrcRect(const Sprite& sprite) {
   SDL_Texture* texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
-    ENGINE_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
     return std::nullopt;
   }
 
@@ -210,15 +210,16 @@ std::optional<SDL_FRect> Renderer::GetSpriteSrcRect(const Sprite& sprite) {
   if (src_rect.has_value()) {  // If Sprite has a specified rect, check if size
                                // is valid
     if (src_rect.value().w <= 0 || src_rect.value().h <= 0) {
-      ENGINE_ERROR("Source rectangle size is invalid, ID: {}",
-                   sprite.GetTextureId());
+      ENGINE_LOG_ERROR("Source rectangle size is invalid, ID: {}",
+                       sprite.GetTextureId());
       return std::nullopt;
     }
     return src_rect;
   } else {  // Otherwise get texture size and return the entire texture size
     SDL_FRect result = {0, 0, 0, 0};
     if (!SDL_GetTextureSize(texture, &result.w, &result.h)) {
-      ENGINE_ERROR("Failed to get texture size, ID: {}", sprite.GetTextureId());
+      ENGINE_LOG_ERROR("Failed to get texture size, ID: {}",
+                       sprite.GetTextureId());
       return std::nullopt;
     }
     return result;

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace engine::core {
 class Context;
@@ -15,7 +15,7 @@ class GameObject;
 namespace engine::component {
 
 class Component {
-  friend class engine::object::GameObject;
+  friend class object::GameObject;
 
  public:
   Component() = default;
@@ -24,18 +24,17 @@ class Component {
   // Subclass by deault is also non-copyable and non-movable
   DISABLE_COPY_AND_MOVE(Component);
 
-  void SetOwner(engine::object::GameObject* owner) { owner_ = owner; }
-  [[nodiscard]] engine::object::GameObject* GetOwner() const { return owner_; }
+  void SetOwner(object::GameObject* owner) { owner_ = owner; }
+  [[nodiscard]] object::GameObject* GetOwner() const { return owner_; }
 
  protected:
   virtual void Init() {}
-  virtual void HandleInput(engine::core::Context& /* context */) {}
-  virtual void Update(float /* delta_time */,
-                      engine::core::Context& /* context */) {}
-  virtual void Render(engine::core::Context& /* context */) {}
+  virtual void HandleInput(core::Context& /* context */) {}
+  virtual void Update(float /* delta_time */, core::Context& /* context */) {}
+  virtual void Render(core::Context& /* context */) {}
   virtual void Clean() {}
 
-  engine::object::GameObject* owner_ = nullptr;
+  object::GameObject* owner_ = nullptr;
 };
 
 }  // namespace engine::component

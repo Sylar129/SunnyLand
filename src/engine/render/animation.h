@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "SDL3/SDL_rect.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace engine::render {
 
@@ -22,19 +22,19 @@ class Animation final {
 
   DISABLE_COPY_AND_MOVE(Animation);
 
-  void addFrame(const SDL_FRect& source_rect, float duration);
+  void AddFrame(const SDL_FRect& source_rect, float duration);
 
-  const AnimationFrame& getFrame(float time) const;
+  AnimationFrame GetFrame(float time) const;
 
-  const std::string& getName() const { return name_; }
-  const std::vector<AnimationFrame>& getFrames() const { return frames_; }
-  size_t getFrameCount() const { return frames_.size(); }
-  float getTotalDuration() const { return total_duration_; }
-  bool isLooping() const { return loop_; }
-  bool isEmpty() const { return frames_.empty(); }
+  const std::string& GetName() const { return name_; }
+  const std::vector<AnimationFrame>& GetFrames() const { return frames_; }
+  size_t GetFrameCount() const { return frames_.size(); }
+  float GetTotalDuration() const { return total_duration_; }
+  bool IsLooping() const { return loop_; }
+  bool IsEmpty() const { return frames_.empty(); }
 
-  void setName(const std::string& name) { name_ = name; }
-  void setLooping(bool loop) { loop_ = loop; }
+  void SetName(const std::string& name) { name_ = name; }
+  void SetLooping(bool loop) { loop_ = loop; }
 
  private:
   std::string name_;

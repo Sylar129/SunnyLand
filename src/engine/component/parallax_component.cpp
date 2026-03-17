@@ -7,32 +7,32 @@
 #include "engine/object/game_object.h"
 #include "engine/render/renderer.h"
 #include "engine/render/sprite.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::component {
 
 ParallaxComponent::ParallaxComponent(const std::string& texture_id,
                                      const glm::vec2& scroll_factor,
                                      const glm::bvec2& repeat)
-    : sprite_(engine::render::Sprite(texture_id)),
+    : sprite_(render::Sprite(texture_id)),
       scroll_factor_(scroll_factor),
       repeat_(repeat) {
-  ENGINE_TRACE("ParallaxComponent constructing finished. texture ID: {}",
-               texture_id);
+  ENGINE_LOG_TRACE("ParallaxComponent constructing finished. texture ID: {}",
+                   texture_id);
 }
 
 void ParallaxComponent::Init() {
-  ENGINE_ASSERT(owner_, "ParallaxComponent: owner is nullptr");
+  ENGINE_LOG_ASSERT(owner_, "ParallaxComponent: owner is nullptr");
 
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_ERROR("ParallaxComponent: can't find TransformComponent");
+    ENGINE_LOG_ERROR("ParallaxComponent: can't find TransformComponent");
     return;
   }
 }
 
-void ParallaxComponent::Render(engine::core::Context& context) {
+void ParallaxComponent::Render(core::Context& context) {
   if (is_hidden_ || !transform_) {
     return;
   }

@@ -19,7 +19,7 @@ void HurtState::Enter() {
   if (sprite_component->IsFlipped()) {
     knockback_velocity.x = -knockback_velocity.x;
   }
-  physics_component->velocity_ = knockback_velocity;
+  physics_component->SetVelocity(knockback_velocity);
 }
 
 void HurtState::Exit() {}

@@ -5,8 +5,8 @@
 #include <memory>
 #include <vector>
 
-#include "engine/utils/math.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/math.h"
+#include "utils/non_copyable.h"
 
 namespace engine::core {
 class Context;
@@ -23,9 +23,9 @@ class UIElement {
 
   DISABLE_COPY_AND_MOVE(UIElement);
 
-  virtual bool HandleInput(engine::core::Context& context);
-  virtual void Update(float delta_time, engine::core::Context& context);
-  virtual void Render(engine::core::Context& context);
+  virtual bool HandleInput(core::Context& context);
+  virtual void Update(float delta_time, core::Context& context);
+  virtual void Render(core::Context& context);
 
   void AddChild(std::unique_ptr<UIElement> child);
   std::unique_ptr<UIElement> RemoveChild(UIElement* child_ptr);
@@ -46,7 +46,7 @@ class UIElement {
   void SetPosition(const glm::vec2& position) { position_ = position; }
   void SetNeedRemove(bool need_remove) { need_remove_ = need_remove; }
 
-  engine::utils::Rect GetBounds() const;
+  utils::Rect GetBounds() const;
   glm::vec2 GetScreenPosition() const;
   bool IsPointInside(const glm::vec2& point) const;
 

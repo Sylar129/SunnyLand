@@ -2,35 +2,35 @@
 
 #include "engine/object/game_object.h"
 
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::object {
 
 GameObject::GameObject(const std::string& name, const std::string& tag)
     : name_(name), tag_(tag) {
-  ENGINE_TRACE("GameObject created: {} {}", name_, tag_);
+  ENGINE_LOG_TRACE("GameObject created: {} {}", name_, tag_);
 }
 
-void GameObject::HandleInput(engine::core::Context& context) {
+void GameObject::HandleInput(core::Context& context) {
   for (auto& pair : components_) {
     pair.second->HandleInput(context);
   }
 }
 
-void GameObject::Update(float delta_time, engine::core::Context& context) {
+void GameObject::Update(float delta_time, core::Context& context) {
   for (auto& pair : components_) {
     pair.second->Update(delta_time, context);
   }
 }
 
-void GameObject::Render(engine::core::Context& context) {
+void GameObject::Render(core::Context& context) {
   for (auto& pair : components_) {
     pair.second->Render(context);
   }
 }
 
 void GameObject::Clean() {
-  ENGINE_TRACE("Cleaning GameObject...");
+  ENGINE_LOG_TRACE("Cleaning GameObject...");
   for (auto& pair : components_) {
     pair.second->Clean();
   }

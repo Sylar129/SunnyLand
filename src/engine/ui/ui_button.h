@@ -11,7 +11,7 @@ namespace engine::ui {
 
 class UIButton final : public UIInteractive {
  public:
-  UIButton(engine::core::Context& context, const std::string& normal_sprite_id,
+  UIButton(core::Context& context, const std::string& normal_sprite_id,
            const std::string& hover_sprite_id,
            const std::string& pressed_sprite_id,
            const glm::vec2& position = {0.0f, 0.0f},
@@ -21,10 +21,10 @@ class UIButton final : public UIInteractive {
 
   void Clicked() override;
 
-  void setCallback(std::function<void()> callback) {
+  void SetCallback(std::function<void()> callback) {
     callback_ = std::move(callback);
   }
-  std::function<void()> getCallback() const { return callback_; }
+  std::function<void()> GetCallback() const { return callback_; }
 
  private:
   std::function<void()> callback_;

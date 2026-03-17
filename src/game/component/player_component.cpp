@@ -10,16 +10,16 @@
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
-#include "engine/utils/assert.h"
 #include "game/component/state/dead_state.h"
 #include "game/component/state/hurt_state.h"
 #include "game/component/state/idle_state.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace game::component {
 
 void PlayerComponent::Init() {
-  GAME_ASSERT(owner_, "player component must have an owner game object");
+  GAME_LOG_ASSERT(owner_, "player component must have an owner game object");
 
   transform_component_ =
       owner_->GetComponent<engine::component::TransformComponent>();
@@ -32,17 +32,20 @@ void PlayerComponent::Init() {
   health_component_ =
       owner_->GetComponent<engine::component::HealthComponent>();
 
-  GAME_ASSERT(transform_component_,
-              "PlayerComponent requires TransformComponent");
-  GAME_ASSERT(physics_component_, "PlayerComponent requires PhysicsComponent");
-  GAME_ASSERT(sprite_component_, "PlayerComponent requires SpriteComponent");
-  GAME_ASSERT(animation_component_,
-              "PlayerComponent requires AnimationComponent");
-  GAME_ASSERT(health_component_, "PlayerComponent requires HealthComponent");
+  GAME_LOG_ASSERT(transform_component_,
+                  "PlayerComponent requires TransformComponent");
+  GAME_LOG_ASSERT(physics_component_,
+                  "PlayerComponent requires PhysicsComponent");
+  GAME_LOG_ASSERT(sprite_component_,
+                  "PlayerComponent requires SpriteComponent");
+  GAME_LOG_ASSERT(animation_component_,
+                  "PlayerComponent requires AnimationComponent");
+  GAME_LOG_ASSERT(health_component_,
+                  "PlayerComponent requires HealthComponent");
 
   SetState(std::make_unique<state::IdleState>(this));
 
-  GAME_DEBUG("Init PlayerComponent successfully.");
+  GAME_LOG_DEBUG("Init PlayerComponent successfully.");
 }
 
 void PlayerComponent::SetState(std::unique_ptr<state::PlayerState> new_state) {
@@ -56,8 +59,8 @@ void PlayerComponent::SetState(std::unique_ptr<state::PlayerState> new_state) {
 
 bool PlayerComponent::TakeDamage(int damage) {
   if (is_dead_ || damage <= 0) {
-    GAME_WARN("Player cannot take damage. is_dead: {},  damage: {}", is_dead_,
-              damage);
+    GAME_LOG_WARN("Player cannot take damage. is_dead: {},  damage: {}",
+                  is_dead_, damage);
     return false;
   }
 

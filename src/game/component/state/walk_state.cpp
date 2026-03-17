@@ -30,14 +30,14 @@ std::unique_ptr<PlayerState> WalkState::HandleInput(
   }
 
   if (input_manager.IsActionDown("move_left")) {
-    if (physics_component->velocity_.x > 0.0f) {
-      physics_component->velocity_.x = 0.0f;
+    if (physics_component->GetVelocity().x > 0.0f) {
+      physics_component->SetVelocityX(0.0f);
     }
     physics_component->AddForce({-player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(true);
   } else if (input_manager.IsActionDown("move_right")) {
-    if (physics_component->velocity_.x < 0.0f) {
-      physics_component->velocity_.x = 0.0f;
+    if (physics_component->GetVelocity().x < 0.0f) {
+      physics_component->SetVelocityX(0.0f);
     }
     physics_component->AddForce({player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(false);
@@ -56,8 +56,8 @@ std::unique_ptr<PlayerState> WalkState::HandleInput(
 std::unique_ptr<PlayerState> WalkState::Update(float, engine::core::Context&) {
   auto physics_component = player_component_->GetPhysicsComponent();
   auto max_speed = player_component_->GetMaxSpeed();
-  physics_component->velocity_.x =
-      glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
+  physics_component->SetVelocityX(
+      glm::clamp(physics_component->GetVelocity().x, -max_speed, max_speed));
 
   if (!player_component_->IsOnGround()) {
     return std::make_unique<FallState>(player_component_);

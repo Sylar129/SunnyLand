@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 namespace engine::core {
 class Context;
@@ -27,8 +27,7 @@ class UIState {
 
  protected:
   virtual void Enter() {}
-  virtual std::unique_ptr<UIState> HandleInput(
-      engine::core::Context& context) = 0;
+  virtual std::unique_ptr<UIState> HandleInput(core::Context& context) = 0;
 
   engine::ui::UIInteractive* owner_ = nullptr;
 };

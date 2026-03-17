@@ -7,17 +7,16 @@
 #include "engine/ui/state/ui_normal_state.h"
 #include "engine/ui/state/ui_pressed_state.h"
 #include "engine/ui/ui_interactive.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::ui::state {
 
 void UIHoverState::Enter() {
   owner_->SetSprite("hover");
-  ENGINE_DEBUG("Switched to hover state");
+  ENGINE_LOG_DEBUG("Switched to hover state");
 }
 
-std::unique_ptr<UIState> UIHoverState::HandleInput(
-    engine::core::Context& context) {
+std::unique_ptr<UIState> UIHoverState::HandleInput(core::Context& context) {
   auto& input_manager = context.GetInputManager();
   auto mouse_pos = input_manager.GetLogicalMousePosition();
   if (!owner_->IsPointInside(mouse_pos)) {

@@ -15,10 +15,11 @@ namespace engine::component {
 class TransformComponent;
 
 class PhysicsComponent final : public Component {
-  friend class engine::object::GameObject;
+  friend class object::GameObject;
+  friend class physics::PhysicsEngine;
 
  public:
-  PhysicsComponent(engine::physics::PhysicsEngine* physics_engine,
+  PhysicsComponent(physics::PhysicsEngine* physics_engine,
                    bool use_gravity = true, float mass = 1.0f);
   ~PhysicsComponent() override = default;
 
@@ -35,6 +36,8 @@ class PhysicsComponent final : public Component {
   void SetMass(float mass) { mass_ = (mass > 0.0f) ? mass : 1.0f; }
   void SetUseGravity(bool use_gravity) { use_gravity_ = use_gravity; }
   void SetVelocity(const glm::vec2& velocity) { velocity_ = velocity; }
+  void SetVelocityX(float vx) { velocity_.x = vx; }
+  void SetVelocityY(float vy) { velocity_.y = vy; }
   const glm::vec2& GetVelocity() const { return velocity_; }
   TransformComponent* GetTransform() const { return transform_; }
 
@@ -61,16 +64,15 @@ class PhysicsComponent final : public Component {
   bool HasCollidedLadder() const { return collision_flag_ & kCollidedLadder; }
   bool IsOnTopLadder() const { return collision_flag_ & kIsOnTopLadder; }
 
-  glm::vec2 velocity_ = {0.0f, 0.0f};
-
  private:
   void Init() override;
-  void Update(float, engine::core::Context&) override {}
+  void Update(float, core::Context&) override {}
   void Clean() override;
 
-  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
+  physics::PhysicsEngine* physics_engine_ = nullptr;
   TransformComponent* transform_ = nullptr;
 
+  glm::vec2 velocity_ = {0.0f, 0.0f};
   glm::vec2 force_ = {0.0f, 0.0f};
   float mass_ = 1.0f;
   bool use_gravity_ = true;

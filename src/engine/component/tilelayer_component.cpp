@@ -5,8 +5,8 @@
 #include "engine/core/context.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/render/renderer.h"
-#include "engine/utils/assert.h"
-#include "log.h"
+#include "utils/assert.h"
+#include "utils/log.h"
 
 namespace engine::component {
 
@@ -15,21 +15,21 @@ TileLayerComponent::TileLayerComponent(const glm::ivec2& tile_size,
                                        std::vector<TileInfo>&& tiles)
     : tile_size_(tile_size), map_size_(map_size), tiles_(std::move(tiles)) {
   if (tiles_.size() != static_cast<size_t>(map_size_.x * map_size_.y)) {
-    ENGINE_ERROR(
+    ENGINE_LOG_ERROR(
         "TileLayerComponent: Invalid tiles data size. Clearing tiles.");
     tiles_.clear();
     map_size_ = {0, 0};
   }
-  ENGINE_TRACE("TileLayerComponent constructed.");
+  ENGINE_LOG_TRACE("TileLayerComponent constructed.");
 }
 
 void TileLayerComponent::Init() {
-  ENGINE_ASSERT(owner_, "TileLayerComponent Init failed: owner_ is null.");
+  ENGINE_LOG_ASSERT(owner_, "TileLayerComponent Init failed: owner_ is null.");
 
-  ENGINE_TRACE("TileLayerComponent initialized.");
+  ENGINE_LOG_TRACE("TileLayerComponent initialized.");
 }
 
-void TileLayerComponent::Render(engine::core::Context& context) {
+void TileLayerComponent::Render(core::Context& context) {
   if (tile_size_.x <= 0 || tile_size_.y <= 0) {
     return;
   }
@@ -38,7 +38,7 @@ void TileLayerComponent::Render(engine::core::Context& context) {
     for (int x = 0; x < map_size_.x; ++x) {
       size_t index = static_cast<size_t>(y) * map_size_.x + x;
 
-      if (index < tiles_.size() && tiles_[index].type != TileType::EMPTY) {
+      if (index < tiles_.size() && tiles_[index].type != TileType::kEmpty) {
         const auto& tile_info = tiles_[index];
 
         glm::vec2 tile_left_top_pos = {
@@ -65,20 +65,20 @@ void TileLayerComponent::Clean() {
 
 const TileInfo* TileLayerComponent::GetTileInfoAt(const glm::ivec2& pos) const {
   if (pos.x < 0 || pos.x >= map_size_.x || pos.y < 0 || pos.y >= map_size_.y) {
-    ENGINE_WARN("TileLayerComponent: invalid pos: ({}, {})", pos.x, pos.y);
+    ENGINE_LOG_WARN("TileLayerComponent: invalid pos: ({}, {})", pos.x, pos.y);
     return nullptr;
   }
   size_t index = static_cast<size_t>(pos.y * map_size_.x + pos.x);
   if (index < tiles_.size()) {
     return &tiles_[index];
   }
-  ENGINE_WARN("TileLayerComponent: invalid index: {}", index);
+  ENGINE_LOG_WARN("TileLayerComponent: invalid index: {}", index);
   return nullptr;
 }
 
 TileType TileLayerComponent::GetTileTypeAt(const glm::ivec2& pos) const {
   const TileInfo* info = GetTileInfoAt(pos);
-  return info ? info->type : TileType::EMPTY;
+  return info ? info->type : TileType::kEmpty;
 }
 
 TileType TileLayerComponent::GetTileTypeAtWorldPos(

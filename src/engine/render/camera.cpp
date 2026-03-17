@@ -3,18 +3,18 @@
 #include "engine/render/camera.h"
 
 #include "engine/component/transform_component.h"
-#include "engine/utils/math.h"
-#include "log.h"
+#include "utils/log.h"
+#include "utils/math.h"
 
 namespace engine::render {
 
 Camera::Camera(const glm::vec2& viewport_size, const glm::vec2& position,
-               const std::optional<engine::utils::Rect> limit_bounds)
+               const std::optional<utils::Rect> limit_bounds)
     : viewport_size_(viewport_size),
       position_(position),
       limit_bounds_(limit_bounds) {
-  ENGINE_TRACE("Camera initialized successfully, position: {},", position_.x,
-               position_.y);
+  ENGINE_LOG_TRACE("Camera initialized successfully, position: {},",
+                   position_.x, position_.y);
 }
 
 void Camera::SetPosition(const glm::vec2& position) {
@@ -46,12 +46,12 @@ void Camera::Move(const glm::vec2& offset) {
   ClampPosition();
 }
 
-void Camera::SetLimitBounds(const engine::utils::Rect& bounds) {
+void Camera::SetLimitBounds(const utils::Rect& bounds) {
   limit_bounds_ = bounds;
   ClampPosition();
 }
 
-void Camera::SetTarget(engine::component::TransformComponent* target) {
+void Camera::SetTarget(component::TransformComponent* target) {
   target_ = target;
 }
 
@@ -87,11 +87,9 @@ glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
 
 glm::vec2 Camera::GetViewportSize() const { return viewport_size_; }
 
-engine::component::TransformComponent* Camera::GetTarget() const {
-  return target_;
-}
+component::TransformComponent* Camera::GetTarget() const { return target_; }
 
-std::optional<engine::utils::Rect> Camera::GetLimitBounds() const {
+std::optional<utils::Rect> Camera::GetLimitBounds() const {
   return limit_bounds_;
 }
 

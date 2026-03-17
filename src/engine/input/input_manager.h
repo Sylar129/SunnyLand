@@ -24,7 +24,7 @@ enum class ActionState {
 
 class InputManager final {
  public:
-  InputManager(SDL_Renderer* sdl_renderer, const engine::core::Config* config);
+  InputManager(SDL_Renderer* sdl_renderer, const core::Config* config);
 
   void Update();
 
@@ -40,7 +40,7 @@ class InputManager final {
 
  private:
   void ProcessEvent(const SDL_Event& event);
-  void InitializeMappings(const engine::core::Config* config);
+  void InitializeMappings(const core::Config* config);
 
   void UpdateActionState(const std::string& action_name, bool is_input_active,
                          bool is_repeat_event);

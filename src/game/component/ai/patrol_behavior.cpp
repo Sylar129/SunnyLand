@@ -7,7 +7,7 @@
 #include "engine/component/sprite_component.h"
 #include "engine/component/transform_component.h"
 #include "game/component/ai_component.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace game::component::ai {
 
@@ -30,7 +30,7 @@ void PatrolBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   auto* transform_component = ai_component.GetTransformComponent();
   auto* sprite_component = ai_component.GetSpriteComponent();
   if (!physics_component || !transform_component || !sprite_component) {
-    GAME_ERROR(
+    GAME_LOG_ERROR(
         "PatrolBehavior missing required components. Cannot execute behavior.");
     return;
   }
@@ -38,11 +38,11 @@ void PatrolBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   auto current_x = transform_component->GetPosition().x;
 
   if (physics_component->HasCollidedRight() || current_x >= patrol_max_x_) {
-    physics_component->velocity_.x = -move_speed_;
+    physics_component->SetVelocityX(-move_speed_);
     moving_right_ = false;
   } else if (physics_component->HasCollidedLeft() ||
              current_x <= patrol_min_x_) {
-    physics_component->velocity_.x = move_speed_;
+    physics_component->SetVelocityX(move_speed_);
     moving_right_ = true;
   }
 

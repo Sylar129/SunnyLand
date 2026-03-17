@@ -8,7 +8,7 @@
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
 #include "engine/render/text_renderer.h"
-#include "engine/utils/non_copyable.h"
+#include "utils/non_copyable.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -45,19 +45,19 @@ class GameApp final {
   void Run();
 
  private:
-  [[nodiscard]] bool Init();
-  [[nodiscard]] bool InitConfig();
-  [[nodiscard]] bool InitSDL();
-  [[nodiscard]] bool InitRenderer();
-  [[nodiscard]] bool InitCamera();
-  [[nodiscard]] bool InitTextRenderer();
-  [[nodiscard]] bool InitTime();
-  [[nodiscard]] bool InitResourceManager();
-  [[nodiscard]] bool InitInputManager();
-  [[nodiscard]] bool InitGameState();
-  [[nodiscard]] bool InitContext();
-  [[nodiscard]] bool InitSceneManager();
-  [[nodiscard]] bool InitPhysicsEngine();
+  bool Init();
+  bool InitConfig();
+  bool InitSDL();
+  bool InitRenderer();
+  bool InitCamera();
+  bool InitTextRenderer();
+  bool InitTime();
+  bool InitResourceManager();
+  bool InitInputManager();
+  bool InitGameState();
+  bool InitContext();
+  bool InitSceneManager();
+  bool InitPhysicsEngine();
 
   void HandleEvents();
   void Update(float delta_time);
@@ -69,15 +69,15 @@ class GameApp final {
   bool is_running_ = false;
   std::unique_ptr<Time> time_;
   std::unique_ptr<resource::ResourceManager> resource_manager_;
-  std::unique_ptr<engine::render::Renderer> renderer_;
-  std::unique_ptr<engine::render::Camera> camera_;
-  std::unique_ptr<engine::render::TextRenderer> text_renderer_;
-  std::unique_ptr<engine::core::Config> config_;
-  std::unique_ptr<engine::input::InputManager> input_manager_;
-  std::unique_ptr<engine::physics::PhysicsEngine> physics_engine_;
-  std::unique_ptr<engine::core::GameState> game_state_;
-  std::unique_ptr<engine::core::Context> context_;
-  std::unique_ptr<engine::scene::SceneManager> scene_manager_;
+  std::unique_ptr<render::Renderer> renderer_;
+  std::unique_ptr<render::Camera> camera_;
+  std::unique_ptr<render::TextRenderer> text_renderer_;
+  std::unique_ptr<core::Config> config_;
+  std::unique_ptr<input::InputManager> input_manager_;
+  std::unique_ptr<physics::PhysicsEngine> physics_engine_;
+  std::unique_ptr<core::GameState> game_state_;
+  std::unique_ptr<core::Context> context_;
+  std::unique_ptr<scene::SceneManager> scene_manager_;
 };
 
 }  // namespace engine::core

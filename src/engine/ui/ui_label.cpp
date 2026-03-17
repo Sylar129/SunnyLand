@@ -4,14 +4,13 @@
 
 #include "engine/core/context.h"
 #include "engine/render/text_renderer.h"
-#include "log.h"
+#include "utils/log.h"
 
 namespace engine::ui {
 
-UILabel::UILabel(engine::render::TextRenderer& text_renderer,
-                 const std::string& text, const std::string& font_id,
-                 int font_size, const engine::utils::FColor& text_color,
-                 const glm::vec2& position)
+UILabel::UILabel(render::TextRenderer& text_renderer, const std::string& text,
+                 const std::string& font_id, int font_size,
+                 const utils::FColor& text_color, const glm::vec2& position)
     : UIElement(position),
       text_renderer_(text_renderer),
       text_(text),
@@ -19,10 +18,10 @@ UILabel::UILabel(engine::render::TextRenderer& text_renderer,
       font_size_(font_size),
       text_fcolor_(text_color) {
   size_ = text_renderer_.GetTextSize(text_, font_id_, font_size_);
-  ENGINE_TRACE("UILabel constructed.");
+  ENGINE_LOG_TRACE("UILabel constructed.");
 }
 
-void UILabel::Render(engine::core::Context& context) {
+void UILabel::Render(core::Context& context) {
   if (!visible_ || text_.empty()) return;
 
   text_renderer_.DrawUIText(text_, font_id_, font_size_, GetScreenPosition(),
@@ -46,7 +45,7 @@ void UILabel::SetFontSize(int font_size) {
   size_ = text_renderer_.GetTextSize(text_, font_id_, font_size_);
 }
 
-void UILabel::SetTextFColor(const engine::utils::FColor& text_fcolor) {
+void UILabel::SetTextFColor(const utils::FColor& text_fcolor) {
   text_fcolor_ = text_fcolor;
 }
 

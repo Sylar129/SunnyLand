@@ -10,8 +10,8 @@
 #include <utility>
 
 #include "engine/component/component.h"
-#include "engine/utils/non_copyable.h"
-#include "log.h"
+#include "utils/log.h"
+#include "utils/non_copyable.h"
 
 namespace engine::object {
 
@@ -29,7 +29,7 @@ class GameObject final {
 
   template <typename T, typename... Args>
   T* AddComponent(Args&&... args) {
-    static_assert(std::is_base_of_v<engine::component::Component, T>,
+    static_assert(std::is_base_of_v<component::Component, T>,
                   "T has to be the subclass of Component");
     auto type_index = std::type_index(typeid(T));
     if (HasComponent<T>()) {
@@ -41,14 +41,14 @@ class GameObject final {
     new_component->SetOwner(this);
     components_[type_index] = std::move(new_component);
     ptr->Init();
-    ENGINE_DEBUG("GameObject::addComponent: {} added component {}", name_,
-                 typeid(T).name());
+    ENGINE_LOG_DEBUG("GameObject::addComponent: {} added component {}", name_,
+                     typeid(T).name());
     return ptr;
   }
 
   template <typename T>
   T* GetComponent() const {
-    static_assert(std::is_base_of_v<engine::component::Component, T>,
+    static_assert(std::is_base_of_v<component::Component, T>,
                   "T has to be the subclass of Component");
     auto type_index = std::type_index(typeid(T));
     auto it = components_.find(type_index);
@@ -60,14 +60,14 @@ class GameObject final {
 
   template <typename T>
   bool HasComponent() const {
-    static_assert(std::is_base_of_v<engine::component::Component, T>,
+    static_assert(std::is_base_of_v<component::Component, T>,
                   "T has to be the subclass of Component");
     return components_.contains(std::type_index(typeid(T)));
   }
 
   template <typename T>
   void RemoveComponent() {
-    static_assert(std::is_base_of_v<engine::component::Component, T>,
+    static_assert(std::is_base_of_v<component::Component, T>,
                   "T has to be the subclass of Component");
     auto type_index = std::type_index(typeid(T));
     auto it = components_.find(type_index);
@@ -77,16 +77,15 @@ class GameObject final {
     }
   }
 
-  void HandleInput(engine::core::Context& context);
-  void Update(float delta_time, engine::core::Context& context);
-  void Render(engine::core::Context& context);
+  void HandleInput(core::Context& context);
+  void Update(float delta_time, core::Context& context);
+  void Render(core::Context& context);
   void Clean();
 
  private:
   std::string name_;
   std::string tag_;
-  std::unordered_map<std::type_index,
-                     std::unique_ptr<engine::component::Component>>
+  std::unordered_map<std::type_index, std::unique_ptr<component::Component>>
       components_;
   bool need_remove_ = false;
 };
