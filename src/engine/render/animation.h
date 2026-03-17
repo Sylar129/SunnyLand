@@ -24,7 +24,7 @@ class Animation final {
 
   void AddFrame(const SDL_FRect& source_rect, float duration);
 
-  const AnimationFrame& GetFrame(float time) const;
+  AnimationFrame GetFrame(float time) const;
 
   const std::string& GetName() const { return name_; }
   const std::vector<AnimationFrame>& GetFrames() const { return frames_; }

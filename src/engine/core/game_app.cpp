@@ -5,7 +5,7 @@
 #include <fstream>
 #include <memory>
 
-#include "SDL3/SDL_init.h"
+#include "SDL3/SDL.h"
 #include "assert.h"
 #include "engine/core/config.h"
 #include "engine/core/context.h"
@@ -206,7 +206,7 @@ bool GameApp::InitContext() {
       *resource_manager_, *physics_engine_, *game_state_);
   ENGINE_LOG_ASSERT(context_, "Failed to Init Context!");
 
-  ENGINE_LOG_ERROR("Init Context successfully.");
+  ENGINE_LOG_TRACE("Init Context successfully.");
   return true;
 }
 

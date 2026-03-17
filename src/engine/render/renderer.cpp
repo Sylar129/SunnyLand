@@ -176,7 +176,7 @@ void Renderer::DrawUIFilledRect(const utils::Rect& rect,
   if (!SDL_RenderFillRect(renderer_, &sdl_rect)) {
     ENGINE_LOG_ERROR("Failed to render filled rectangle: {}", SDL_GetError());
   }
-  SetDrawColor(0, 0, 0, 1.0f);
+  SetDrawColor(0, 0, 0, 255);
 }
 
 void Renderer::SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
