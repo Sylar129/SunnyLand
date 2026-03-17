@@ -6,14 +6,6 @@
 
 #include "engine/scene/scene.h"
 
-namespace engine::object {
-class GameObject;
-}
-
-namespace engine::scene {
-class SceneManager;
-}
-
 namespace game::data {
 class Session;
 }
@@ -21,8 +13,6 @@ class Session;
 namespace game::scene {
 
 class TitleScene final : public engine::scene::Scene {
-
-
  public:
   TitleScene(engine::core::Context& context,
              engine::scene::SceneManager& scene_manager,
@@ -34,14 +24,13 @@ class TitleScene final : public engine::scene::Scene {
   void Update(float delta_time) override;
 
  private:
-  void createUI();
+  void CreateUI();
 
-  void onStartGameClick();
-  void onLoadGameClick();
-  void onHelpsClick();
-  void onQuitClick();
+  void OnStartGameClick();
+  void OnLoadGameClick();
+  void OnHelpsClick();
+  void OnQuitClick();
 
- private:
   std::shared_ptr<game::data::Session> session_data_;
 };
 

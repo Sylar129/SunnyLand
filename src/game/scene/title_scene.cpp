@@ -1,117 +1,102 @@
 // Copyright Sylar129
 
-#include "title_scene.h"
+#include "game/scene/title_scene.h"
 
-#include <spdlog/spdlog.h>
-
-#include "../../engine/core/context.h"
-#include "../../engine/input/input_manager.h"
-#include "../../engine/render/camera.h"
-#include "../../engine/resource/resource_manager.h"
-#include "../../engine/scene/level_loader.h"
-#include "../../engine/scene/scene_manager.h"
-#include "../../engine/ui/ui_button.h"
-#include "../../engine/ui/ui_image.h"
-#include "../../engine/ui/ui_label.h"
-#include "../../engine/ui/ui_manager.h"
-#include "../../engine/ui/ui_panel.h"
-#include "../../engine/utils/math.h"
-#include "../data/session_data.h"
-#include "game_scene.h"
-#include "helps_scene.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "engine/render/camera.h"
+#include "engine/resource/resource_manager.h"
+#include "engine/scene/level_loader.h"
+#include "engine/scene/scene_manager.h"
+#include "engine/ui/ui_button.h"
+#include "engine/ui/ui_image.h"
+#include "engine/ui/ui_label.h"
+#include "engine/ui/ui_manager.h"
+#include "engine/ui/ui_panel.h"
+#include "engine/utils/math.h"
+#include "game/data/session_data.h"
+#include "game/scene/game_scene.h"
+#include "game/scene/helps_scene.h"
+#include "log.h"
 
 namespace game::scene {
 
-// 构造函数：初始化场景名称和上下文，创建 UI 管理器
 TitleScene::TitleScene(engine::core::Context& context,
                        engine::scene::SceneManager& scene_manager,
                        std::shared_ptr<game::data::Session> session_data)
     : engine::scene::Scene("TitleScene", context, scene_manager),
       session_data_(std::move(session_data)) {
   if (!session_data_) {
-    spdlog::warn(
-        "TitleScene 接收到空的 SessionData，创建一个默认的 SessionData");
+    GAME_WARN("TitleScene empty SessionData, creating default SessionData.");
     session_data_ = std::make_shared<game::data::Session>();
   }
-  spdlog::trace("TitleScene 创建.");
+  GAME_TRACE("TitleScene constructed");
 }
 
-// 初始化场景
 void TitleScene::Init() {
   if (is_initialized_) {
     return;
   }
-  // 加载背景地图
   engine::scene::LevelLoader level_loader;
   if (!level_loader.LoadLevel("assets/maps/level0.tmj", *this)) {
-    spdlog::error("加载背景失败");
+    GAME_ERROR("load title scene level failed!");
     return;
   }
 
-  // 创建 UI 元素
-  createUI();
+  CreateUI();
 
   Scene::Init();
-  spdlog::trace("TitleScene 初始化完成.");
+  GAME_TRACE("TitleScene initialized");
 }
 
-// 创建 UI 界面元素
-void TitleScene::createUI() {
-  spdlog::trace("创建 TitleScene UI...");
+void TitleScene::CreateUI() {
+  GAME_TRACE("Creating TitleScene UI...");
   auto window_size = glm::vec2(640.0f, 360.0f);
 
   if (!ui_manager_->Init(window_size)) {
-    spdlog::error("初始化 UIManager 失败!");
+    GAME_ERROR("init UIManager failed!");
     return;
   }
 
-  // 设置音量
-  // context_.getAudioPlayer().setMusicVolume(0.2f);  
-  // context_.getAudioPlayer().setSoundVolume(0.5f);  
+  // context_.getAudioPlayer().setMusicVolume(0.2f);
+  // context_.getAudioPlayer().setSoundVolume(0.5f);
 
-  // 设置背景音乐
   // context_.getAudioPlayer().playMusic("assets/audio/platformer_level03_loop.ogg");
 
   auto title_image = std::make_unique<engine::ui::UIImage>(
       "assets/textures/UI/title-screen.png");
   auto size =
       context_.GetResourceManager().GetTextureSize(title_image->GetTextureId());
-  title_image->SetSize(size * 2.0f);  // 放大为2倍
+  title_image->SetSize(size * 2.0f);
 
-  // 水平居中
   auto title_pos =
       (window_size - title_image->GetSize()) / 2.0f - glm::vec2(0.0f, 50.0f);
   title_image->SetPosition(title_pos);
   ui_manager_->AddElement(std::move(title_image));
 
-  // --- 创建按钮面板并居中 --- (4个按钮，设定好大小、间距)
   float button_width = 96.0f;
   float button_height = 32.0f;
   float button_spacing = 20.0f;
   int num_buttons = 4;
 
-  // 计算面板总宽度
   float panel_width =
       num_buttons * button_width + (num_buttons - 1) * button_spacing;
   float panel_height = button_height;
 
-  // 计算面板位置使其居中
   float panel_x = (window_size.x - panel_width) / 2.0f;
-  float panel_y = window_size.y * 0.65f;  // 垂直位置中间靠下
+  float panel_y = window_size.y * 0.65f;
 
   auto button_panel = std::make_unique<engine::ui::UIPanel>(
       glm::vec2(panel_x, panel_y), glm::vec2(panel_width, panel_height));
 
-  // --- 创建按钮并添加到 UIPanel (位置是相对于 UIPanel 的 0,0) ---
   glm::vec2 current_button_pos = glm::vec2(0.0f, 0.0f);
   glm::vec2 button_size = glm::vec2(button_width, button_height);
 
-  // Start Button
   auto start_button = std::make_unique<engine::ui::UIButton>(
       context_, "assets/textures/UI/buttons/Start1.png",
       "assets/textures/UI/buttons/Start2.png",
       "assets/textures/UI/buttons/Start3.png", current_button_pos, button_size,
-      [this]() { this->onStartGameClick(); });
+      [this]() { this->OnStartGameClick(); });
   button_panel->AddChild(std::move(start_button));
 
   // Load Button
@@ -120,7 +105,7 @@ void TitleScene::createUI() {
       context_, "assets/textures/UI/buttons/Load1.png",
       "assets/textures/UI/buttons/Load2.png",
       "assets/textures/UI/buttons/Load3.png", current_button_pos, button_size,
-      [this]() { this->onLoadGameClick(); });
+      [this]() { this->OnLoadGameClick(); });
   button_panel->AddChild(std::move(load_button));
 
   // Helps Button
@@ -129,7 +114,7 @@ void TitleScene::createUI() {
       context_, "assets/textures/UI/buttons/Helps1.png",
       "assets/textures/UI/buttons/Helps2.png",
       "assets/textures/UI/buttons/Helps3.png", current_button_pos, button_size,
-      [this]() { this->onHelpsClick(); });
+      [this]() { this->OnHelpsClick(); });
   button_panel->AddChild(std::move(helps_button));
 
   // Quit Button
@@ -138,13 +123,11 @@ void TitleScene::createUI() {
       context_, "assets/textures/UI/buttons/Quit1.png",
       "assets/textures/UI/buttons/Quit2.png",
       "assets/textures/UI/buttons/Quit3.png", current_button_pos, button_size,
-      [this]() { this->onQuitClick(); });
+      [this]() { this->OnQuitClick(); });
   button_panel->AddChild(std::move(quit_button));
 
-  // 将 UIPanel 添加到UI管理器
   ui_manager_->AddElement(std::move(button_panel));
 
-  // 创建 Credits 标签
   auto credits_label = std::make_unique<engine::ui::UILabel>(
       context_.GetTextRenderer(), "SunnyLand Credits: XXX - 2025",
       "assets/fonts/VonwaonBitmap-16px.ttf", 16,
@@ -154,49 +137,46 @@ void TitleScene::createUI() {
                 window_size.y - credits_label->GetSize().y - 10.0f});
   ui_manager_->AddElement(std::move(credits_label));
 
-  spdlog::trace("TitleScene UI 创建完成.");
+  GAME_TRACE("TitleScene UI created successfully.");
 }
 
-// 更新场景逻辑
 void TitleScene::Update(float delta_time) {
   Scene::Update(delta_time);
 
-  // 相机自动向右移动
   context_.GetCamera().Move(glm::vec2(delta_time * 100.0f, 0.0f));
 }
 
-// --- 按钮回调实现 --- //
-
-void TitleScene::onStartGameClick() {
-  spdlog::debug("开始游戏按钮被点击。");
+void TitleScene::OnStartGameClick() {
+  GAME_DEBUG("OnStartGameClick");
   scene_manager_.RequestReplaceScene(
       std::make_unique<GameScene>(context_, scene_manager_, session_data_));
 }
 
-void TitleScene::onLoadGameClick() {
-  spdlog::debug("加载游戏按钮被点击。");
+void TitleScene::OnLoadGameClick() {
+  GAME_DEBUG("OnLoadGameClick");
   if (!session_data_) {
-    spdlog::error("游戏状态为空，无法加载。");
+    GAME_ERROR("SessionData is null, cannot load game.");
     return;
   }
 
   if (session_data_->LoadFromFile("assets/save.json")) {
-    spdlog::debug("保存文件加载成功。开始游戏...");
+    GAME_DEBUG(
+        "Load game successfully from save.json, transitioning to GameScene.");
     scene_manager_.RequestReplaceScene(
         std::make_unique<GameScene>(context_, scene_manager_, session_data_));
   } else {
-    spdlog::warn("加载保存文件失败。");
+    GAME_WARN("Failed to load game from save.json. Starting new game instead.");
   }
 }
 
-void TitleScene::onHelpsClick() {
-  spdlog::debug("帮助按钮被点击。");
+void TitleScene::OnHelpsClick() {
+  GAME_DEBUG("OnHelpsClick");
   scene_manager_.RequestPushScene(
       std::make_unique<HelpsScene>(context_, scene_manager_));
 }
 
-void TitleScene::onQuitClick() {
-  spdlog::debug("退出按钮被点击。");
+void TitleScene::OnQuitClick() {
+  GAME_DEBUG("OnQuitClick");
   context_.GetInputManager().SetShouldQuit(true);
 }
 

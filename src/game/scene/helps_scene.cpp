@@ -1,21 +1,20 @@
 // Copyright Sylar129
 
-#include "helps_scene.h"
+#include "game/scene/helps_scene.h"
 
-#include <spdlog/spdlog.h>
-
-#include "../../engine/core/context.h"
-#include "../../engine/input/input_manager.h"
-#include "../../engine/scene/scene_manager.h"
-#include "../../engine/ui/ui_image.h"
-#include "../../engine/ui/ui_manager.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "engine/scene/scene_manager.h"
+#include "engine/ui/ui_image.h"
+#include "engine/ui/ui_manager.h"
+#include "log.h"
 
 namespace game::scene {
 
 HelpsScene::HelpsScene(engine::core::Context& context,
                        engine::scene::SceneManager& scene_manager)
     : engine::scene::Scene("HelpsScene", context, scene_manager) {
-  spdlog::trace("HelpsScene 创建.");
+  GAME_TRACE("HelpsScene constructed");
 }
 
 void HelpsScene::Init() {
@@ -24,7 +23,6 @@ void HelpsScene::Init() {
   }
   auto window_size = glm::vec2(640.0f, 360.0f);
 
-  // 创建帮助图片 UIImage （让它覆盖整个屏幕）
   auto help_image = std::make_unique<engine::ui::UIImage>(
       "assets/textures/UI/instructions.png", glm::vec2(0.0f, 0.0f),
       window_size);
@@ -32,15 +30,14 @@ void HelpsScene::Init() {
   ui_manager_->AddElement(std::move(help_image));
 
   Scene::Init();
-  spdlog::trace("HelpsScene 初始化完成.");
+  GAME_TRACE("HelpsScene initialized");
 }
 
 void HelpsScene::HandleInput() {
   if (!is_initialized_) return;
 
-  // 检测是否按下鼠标左键
   if (context_.GetInputManager().IsActionPressed("MouseLeftClick")) {
-    spdlog::debug("鼠标左键被按下, 退出 HelpsScene.");
+    GAME_DEBUG("Mouse left click detected, popping HelpsScene.");
     scene_manager_.RequestPopScene();
   }
 }
