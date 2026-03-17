@@ -59,6 +59,10 @@ set(TARGET_SOURCES
     src/engine/scene/scene.h
     src/engine/ui/ui_element.cpp
     src/engine/ui/ui_element.h
+    src/engine/ui/ui_image.cpp
+    src/engine/ui/ui_image.h
+    src/engine/ui/ui_label.cpp
+    src/engine/ui/ui_label.h
     src/engine/ui/ui_manager.cpp
     src/engine/ui/ui_manager.h
     src/engine/ui/ui_panel.cpp

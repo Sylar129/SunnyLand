@@ -13,6 +13,11 @@ namespace game::data {
 class Session;
 }
 
+namespace engine::ui {
+class UILabel;
+class UIPanel;
+}  // namespace engine::ui
+
 namespace game::scene {
 
 class GameScene final : public engine::scene::Scene {
@@ -49,8 +54,17 @@ class GameScene final : public engine::scene::Scene {
     return "assets/maps/" + level_name + ".tmj";
   }
 
+  void CreateScoreUI();
+  void CreateHealthUI();
+  void AddScoreWithUI(int score);
+  void HealWithUI(int amount);
+  void UpdateHealthWithUI();
+
   engine::object::GameObject* player_ = nullptr;
   std::shared_ptr<game::data::Session> game_session_;
+
+  engine::ui::UILabel* score_label_ = nullptr;
+  engine::ui::UIPanel* health_panel_ = nullptr;
 };
 
 }  // namespace game::scene

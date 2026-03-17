@@ -23,6 +23,7 @@ class Session {
 
   std::string GetCurrentMapPath() const { return data_.map_path; }
   int GetCurrentHealth() const { return data_.current_health; }
+  int GetMaxHealth() const { return data_.max_health; }
   int GetCurrentScore() const { return data_.current_score; }
 
   void SetNextMapPath(const std::string& path) { data_.map_path = path; }

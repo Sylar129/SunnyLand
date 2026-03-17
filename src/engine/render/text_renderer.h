@@ -5,6 +5,7 @@
 #include <string>
 
 #include "SDL3/SDL_render.h"
+#include "engine/utils/math.h"
 #include "engine/utils/non_copyable.h"
 #include "glm/vec2.hpp"
 
@@ -30,12 +31,13 @@ class TextRenderer final {
 
   void DrawUIText(const std::string& text, const std::string& font_id,
                   int font_size, const glm::vec2& position,
-                  const SDL_FColor& color = {1.0f, 1.0f, 1.0f, 1.0f});
+                  const engine::utils::FColor& color = {1.0f, 1.0f, 1.0f,
+                                                        1.0f});
 
   void DrawText(const Camera& camera, const std::string& text,
                 const std::string& font_id, int font_size,
                 const glm::vec2& position,
-                const SDL_FColor& color = {1.0f, 1.0f, 1.0f, 1.0f});
+                const engine::utils::FColor& color = {1.0f, 1.0f, 1.0f, 1.0f});
 
   glm::vec2 GetTextSize(const std::string& text, const std::string& font_id,
                         int font_size);

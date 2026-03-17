@@ -10,8 +10,8 @@
 
 namespace engine::render {
 
-TextRenderer::TextRenderer(SDL_Renderer *sdl_renderer,
-                           engine::resource::ResourceManager *resource_manager)
+TextRenderer::TextRenderer(SDL_Renderer* sdl_renderer,
+                           engine::resource::ResourceManager* resource_manager)
     : sdl_renderer_(sdl_renderer), resource_manager_(resource_manager) {
   ENGINE_ASSERT(sdl_renderer_ && resource_manager_,
                 "TextRenderer need valid SDL_Renderer and ResourceManager!");
@@ -38,18 +38,18 @@ void TextRenderer::Close() {
   TTF_Quit();
 }
 
-void TextRenderer::DrawUIText(const std::string &text,
-                              const std::string &font_id, int font_size,
-                              const glm::vec2 &position,
-                              const SDL_FColor &color) {
-  TTF_Font *font = resource_manager_->GetFont(font_id, font_size);
+void TextRenderer::DrawUIText(const std::string& text,
+                              const std::string& font_id, int font_size,
+                              const glm::vec2& position,
+                              const engine::utils::FColor& color) {
+  TTF_Font* font = resource_manager_->GetFont(font_id, font_size);
   if (!font) {
     ENGINE_WARN("drawUIText Failed to get font: {} size {}", font_id,
                 font_size);
     return;
   }
 
-  TTF_Text *temp_text_object =
+  TTF_Text* temp_text_object =
       TTF_CreateText(text_engine_, font, text.c_str(), 0);
   if (!temp_text_object) {
     ENGINE_ERROR("drawUIText Failed to create TTF_Text: {}", SDL_GetError());
@@ -71,25 +71,25 @@ void TextRenderer::DrawUIText(const std::string &text,
   TTF_DestroyText(temp_text_object);
 }
 
-void TextRenderer::DrawText(const Camera &camera, const std::string &text,
-                            const std::string &font_id, int font_size,
-                            const glm::vec2 &position,
-                            const SDL_FColor &color) {
+void TextRenderer::DrawText(const Camera& camera, const std::string& text,
+                            const std::string& font_id, int font_size,
+                            const glm::vec2& position,
+                            const engine::utils::FColor& color) {
   glm::vec2 position_screen = camera.WorldToScreen(position);
 
   DrawUIText(text, font_id, font_size, position_screen, color);
 }
 
-glm::vec2 TextRenderer::GetTextSize(const std::string &text,
-                                    const std::string &font_id, int font_size) {
-  TTF_Font *font = resource_manager_->GetFont(font_id, font_size);
+glm::vec2 TextRenderer::GetTextSize(const std::string& text,
+                                    const std::string& font_id, int font_size) {
+  TTF_Font* font = resource_manager_->GetFont(font_id, font_size);
   if (!font) {
     ENGINE_WARN("getTextSize Failed to get font: {} size {}", font_id,
                 font_size);
     return glm::vec2(0.0f, 0.0f);
   }
 
-  TTF_Text *temp_text_object =
+  TTF_Text* temp_text_object =
       TTF_CreateText(text_engine_, font, text.c_str(), 0);
   if (!temp_text_object) {
     ENGINE_ERROR("getTextSize failed to create TTF_Text: {}", SDL_GetError());
