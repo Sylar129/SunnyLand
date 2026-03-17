@@ -113,6 +113,10 @@ set(TARGET_SOURCES
     src/game/data/session_data.h
     src/game/scene/game_scene.cpp
     src/game/scene/game_scene.h
+    src/game/scene/helps_scene.cpp
+    src/game/scene/helps_scene.h
+    src/game/scene/title_scene.cpp
+    src/game/scene/title_scene.h
     src/log.cpp
     src/log.h
     src/main.cpp)
