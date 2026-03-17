@@ -15,18 +15,18 @@ TileLayerComponent::TileLayerComponent(const glm::ivec2& tile_size,
                                        std::vector<TileInfo>&& tiles)
     : tile_size_(tile_size), map_size_(map_size), tiles_(std::move(tiles)) {
   if (tiles_.size() != static_cast<size_t>(map_size_.x * map_size_.y)) {
-    ENGINE_ERROR(
+    ENGINE_LOG_ERROR(
         "TileLayerComponent: Invalid tiles data size. Clearing tiles.");
     tiles_.clear();
     map_size_ = {0, 0};
   }
-  ENGINE_TRACE("TileLayerComponent constructed.");
+  ENGINE_LOG_TRACE("TileLayerComponent constructed.");
 }
 
 void TileLayerComponent::Init() {
-  ENGINE_ASSERT(owner_, "TileLayerComponent Init failed: owner_ is null.");
+  ENGINE_LOG_ASSERT(owner_, "TileLayerComponent Init failed: owner_ is null.");
 
-  ENGINE_TRACE("TileLayerComponent initialized.");
+  ENGINE_LOG_TRACE("TileLayerComponent initialized.");
 }
 
 void TileLayerComponent::Render(engine::core::Context& context) {
@@ -58,21 +58,21 @@ void TileLayerComponent::Render(engine::core::Context& context) {
 }
 
 void TileLayerComponent::Clean() {
-  if (physics_engine_) {
-    physics_engine_->UnregisterCollisionLayer(this);
+  if (physics_ENGINE_LOG_) {
+    physics_ENGINE_LOG_->UnregisterCollisionLayer(this);
   }
 }
 
 const TileInfo* TileLayerComponent::GetTileInfoAt(const glm::ivec2& pos) const {
   if (pos.x < 0 || pos.x >= map_size_.x || pos.y < 0 || pos.y >= map_size_.y) {
-    ENGINE_WARN("TileLayerComponent: invalid pos: ({}, {})", pos.x, pos.y);
+    ENGINE_LOG_WARN("TileLayerComponent: invalid pos: ({}, {})", pos.x, pos.y);
     return nullptr;
   }
   size_t index = static_cast<size_t>(pos.y * map_size_.x + pos.x);
   if (index < tiles_.size()) {
     return &tiles_[index];
   }
-  ENGINE_WARN("TileLayerComponent: invalid index: {}", index);
+  ENGINE_LOG_WARN("TileLayerComponent: invalid index: {}", index);
   return nullptr;
 }
 

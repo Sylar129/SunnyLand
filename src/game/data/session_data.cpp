@@ -19,7 +19,7 @@ bool Session::SaveToFile(const std::string& filename) const {
     ofs << j.dump(4);
     ofs.close();
   } catch (const std::exception& e) {
-    GAME_ERROR("Save to {} Failed, e: {}", filename, e.what());
+    GAME_LOG_ERROR("Save to {} Failed, e: {}", filename, e.what());
     return false;
   }
   return true;
@@ -38,7 +38,7 @@ bool Session::LoadFromFile(const std::string& filename) {
 
     data_ = j.get<Session::Data>();
   } catch (const std::exception& e) {
-    GAME_ERROR("Load from {} Failed, e: {}", filename, e.what());
+    GAME_LOG_ERROR("Load from {} Failed, e: {}", filename, e.what());
     return false;
   }
   return true;

@@ -30,7 +30,7 @@ void PatrolBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   auto* transform_component = ai_component.GetTransformComponent();
   auto* sprite_component = ai_component.GetSpriteComponent();
   if (!physics_component || !transform_component || !sprite_component) {
-    GAME_ERROR(
+    GAME_LOG_ERROR(
         "PatrolBehavior missing required components. Cannot execute behavior.");
     return;
   }

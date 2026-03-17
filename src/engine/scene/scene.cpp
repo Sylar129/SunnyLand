@@ -22,14 +22,14 @@ Scene::Scene(const std::string& name, engine::core::Context& context,
       scene_manager_(scene_manager),
       ui_manager_(std::make_unique<engine::ui::UIManager>()),
       is_initialized_(false) {
-  ENGINE_TRACE("Scene '{}' created.", scene_name_);
+  ENGINE_LOG_TRACE("Scene '{}' created.", scene_name_);
 }
 
 Scene::~Scene() = default;
 
 void Scene::Init() {
   is_initialized_ = true;
-  ENGINE_TRACE("Scene '{}' initialized", scene_name_);
+  ENGINE_LOG_TRACE("Scene '{}' initialized", scene_name_);
 }
 
 void Scene::Update(float delta_time) {
@@ -99,7 +99,7 @@ void Scene::Clean() {
   game_objects_.clear();
 
   is_initialized_ = false;
-  ENGINE_TRACE("Scene '{}' clean finished", scene_name_);
+  ENGINE_LOG_TRACE("Scene '{}' clean finished", scene_name_);
 }
 
 void Scene::AddGameObject(
@@ -107,7 +107,7 @@ void Scene::AddGameObject(
   if (game_object) {
     game_objects_.push_back(std::move(game_object));
   } else {
-    ENGINE_WARN("Trying to add empty object to scene '{}'", scene_name_);
+    ENGINE_LOG_WARN("Trying to add empty object to scene '{}'", scene_name_);
   }
 }
 
@@ -116,14 +116,14 @@ void Scene::SafeAddGameObject(
   if (game_object) {
     pending_additions_.push_back(std::move(game_object));
   } else {
-    ENGINE_WARN("Trying to add empty object to scene '{}'", scene_name_);
+    ENGINE_LOG_WARN("Trying to add empty object to scene '{}'", scene_name_);
   }
 }
 
 void Scene::RemoveGameObject(engine::object::GameObject* game_object_ptr) {
   if (!game_object_ptr) {
-    ENGINE_WARN("Trying to remove empty object ptr from scene '{}'",
-                scene_name_);
+    ENGINE_LOG_WARN("Trying to remove empty object ptr from scene '{}'",
+                    scene_name_);
     return;
   }
 
@@ -136,9 +136,9 @@ void Scene::RemoveGameObject(engine::object::GameObject* game_object_ptr) {
   if (it != game_objects_.end()) {
     game_object_ptr->Clean();
     game_objects_.erase(it, game_objects_.end());
-    ENGINE_TRACE("Removing game object from scne '{}'", scene_name_);
+    ENGINE_LOG_TRACE("Removing game object from scne '{}'", scene_name_);
   } else {
-    ENGINE_WARN("Game object is not in the scene '{}'", scene_name_);
+    ENGINE_LOG_WARN("Game object is not in the scene '{}'", scene_name_);
   }
 }
 

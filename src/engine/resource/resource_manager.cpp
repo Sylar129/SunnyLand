@@ -18,14 +18,14 @@ ResourceManager::ResourceManager(SDL_Renderer* renderer) {
   audio_manager_ = std::make_unique<AudioManager>();
   font_manager_ = std::make_unique<FontManager>();
 
-  ENGINE_TRACE("Init ResourceManager successfully");
+  ENGINE_LOG_TRACE("Init ResourceManager successfully");
 }
 
 void ResourceManager::Clear() {
   font_manager_->ClearFonts();
   audio_manager_->ClearSounds();
   texture_manager_->ClearTextures();
-  ENGINE_TRACE("Clearing ResourceManager Assets");
+  ENGINE_LOG_TRACE("Clearing ResourceManager Assets");
 }
 
 SDL_Texture* ResourceManager::LoadTexture(const std::string& file_path) {

@@ -22,8 +22,9 @@ EndScene::EndScene(engine::core::Context& context,
                    std::shared_ptr<game::data::Session> session_data)
     : engine::scene::Scene("EndScene", context, scene_manager),
       session_data_(std::move(session_data)) {
-  GAME_ASSERT(session_data_, "EndScene requires a valid SessionData pointer!");
-  GAME_TRACE("EndScene constructed, is_win: {}", session_data_->GetIsWin());
+  GAME_LOG_ASSERT(session_data_,
+                  "EndScene requires a valid SessionData pointer!");
+  GAME_LOG_TRACE("EndScene constructed, is_win: {}", session_data_->GetIsWin());
 }
 
 void EndScene::Init() {
@@ -36,13 +37,13 @@ void EndScene::Init() {
   CreateUI();
 
   Scene::Init();
-  GAME_INFO("EndScene initialized");
+  GAME_LOG_INFO("EndScene initialized");
 }
 
 void EndScene::CreateUI() {
   auto window_size = context_.GetGameState().GetLogicalSize();
   if (!ui_manager_->Init(window_size)) {
-    GAME_ERROR("EndScene failed to initialize UIManager!");
+    GAME_LOG_ERROR("EndScene failed to initialize UIManager!");
     return;
   }
   auto is_win = session_data_->GetIsWin();
@@ -118,13 +119,13 @@ void EndScene::CreateUI() {
 }
 
 void EndScene::OnBackClick() {
-  GAME_INFO("onBackClick");
+  GAME_LOG_INFO("onBackClick");
   scene_manager_.RequestReplaceScene(
       std::make_unique<TitleScene>(context_, scene_manager_, session_data_));
 }
 
 void EndScene::OnRestartClick() {
-  GAME_INFO("onRestartClick");
+  GAME_LOG_INFO("onRestartClick");
   session_data_ = nullptr;
   scene_manager_.RequestReplaceScene(
       std::make_unique<GameScene>(context_, scene_manager_, session_data_));

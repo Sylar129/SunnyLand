@@ -26,14 +26,14 @@ GameApp::GameApp() {}
 
 GameApp::~GameApp() {
   if (is_running_) {
-    ENGINE_WARN("GameApp is still running when dtor!");
+    ENGINE_LOG_WARN("GameApp is still running when dtor!");
     Close();
   }
 }
 
 void GameApp::Run() {
   if (!Init()) {
-    ENGINE_ERROR("Failed to init game!");
+    ENGINE_LOG_ERROR("Failed to init game!");
     return;
   }
 
@@ -51,7 +51,7 @@ void GameApp::Run() {
 }
 
 bool GameApp::Init() {
-  ENGINE_TRACE("Init GameApp ...");
+  ENGINE_LOG_TRACE("Init GameApp ...");
   if (!InitConfig()) return false;
   if (!InitSDL()) return false;
   if (!InitTime()) return false;
@@ -77,7 +77,7 @@ bool GameApp::InitConfig() {
   constexpr const char* filepath = "assets/config.json";
   std::ifstream file(filepath);
   if (!file.is_open()) {
-    ENGINE_WARN(
+    ENGINE_LOG_WARN(
         "Config file '{}' not found. Using default settings and creating "
         "default config file.",
         filepath);
@@ -86,11 +86,12 @@ bool GameApp::InitConfig() {
     if (output_file.is_open()) {
       output_file << nlohmann::json(Config()).dump(4);
     } else {
-      ENGINE_ERROR("Failed to create default config file at '{}'", filepath);
+      ENGINE_LOG_ERROR("Failed to create default config file at '{}'",
+                       filepath);
     }
 
     config_ = std::make_unique<engine::core::Config>();
-    ENGINE_TRACE("Init Config successfully.");
+    ENGINE_LOG_TRACE("Init Config successfully.");
     return true;
   }
 
@@ -98,18 +99,19 @@ bool GameApp::InitConfig() {
     nlohmann::json j = nlohmann::json::parse(file);
     config_ = std::make_unique<engine::core::Config>(j.get<Config>());
   } catch (const std::exception& e) {
-    ENGINE_ERROR("Error reading config file '{}': {}. Using default settings.",
-                 filepath, e.what());
+    ENGINE_LOG_ERROR(
+        "Error reading config file '{}': {}. Using default settings.", filepath,
+        e.what());
     config_ = std::make_unique<engine::core::Config>();
   }
 
-  ENGINE_TRACE("Init Config successfully.");
+  ENGINE_LOG_TRACE("Init Config successfully.");
   return true;
 }
 
 bool GameApp::InitSDL() {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-    ENGINE_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
     return false;
   }
 
@@ -118,21 +120,21 @@ bool GameApp::InitSDL() {
                        config_->window.height,
                        config_->window.resizable ? SDL_WINDOW_RESIZABLE : 0);
   if (window_ == nullptr) {
-    ENGINE_ERROR("Failed to create window! Error: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to create window! Error: {}", SDL_GetError());
     return false;
   }
 
   sdl_renderer_ = SDL_CreateRenderer(window_, nullptr);
   if (sdl_renderer_ == nullptr) {
-    ENGINE_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
+    ENGINE_LOG_ERROR("Failed to create renderer! Error: {}", SDL_GetError());
     return false;
   }
 
   int vsync_mode = config_->graphics.vsync ? SDL_RENDERER_VSYNC_ADAPTIVE
                                            : SDL_RENDERER_VSYNC_DISABLED;
   SDL_SetRenderVSync(sdl_renderer_, vsync_mode);
-  ENGINE_TRACE("Setting VSync: {}",
-               config_->graphics.vsync ? "Enabled" : "Disabled");
+  ENGINE_LOG_TRACE("Setting VSync: {}",
+                   config_->graphics.vsync ? "Enabled" : "Disabled");
 
   SDL_SetRenderLogicalPresentation(sdl_renderer_, config_->window.width / 2,
                                    config_->window.height / 2,
@@ -147,25 +149,25 @@ bool GameApp::InitRenderer() {
 
   SDL_SetRenderDrawBlendMode(sdl_renderer_, SDL_BLENDMODE_BLEND);
 
-  ENGINE_ASSERT(renderer_, "Failed to Init Renderer!");
+  ENGINE_LOG_ASSERT(renderer_, "Failed to Init Renderer!");
 
-  ENGINE_TRACE("Renderer initialized successfully.");
+  ENGINE_LOG_TRACE("Renderer initialized successfully.");
   return true;
 }
 
 bool GameApp::InitCamera() {
   camera_ = std::make_unique<engine::render::Camera>(
       glm::vec2(config_->window.width / 2, config_->window.height / 2));
-  ENGINE_ASSERT(camera_, "Failed to Init Camera!");
+  ENGINE_LOG_ASSERT(camera_, "Failed to Init Camera!");
 
-  ENGINE_TRACE("Camera initialized successfully.");
+  ENGINE_LOG_TRACE("Camera initialized successfully.");
   return true;
 }
 
 bool GameApp::InitTextRenderer() {
   text_renderer_ = std::make_unique<engine::render::TextRenderer>(
       sdl_renderer_, resource_manager_.get());
-  ENGINE_TRACE("TextRenderer initialized successfully.");
+  ENGINE_LOG_TRACE("TextRenderer initialized successfully.");
   return true;
 }
 
@@ -185,9 +187,9 @@ bool GameApp::InitResourceManager() {
 bool GameApp::InitInputManager() {
   input_manager_ = std::make_unique<engine::input::InputManager>(sdl_renderer_,
                                                                  config_.get());
-  ENGINE_ASSERT(input_manager_, "Failed to Init InputManager!");
+  ENGINE_LOG_ASSERT(input_manager_, "Failed to Init InputManager!");
 
-  ENGINE_TRACE("Init InputManager successfully.");
+  ENGINE_LOG_TRACE("Init InputManager successfully.");
   return true;
 }
 
@@ -201,29 +203,29 @@ bool GameApp::InitGameState() {
 bool GameApp::InitContext() {
   context_ = std::make_unique<engine::core::Context>(
       *input_manager_, *renderer_, *camera_, *text_renderer_,
-      *resource_manager_, *physics_engine_, *game_state_);
-  ENGINE_ASSERT(context_, "Failed to Init Context!");
+      *resource_manager_, *physics_ENGINE_LOG_, *game_state_);
+  ENGINE_LOG_ASSERT(context_, "Failed to Init Context!");
 
-  ENGINE_ERROR("Init Context successfully.");
+  ENGINE_LOG_ERROR("Init Context successfully.");
   return true;
 }
 
 bool GameApp::InitSceneManager() {
   scene_manager_ = std::make_unique<engine::scene::SceneManager>(*context_);
-  ENGINE_ASSERT(scene_manager_, "Failed to Init SceneManager!");
+  ENGINE_LOG_ASSERT(scene_manager_, "Failed to Init SceneManager!");
 
-  ENGINE_TRACE("Init SceneManager successfully.");
+  ENGINE_LOG_TRACE("Init SceneManager successfully.");
   return true;
 }
 
 bool GameApp::InitPhysicsEngine() {
-  physics_engine_ = std::make_unique<engine::physics::PhysicsEngine>();
+  physics_ENGINE_LOG_ = std::make_unique<engine::physics::PhysicsEngine>();
   return true;
 }
 
 void GameApp::HandleEvents() {
   if (input_manager_->ShouldQuit()) {
-    ENGINE_TRACE("GameApp receive quit request from InputManager.");
+    ENGINE_LOG_TRACE("GameApp receive quit request from InputManager.");
     is_running_ = false;
     return;
   }
@@ -241,7 +243,7 @@ void GameApp::Render() {
 }
 
 void GameApp::Close() {
-  ENGINE_TRACE("Closing GameApp...");
+  ENGINE_LOG_TRACE("Closing GameApp...");
   resource_manager_.reset();
 
   if (sdl_renderer_ != nullptr) {

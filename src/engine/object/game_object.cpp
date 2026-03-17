@@ -8,7 +8,7 @@ namespace engine::object {
 
 GameObject::GameObject(const std::string& name, const std::string& tag)
     : name_(name), tag_(tag) {
-  ENGINE_TRACE("GameObject created: {} {}", name_, tag_);
+  ENGINE_LOG_TRACE("GameObject created: {} {}", name_, tag_);
 }
 
 void GameObject::HandleInput(engine::core::Context& context) {
@@ -30,7 +30,7 @@ void GameObject::Render(engine::core::Context& context) {
 }
 
 void GameObject::Clean() {
-  ENGINE_TRACE("Cleaning GameObject...");
+  ENGINE_LOG_TRACE("Cleaning GameObject...");
   for (auto& pair : components_) {
     pair.second->Clean();
   }

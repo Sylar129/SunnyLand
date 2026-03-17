@@ -13,7 +13,7 @@ namespace engine::ui::state {
 
 void UIHoverState::Enter() {
   owner_->SetSprite("hover");
-  ENGINE_DEBUG("Switched to hover state");
+  ENGINE_LOG_DEBUG("Switched to hover state");
 }
 
 std::unique_ptr<UIState> UIHoverState::HandleInput(

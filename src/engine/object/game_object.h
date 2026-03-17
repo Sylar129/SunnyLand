@@ -41,8 +41,8 @@ class GameObject final {
     new_component->SetOwner(this);
     components_[type_index] = std::move(new_component);
     ptr->Init();
-    ENGINE_DEBUG("GameObject::addComponent: {} added component {}", name_,
-                 typeid(T).name());
+    ENGINE_LOG_DEBUG("GameObject::addComponent: {} added component {}", name_,
+                     typeid(T).name());
     return ptr;
   }
 

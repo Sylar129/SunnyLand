@@ -13,8 +13,8 @@ Camera::Camera(const glm::vec2& viewport_size, const glm::vec2& position,
     : viewport_size_(viewport_size),
       position_(position),
       limit_bounds_(limit_bounds) {
-  ENGINE_TRACE("Camera initialized successfully, position: {},", position_.x,
-               position_.y);
+  ENGINE_LOG_TRACE("Camera initialized successfully, position: {},",
+                   position_.x, position_.y);
 }
 
 void Camera::SetPosition(const glm::vec2& position) {

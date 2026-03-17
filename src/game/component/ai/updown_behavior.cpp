@@ -33,7 +33,7 @@ void UpDownBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   auto* physics_component = ai_component.GetPhysicsComponent();
   auto* transform_component = ai_component.GetTransformComponent();
   if (!physics_component || !transform_component) {
-    GAME_ERROR(
+    GAME_LOG_ERROR(
         "UpdownBehavior missing required components. Cannot execute behavior.");
     return;
   }

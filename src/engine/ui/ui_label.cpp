@@ -19,7 +19,7 @@ UILabel::UILabel(engine::render::TextRenderer& text_renderer,
       font_size_(font_size),
       text_fcolor_(text_color) {
   size_ = text_renderer_.GetTextSize(text_, font_id_, font_size_);
-  ENGINE_TRACE("UILabel constructed.");
+  ENGINE_LOG_TRACE("UILabel constructed.");
 }
 
 void UILabel::Render(engine::core::Context& context) {

@@ -17,16 +17,16 @@ ColliderComponent::ColliderComponent(
       alignment_(alignment),
       is_trigger_(is_trigger),
       is_active_(is_active) {
-  ENGINE_ASSERT(collider_,
-                "Empty collider passed to ColliderComponent constructor!");
+  ENGINE_LOG_ASSERT(collider_,
+                    "Empty collider passed to ColliderComponent constructor!");
 }
 
 void ColliderComponent::Init() {
-  ENGINE_ASSERT(owner_, "ColliderComponent has no owner GameObject!");
+  ENGINE_LOG_ASSERT(owner_, "ColliderComponent has no owner GameObject!");
 
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_ERROR("ColliderComponent: No TransformComponent!");
+    ENGINE_LOG_ERROR("ColliderComponent: No TransformComponent!");
     return;
   }
 

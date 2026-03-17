@@ -35,7 +35,7 @@ void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
   auto* animation_component = ai_component.GetAnimationComponent();
   if (!physics_component || !transform_component || !sprite_component ||
       !animation_component) {
-    GAME_ERROR(
+    GAME_LOG_ERROR(
         "JumpBehavior missing required components. Cannot execute behavior.");
     return;
   }

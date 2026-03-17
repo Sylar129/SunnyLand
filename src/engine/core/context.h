@@ -49,7 +49,7 @@ class Context final {
     return resource_manager_;
   }
   engine::physics::PhysicsEngine& GetPhysicsEngine() const {
-    return physics_engine_;
+    return physics_ENGINE_LOG_;
   }
   engine::core::GameState& GetGameState() const { return game_state_; }
 
@@ -59,7 +59,7 @@ class Context final {
   engine::render::Camera& camera_;
   engine::render::TextRenderer& text_renderer_;
   engine::resource::ResourceManager& resource_manager_;
-  engine::physics::PhysicsEngine& physics_engine_;
+  engine::physics::PhysicsEngine& physics_ENGINE_LOG_;
   engine::core::GameState& game_state_;
 };
 

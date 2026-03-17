@@ -28,10 +28,11 @@ TitleScene::TitleScene(engine::core::Context& context,
     : engine::scene::Scene("TitleScene", context, scene_manager),
       session_data_(std::move(session_data)) {
   if (!session_data_) {
-    GAME_WARN("TitleScene empty SessionData, creating default SessionData.");
+    GAME_LOG_WARN(
+        "TitleScene empty SessionData, creating default SessionData.");
     session_data_ = std::make_shared<game::data::Session>();
   }
-  GAME_TRACE("TitleScene constructed");
+  GAME_LOG_TRACE("TitleScene constructed");
 }
 
 void TitleScene::Init() {
@@ -40,23 +41,23 @@ void TitleScene::Init() {
   }
   engine::scene::LevelLoader level_loader;
   if (!level_loader.LoadLevel("assets/maps/level0.tmj", *this)) {
-    GAME_ERROR("load title scene level failed!");
+    GAME_LOG_ERROR("load title scene level failed!");
     return;
   }
 
   CreateUI();
 
   Scene::Init();
-  GAME_TRACE("TitleScene initialized");
+  GAME_LOG_TRACE("TitleScene initialized");
 }
 
 void TitleScene::CreateUI() {
-  GAME_TRACE("Creating TitleScene UI...");
+  GAME_LOG_TRACE("Creating TitleScene UI...");
   context_.GetGameState().SetState(engine::core::State::kTitle);
   auto window_size = context_.GetGameState().GetLogicalSize();
 
   if (!ui_manager_->Init(window_size)) {
-    GAME_ERROR("init UIManager failed!");
+    GAME_LOG_ERROR("init UIManager failed!");
     return;
   }
 
@@ -139,7 +140,7 @@ void TitleScene::CreateUI() {
                 window_size.y - credits_label->GetSize().y - 10.0f});
   ui_manager_->AddElement(std::move(credits_label));
 
-  GAME_TRACE("TitleScene UI created successfully.");
+  GAME_LOG_TRACE("TitleScene UI created successfully.");
 }
 
 void TitleScene::Update(float delta_time) {
@@ -149,36 +150,37 @@ void TitleScene::Update(float delta_time) {
 }
 
 void TitleScene::OnStartGameClick() {
-  GAME_DEBUG("OnStartGameClick");
+  GAME_LOG_DEBUG("OnStartGameClick");
   scene_manager_.RequestReplaceScene(
       std::make_unique<GameScene>(context_, scene_manager_, session_data_));
 }
 
 void TitleScene::OnLoadGameClick() {
-  GAME_DEBUG("OnLoadGameClick");
+  GAME_LOG_DEBUG("OnLoadGameClick");
   if (!session_data_) {
-    GAME_ERROR("SessionData is null, cannot load game.");
+    GAME_LOG_ERROR("SessionData is null, cannot load game.");
     return;
   }
 
   if (session_data_->LoadFromFile("assets/save.json")) {
-    GAME_DEBUG(
+    GAME_LOG_DEBUG(
         "Load game successfully from save.json, transitioning to GameScene.");
     scene_manager_.RequestReplaceScene(
         std::make_unique<GameScene>(context_, scene_manager_, session_data_));
   } else {
-    GAME_WARN("Failed to load game from save.json. Starting new game instead.");
+    GAME_LOG_WARN(
+        "Failed to load game from save.json. Starting new game instead.");
   }
 }
 
 void TitleScene::OnHelpsClick() {
-  GAME_DEBUG("OnHelpsClick");
+  GAME_LOG_DEBUG("OnHelpsClick");
   scene_manager_.RequestPushScene(
       std::make_unique<HelpsScene>(context_, scene_manager_));
 }
 
 void TitleScene::OnQuitClick() {
-  GAME_DEBUG("OnQuitClick");
+  GAME_LOG_DEBUG("OnQuitClick");
   context_.GetInputManager().SetShouldQuit(true);
 }
 

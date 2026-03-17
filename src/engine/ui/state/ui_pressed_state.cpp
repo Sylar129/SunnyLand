@@ -14,7 +14,7 @@ namespace engine::ui::state {
 void UIPressedState::Enter() {
   owner_->SetSprite("pressed");
   owner_->PlaySound("pressed");
-  ENGINE_DEBUG("Switched to pressed state");
+  ENGINE_LOG_DEBUG("Switched to pressed state");
 }
 
 std::unique_ptr<UIState> UIPressedState::HandleInput(

@@ -10,7 +10,7 @@ namespace engine::core {
 Time::Time() {
   last_time_ = SDL_GetTicksNS();
   frame_start_time_ = last_time_;
-  ENGINE_TRACE("Time init. Last time: {}", last_time_);
+  ENGINE_LOG_TRACE("Time init. Last time: {}", last_time_);
 }
 
 void Time::Update() {
@@ -44,7 +44,7 @@ float Time::GetUnscaledDeltaTime() const { return delta_time_; }
 
 void Time::SetTimeScale(float scale) {
   if (scale < 0.0) {
-    ENGINE_WARN("Time scale can't be negative. Clamping to 0.");
+    ENGINE_LOG_WARN("Time scale can't be negative. Clamping to 0.");
     scale = 0.0;
   }
   time_scale_ = scale;
@@ -54,7 +54,7 @@ float Time::GetTimeScale() const { return time_scale_; }
 
 void Time::SetTargetFps(int fps) {
   if (fps < 0) {
-    ENGINE_WARN("Target FPS can't be negative. Setting to 0 (unlimited).");
+    ENGINE_LOG_WARN("Target FPS can't be negative. Setting to 0 (unlimited).");
     target_fps_ = 0;
   } else {
     target_fps_ = fps;
@@ -62,11 +62,11 @@ void Time::SetTargetFps(int fps) {
 
   if (target_fps_ > 0) {
     target_frame_time_ = 1.0 / static_cast<float>(target_fps_);
-    ENGINE_INFO("Setting Target FPS: {} (Frame time: {:.6f}s)", target_fps_,
-                target_frame_time_);
+    ENGINE_LOG_INFO("Setting Target FPS: {} (Frame time: {:.6f}s)", target_fps_,
+                    target_frame_time_);
   } else {
     target_frame_time_ = 0.0;
-    ENGINE_INFO("Setting Target FPS: Unlimited");
+    ENGINE_LOG_INFO("Setting Target FPS: Unlimited");
   }
 }
 

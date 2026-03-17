@@ -23,7 +23,7 @@ UIButton::UIButton(engine::core::Context& context,
 
   AddSound("hover", "assets/audio/button_hover.wav");
   AddSound("pressed", "assets/audio/button_click.wav");
-  ENGINE_TRACE(
+  ENGINE_LOG_TRACE(
       "UIButton constructed with normal '{}', hover '{}', pressed '{}' sprites",
       normal_sprite_id, hover_sprite_id, pressed_sprite_id);
 }

@@ -42,9 +42,9 @@ GameScene::GameScene(engine::core::Context& context,
       game_session_(std::move(data)) {
   if (!game_session_) {
     game_session_ = std::make_shared<game::data::Session>();
-    GAME_INFO("No SessionData provided, created default SessionData.");
+    GAME_LOG_INFO("No SessionData provided, created default SessionData.");
   }
-  GAME_TRACE("GameScene constructed");
+  GAME_LOG_TRACE("GameScene constructed");
 }
 
 void GameScene::Init() {
@@ -57,7 +57,7 @@ void GameScene::Init() {
   InitEnemyAndItem();
   InitUI();
   Scene::Init();
-  GAME_TRACE("Init GameScene '{}'", GetName());
+  GAME_LOG_TRACE("Init GameScene '{}'", GetName());
 }
 
 void GameScene::Update(float delta_time) {
@@ -92,7 +92,7 @@ void GameScene::InitLevel() {
   engine::scene::LevelLoader level_loader;
   auto level_path = game_session_->GetCurrentMapPath();
   if (!level_loader.LoadLevel(level_path, *this)) {
-    GAME_ERROR("Load level '{}' failed!", level_path);
+    GAME_LOG_ERROR("Load level '{}' failed!", level_path);
     return;
   }
 
@@ -102,7 +102,7 @@ void GameScene::InitLevel() {
         main_layer_obj->GetComponent<engine::component::TileLayerComponent>();
     if (tile_layer_comp) {
       context_.GetPhysicsEngine().RegisterCollisionLayer(tile_layer_comp);
-      GAME_INFO("'main' layer registered to PhysicsEngine for collisions.");
+      GAME_LOG_INFO("'main' layer registered to PhysicsEngine for collisions.");
     }
   }
 
@@ -119,13 +119,13 @@ void GameScene::InitLevel() {
 
 void GameScene::InitPlayer() {
   player_ = FindGameObjectByName("player");
-  GAME_ASSERT(player_, "No Player!");
+  GAME_LOG_ASSERT(player_, "No Player!");
 
   auto* player_component =
       player_->AddComponent<game::component::PlayerComponent>();
 
-  GAME_ASSERT(player_component,
-              "Failed to add PlayerComponent to player object");
+  GAME_LOG_ASSERT(player_component,
+                  "Failed to add PlayerComponent to player object");
 
   auto* player_transform =
       player_->GetComponent<engine::component::TransformComponent>();
@@ -185,7 +185,7 @@ void GameScene::InitEnemyAndItem() {
           ac) {
         ac->PlayAnimation("idle");
       } else {
-        GAME_ERROR(
+        GAME_LOG_ERROR(
             "Item object missing AnimationComponent, cannot play animation.");
       }
     }
@@ -194,7 +194,7 @@ void GameScene::InitEnemyAndItem() {
 
 void GameScene::InitUI() {
   if (!ui_manager_->Init(context_.GetGameState().GetLogicalSize())) {
-    GAME_ERROR("Failed to initialize UIManager.");
+    GAME_LOG_ERROR("Failed to initialize UIManager.");
     return;
   }
 
@@ -218,10 +218,10 @@ void GameScene::HandleObjectCollisions() {
       PlayerVSItemCollision(obj2, obj1);
     } else if (obj1->GetName() == "player" && obj2->GetTag() == "hazard") {
       HandlePlayerDamage(1);
-      GAME_DEBUG("Player '{}' taking damage from hazard", obj1->GetName());
+      GAME_LOG_DEBUG("Player '{}' taking damage from hazard", obj1->GetName());
     } else if (obj2->GetName() == "player" && obj1->GetTag() == "hazard") {
       HandlePlayerDamage(1);
-      GAME_DEBUG("Player '{}' taking damage from hazard", obj2->GetName());
+      GAME_LOG_DEBUG("Player '{}' taking damage from hazard", obj2->GetName());
     } else if (obj1->GetName() == "player" && obj2->GetTag() == "next_level") {
       ToNextLevel(obj2);
     } else if (obj2->GetName() == "player" && obj1->GetTag() == "next_level") {
@@ -243,7 +243,7 @@ void GameScene::HandleTileTriggers() {
     if (tile_type == engine::component::TileType::kHazard) {
       if (obj->GetName() == "player") {
         HandlePlayerDamage(1);
-        GAME_DEBUG("Player '{}' taking damage from hazard", obj->GetName());
+        GAME_LOG_DEBUG("Player '{}' taking damage from hazard", obj->GetName());
       }
     }
   }
@@ -256,7 +256,7 @@ void GameScene::HandlePlayerDamage(int damage) {
     return;
   }
   if (player_component->IsDead()) {
-    GAME_INFO("Player {} is dead", player_->GetName());
+    GAME_LOG_INFO("Player {} is dead", player_->GetName());
   }
   UpdateHealthWithUI();
 }
@@ -274,19 +274,20 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
                  glm::abs(player_center - enemy_center);
 
   if (overlap.x > overlap.y && player_center.y < enemy_center.y) {
-    GAME_INFO("Player {} stomped on enemy {}", player->GetName(),
-              enemy->GetName());
+    GAME_LOG_INFO("Player {} stomped on enemy {}", player->GetName(),
+                  enemy->GetName());
     auto enemy_health =
         enemy->GetComponent<engine::component::HealthComponent>();
     if (!enemy_health) {
-      GAME_ERROR("Enemy {} does not have HealthComponent, cannot take damage.",
-                 enemy->GetName());
+      GAME_LOG_ERROR(
+          "Enemy {} does not have HealthComponent, cannot take damage.",
+          enemy->GetName());
       return;
     }
     enemy_health->TakeDamage(1);
     if (!enemy_health->IsAlive()) {
-      GAME_INFO("Enemy {} defeated by player {}", enemy->GetName(),
-                player->GetName());
+      GAME_LOG_INFO("Enemy {} defeated by player {}", enemy->GetName(),
+                    player->GetName());
       enemy->SetNeedRemove(true);
       AddScoreWithUI(10);
 
@@ -295,8 +296,8 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
     player->GetComponent<engine::component::PhysicsComponent>()->SetVelocityY(
         -300.0f);
   } else {
-    GAME_INFO("Enemy {} collided with player {}, causing damage",
-              enemy->GetName(), player->GetName());
+    GAME_LOG_INFO("Enemy {} collided with player {}, causing damage",
+                  enemy->GetName(), player->GetName());
     HandlePlayerDamage(1);
   }
 }
@@ -338,7 +339,7 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
                           0.1f);
     }
   } else {
-    GAME_WARN("Unknown effect type: {}", tag);
+    GAME_LOG_WARN("Unknown effect type: {}", tag);
     return;
   }
 
@@ -348,7 +349,7 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
   animation_component->SetOneShotRemoval(true);
   animation_component->PlayAnimation("effect");
   SafeAddGameObject(std::move(effect_obj));
-  GAME_DEBUG("Created effect: {}", tag);
+  GAME_LOG_DEBUG("Created effect: {}", tag);
 }
 
 void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
@@ -414,7 +415,7 @@ void GameScene::CreateHealthUI() {
 
 void GameScene::UpdateHealthWithUI() {
   if (!player_ || !health_panel_) {
-    GAME_ERROR("Player or health_panel_ is null, cannot update health UI.");
+    GAME_LOG_ERROR("Player or health_panel_ is null, cannot update health UI.");
     return;
   }
 

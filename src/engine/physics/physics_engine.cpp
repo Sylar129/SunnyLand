@@ -17,28 +17,28 @@ namespace engine::physics {
 
 void PhysicsEngine::RegisterComponent(
     engine::component::PhysicsComponent* component) {
-  ENGINE_ASSERT(component, "PhysicsComponent is null.");
+  ENGINE_LOG_ASSERT(component, "PhysicsComponent is null.");
   components_.push_back(component);
-  ENGINE_TRACE("Register PhysicsComponent complete.");
+  ENGINE_LOG_TRACE("Register PhysicsComponent complete.");
 }
 
 void PhysicsEngine::UnregisterComponent(
     engine::component::PhysicsComponent* component) {
   std::erase(components_, component);
-  ENGINE_TRACE("Unregister PhysicsComponent complete.");
+  ENGINE_LOG_TRACE("Unregister PhysicsComponent complete.");
 }
 
 void PhysicsEngine::RegisterCollisionLayer(
     engine::component::TileLayerComponent* layer) {
   layer->SetPhysicsEngine(this);
   collision_tile_layers_.push_back(layer);
-  ENGINE_TRACE("Register collision tile layer complete.");
+  ENGINE_LOG_TRACE("Register collision tile layer complete.");
 }
 
 void PhysicsEngine::UnregisterCollisionLayer(
     engine::component::TileLayerComponent* layer) {
   std::erase(collision_tile_layers_, layer);
-  ENGINE_TRACE("Unregister collision tile layer complete.");
+  ENGINE_LOG_TRACE("Unregister collision tile layer complete.");
 }
 
 void PhysicsEngine::Update(float delta_time) {
@@ -139,8 +139,9 @@ void PhysicsEngine::CheckTileTriggers() {
       }
       for (const auto& type : triggers_set) {
         tile_trigger_events_.emplace_back(obj, type);
-        ENGINE_TRACE("tile_trigger_events_ Add GameObject {} with TileType {}",
-                     obj->GetName(), static_cast<int>(type));
+        ENGINE_LOG_TRACE(
+            "tile_trigger_events_ Add GameObject {} with TileType {}",
+            obj->GetName(), static_cast<int>(type));
       }
     }
   }

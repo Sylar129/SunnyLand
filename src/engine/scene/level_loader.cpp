@@ -28,7 +28,7 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
 
   std::ifstream file(level_path);
   if (!file.is_open()) {
-    ENGINE_ERROR("Can't open level file: {}", level_path);
+    ENGINE_LOG_ERROR("Can't open level file: {}", level_path);
     return false;
   }
 
@@ -36,7 +36,7 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
   try {
     file >> json_data;
   } catch (const nlohmann::json::parse_error& e) {
-    ENGINE_ERROR("Parsing JSON failed: {}", e.what());
+    ENGINE_LOG_ERROR("Parsing JSON failed: {}", e.what());
     return false;
   }
 
@@ -54,14 +54,14 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
   }
 
   if (!json_data.contains("layers") || !json_data["layers"].is_array()) {
-    ENGINE_ERROR("Missing or invalid 'layers' in map '{}'", level_path);
+    ENGINE_LOG_ERROR("Missing or invalid 'layers' in map '{}'", level_path);
     return false;
   }
   for (const auto& layer_json : json_data["layers"]) {
     std::string layer_type = layer_json.value("type", "none");
     if (!layer_json.value("visible", true)) {
-      ENGINE_INFO("Layer '{}' is invisible. Skipping.",
-                  layer_json.value("name", "Unnamed"));
+      ENGINE_LOG_INFO("Layer '{}' is invisible. Skipping.",
+                      layer_json.value("name", "Unnamed"));
       continue;
     }
 
@@ -72,11 +72,11 @@ bool LevelLoader::LoadLevel(const std::string& level_path, Scene& scene) {
     } else if (layer_type == "objectgroup") {
       LoadObjectLayer(layer_json, scene);
     } else {
-      ENGINE_WARN("Unsupported layer type: {}", layer_type);
+      ENGINE_LOG_WARN("Unsupported layer type: {}", layer_type);
     }
   }
 
-  ENGINE_INFO("Level [{}] loaded.", level_path);
+  ENGINE_LOG_INFO("Level [{}] loaded.", level_path);
   return true;
 }
 
@@ -84,8 +84,8 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
                                  Scene& scene) {
   const std::string& image_path = layer_json.value("image", "");
   if (image_path.empty()) {
-    ENGINE_ERROR("Missing 'image' in Layer '{}'",
-                 layer_json.value("name", "Unnamed"));
+    ENGINE_LOG_ERROR("Missing 'image' in Layer '{}'",
+                     layer_json.value("name", "Unnamed"));
     return;
   }
   auto texture_id = ResolvePath(image_path, map_path_);
@@ -107,7 +107,7 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
       texture_id, scroll_factor, repeat);
 
   scene.AddGameObject(std::move(game_object));
-  ENGINE_INFO("Loading Layer '{}' completed.", layer_name);
+  ENGINE_LOG_INFO("Loading Layer '{}' completed.", layer_name);
 }
 
 void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
@@ -131,8 +131,8 @@ void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
 void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
                                   Scene& scene) {
   if (!layer_json.contains("objects") || !layer_json["objects"].is_array()) {
-    ENGINE_ERROR("Object layer '{}' missing 'objects' attribute.",
-                 layer_json.value("name", "Unnamed"));
+    ENGINE_LOG_ERROR("Object layer '{}' missing 'objects' attribute.",
+                     layer_json.value("name", "Unnamed"));
     return;
   }
 
@@ -172,12 +172,12 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
           game_object->SetTag(tag.value());
         }
         scene.AddGameObject(std::move(game_object));
-        ENGINE_INFO("Load object: '{}' completed.", object_name);
+        ENGINE_LOG_INFO("Load object: '{}' completed.", object_name);
       }
     } else {
       auto tile_info = GetTileInfoByGid(gid);
       if (tile_info.sprite.GetTextureId().empty()) {
-        ENGINE_ERROR("Tile {} does not have texture.", gid);
+        ENGINE_LOG_ERROR("Tile {} does not have texture.", gid);
         continue;
       }
 
@@ -192,7 +192,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
 
       auto src_size_opt = tile_info.sprite.GetSourceRect();
       if (!src_size_opt) {
-        ENGINE_ERROR("Tile {} does not have source rect.", gid);
+        ENGINE_LOG_ERROR("Tile {} does not have source rect.", gid);
         continue;
       }
       auto src_size = glm::vec2(src_size_opt->w, src_size_opt->h);
@@ -242,7 +242,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         if (pc) {
           pc->SetUseGravity(gravity.value());
         } else {
-          ENGINE_WARN(
+          ENGINE_LOG_WARN(
               "Object '{}' does not have PhysicsComponent when setting gravity "
               "property.",
               object_name);
@@ -257,8 +257,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         try {
           anim_json = nlohmann::json::parse(anim_string.value());
         } catch (const nlohmann::json::parse_error& e) {
-          ENGINE_ERROR("Parsing animation JSON failed for object '{}': {}",
-                       object_name, e.what());
+          ENGINE_LOG_ERROR("Parsing animation JSON failed for object '{}': {}",
+                           object_name, e.what());
           continue;
         }
         auto* ac =
@@ -273,7 +273,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       }
 
       scene.AddGameObject(std::move(game_object));
-      ENGINE_INFO("Load object: '{}' completed.", object_name);
+      ENGINE_LOG_INFO("Load object: '{}' completed.", object_name);
     }
   }
 }
@@ -282,30 +282,30 @@ void LevelLoader::AddAnimation(const nlohmann::json& anim_json,
                                engine::component::AnimationComponent* ac,
                                const glm::vec2& sprite_size) {
   if (!anim_json.is_object() || !ac) {
-    ENGINE_ERROR("Invalid animation JSON or AnimationComponent is null.");
+    ENGINE_LOG_ERROR("Invalid animation JSON or AnimationComponent is null.");
     return;
   }
   for (const auto& anim : anim_json.items()) {
     const std::string& anim_name = anim.key();
     const auto& anim_info = anim.value();
     if (!anim_info.is_object()) {
-      ENGINE_WARN("Animation '{}' info is not a JSON object. Skipping.",
-                  anim_name);
+      ENGINE_LOG_WARN("Animation '{}' info is not a JSON object. Skipping.",
+                      anim_name);
       continue;
     }
     auto duration_ms = anim_info.value("duration", 100.0f);
     auto duration = duration_ms / 1000.0f;
     auto row = anim_info.value("row", 0);
     if (!anim_info.contains("frames") || !anim_info["frames"].is_array()) {
-      ENGINE_WARN("Animation '{}' missing 'frames' array. Skipping.",
-                  anim_name);
+      ENGINE_LOG_WARN("Animation '{}' missing 'frames' array. Skipping.",
+                      anim_name);
       continue;
     }
     auto animation = std::make_unique<engine::render::Animation>(anim_name);
 
     for (const auto& frame : anim_info["frames"]) {
       if (!frame.is_number_integer()) {
-        ENGINE_WARN(
+        ENGINE_LOG_WARN(
             "Animation '{}' has a non-integer frame index. Skipping this "
             "frame.",
             anim_name);
@@ -362,8 +362,8 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
     return {{texture_id, texture_rect}, tile_type};
   } else {
     if (!tileset.contains("tiles")) {
-      ENGINE_ERROR("Tileset '{}' missing 'tiles' attribute.",
-                   tileset_it->first);
+      ENGINE_LOG_ERROR("Tileset '{}' missing 'tiles' attribute.",
+                       tileset_it->first);
       return engine::component::TileInfo();
     }
 
@@ -372,8 +372,8 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
       auto tile_id = tile_json.value("id", 0);
       if (tile_id == local_id) {
         if (!tile_json.contains("image")) {
-          ENGINE_ERROR("Tileset '{}' missing 'image' attribute.",
-                       tileset_it->first, tile_id);
+          ENGINE_LOG_ERROR("Tileset '{}' missing 'image' attribute.",
+                           tileset_it->first, tile_id);
           return engine::component::TileInfo();
         }
 
@@ -428,7 +428,7 @@ engine::component::TileType LevelLoader::GetTileType(
         } else if (slope_type == "1_2") {
           return engine::component::TileType::kSlope1_2;
         } else {
-          ENGINE_ERROR("Unknown slope type: {}", slope_type);
+          ENGINE_LOG_ERROR("Unknown slope type: {}", slope_type);
           return engine::component::TileType::kNormal;
         }
       } else if (property.contains("name") && property["name"] == "hazard") {
@@ -477,14 +477,15 @@ std::optional<engine::utils::Rect> LevelLoader::GetColliderRect(
 std::optional<nlohmann::json> LevelLoader::GetTileJsonByGid(int gid) const {
   auto tileset_it = tileset_data_.upper_bound(gid);
   if (tileset_it == tileset_data_.begin()) {
-    ENGINE_ERROR("Tileset '{}' not found.", gid);
+    ENGINE_LOG_ERROR("Tileset '{}' not found.", gid);
     return std::nullopt;
   }
   --tileset_it;
   const auto& tileset = tileset_it->second;
   auto local_id = gid - tileset_it->first;
   if (!tileset.contains("tiles")) {
-    ENGINE_ERROR("Tileset '{}' missing 'tiles' attribute.", tileset_it->first);
+    ENGINE_LOG_ERROR("Tileset '{}' missing 'tiles' attribute.",
+                     tileset_it->first);
     return std::nullopt;
   }
   const auto& tiles_json = tileset["tiles"];

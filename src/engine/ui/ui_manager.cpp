@@ -13,19 +13,19 @@ UIManager::~UIManager() = default;
 UIManager::UIManager() {
   root_element_ =
       std::make_unique<UIPanel>(glm::vec2{0.0f, 0.0f}, glm::vec2{0.0f, 0.0f});
-  ENGINE_TRACE("UIManager created with root UIPanel.");
+  ENGINE_LOG_TRACE("UIManager created with root UIPanel.");
 }
 
 bool UIManager::Init(const glm::vec2& window_size) {
   root_element_->SetSize(window_size);
-  ENGINE_TRACE("UIManager initialized with window size ({}, {})", window_size.x,
-               window_size.y);
+  ENGINE_LOG_TRACE("UIManager initialized with window size ({}, {})",
+                   window_size.x, window_size.y);
   return true;
 }
 
 void UIManager::AddElement(std::unique_ptr<UIElement> element) {
   if (!root_element_) {
-    ENGINE_TRACE("Cannot add UIElement because root_element_ is null.");
+    ENGINE_LOG_TRACE("Cannot add UIElement because root_element_ is null.");
     return;
   }
   root_element_->AddChild(std::move(element));
@@ -34,7 +34,7 @@ void UIManager::AddElement(std::unique_ptr<UIElement> element) {
 void UIManager::ClearElements() {
   if (root_element_) {
     root_element_->RemoveAllChildren();
-    ENGINE_TRACE("All UIElements removed from root UIPanel.");
+    ENGINE_LOG_TRACE("All UIElements removed from root UIPanel.");
   }
 }
 

@@ -21,7 +21,7 @@ SpriteComponent::SpriteComponent(
     : resource_manager_(resource_manager),
       sprite_(texture_id, source_rect_opt, is_flipped),
       alignment_(alignment) {
-  ENGINE_TRACE("Creating SpriteComponent, texture id: {}", texture_id);
+  ENGINE_LOG_TRACE("Creating SpriteComponent, texture id: {}", texture_id);
 }
 
 SpriteComponent::SpriteComponent(
@@ -31,15 +31,16 @@ SpriteComponent::SpriteComponent(
     : resource_manager_(resource_manager),
       sprite_(std::move(sprite)),
       alignment_(alignment) {
-  ENGINE_TRACE("Creating SpriteComponent, texture id: {}",
-               sprite_.GetTextureId());
+  ENGINE_LOG_TRACE("Creating SpriteComponent, texture id: {}",
+                   sprite_.GetTextureId());
 }
 
 void SpriteComponent::Init() {
-  ENGINE_ASSERT(owner_, "SpriteComponent does not have an owner GameObject!");
+  ENGINE_LOG_ASSERT(owner_,
+                    "SpriteComponent does not have an owner GameObject!");
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_WARN(
+    ENGINE_LOG_WARN(
         "The SpriteComponent in GameObject '{}' does not have a "
         "TransformComponent ",
         owner_->GetName());

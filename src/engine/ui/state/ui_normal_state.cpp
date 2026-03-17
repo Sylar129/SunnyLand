@@ -12,7 +12,7 @@ namespace engine::ui::state {
 
 void UINormalState::Enter() {
   owner_->SetSprite("normal");
-  ENGINE_DEBUG("Switched to normal state");
+  ENGINE_LOG_DEBUG("Switched to normal state");
 }
 
 std::unique_ptr<UIState> UINormalState::HandleInput(

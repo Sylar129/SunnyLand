@@ -13,10 +13,11 @@ namespace engine::component {
 AnimationComponent::~AnimationComponent() = default;
 
 void AnimationComponent::Init() {
-  ENGINE_ASSERT(owner_, "AnimationComponent must have an owner GameObject!");
+  ENGINE_LOG_ASSERT(owner_,
+                    "AnimationComponent must have an owner GameObject!");
 
   sprite_component_ = owner_->GetComponent<SpriteComponent>();
-  ENGINE_ASSERT(
+  ENGINE_LOG_ASSERT(
       sprite_component_,
       "AnimationComponent requires a SpriteComponent on the same GameObject!");
 }
@@ -24,7 +25,7 @@ void AnimationComponent::Init() {
 void AnimationComponent::Update(float delta_time, engine::core::Context&) {
   if (!is_playing_ || !current_animation_ || !sprite_component_ ||
       current_animation_->IsEmpty()) {
-    ENGINE_TRACE(
+    ENGINE_LOG_TRACE(
         "AnimationComponent on GameObject '{}' is not playing or has no "
         "animation.",
         owner_->GetName());
@@ -52,15 +53,15 @@ void AnimationComponent::AddAnimation(
   if (!animation) return;
   std::string name = animation->GetName();
   animations_[name] = std::move(animation);
-  ENGINE_DEBUG("Add animation '{}' to GameObject '{}'", name,
-               owner_->GetName());
+  ENGINE_LOG_DEBUG("Add animation '{}' to GameObject '{}'", name,
+                   owner_->GetName());
 }
 
 void AnimationComponent::PlayAnimation(const std::string& name) {
   auto it = animations_.find(name);
   if (it == animations_.end() || !it->second) {
-    ENGINE_WARN("Animation '{}' not found in GameObject '{}'", name,
-                owner_->GetName());
+    ENGINE_LOG_WARN("Animation '{}' not found in GameObject '{}'", name,
+                    owner_->GetName());
     return;
   }
 
@@ -75,8 +76,8 @@ void AnimationComponent::PlayAnimation(const std::string& name) {
   if (sprite_component_ && !current_animation_->IsEmpty()) {
     const auto& first_frame = current_animation_->GetFrame(0.0f);
     sprite_component_->SetSourceRect(first_frame.source_rect);
-    ENGINE_DEBUG("GameObject '{}' started playing animation '{}'",
-                 owner_->GetName(), name);
+    ENGINE_LOG_DEBUG("GameObject '{}' started playing animation '{}'",
+                     owner_->GetName(), name);
   }
 }
 

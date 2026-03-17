@@ -19,7 +19,7 @@ UIInteractive::UIInteractive(engine::core::Context& context,
 void UIInteractive::SetState(
     std::unique_ptr<engine::ui::state::UIState> state) {
   if (!state) {
-    ENGINE_WARN(
+    ENGINE_LOG_WARN(
         "Trying to set null state for UIInteractive. Operation ignored.");
     return;
   }
@@ -41,7 +41,7 @@ void UIInteractive::SetSprite(const std::string& name) {
   if (sprites_.find(name) != sprites_.end()) {
     current_sprite_ = sprites_[name].get();
   } else {
-    ENGINE_WARN("Sprite '{}' not found", name);
+    ENGINE_LOG_WARN("Sprite '{}' not found", name);
   }
 }
 
@@ -53,7 +53,7 @@ void UIInteractive::PlaySound(const std::string& name) {
   if (sounds_.find(name) != sounds_.end()) {
     // context_.getAudioPlayer().playSound(sounds_[name]);
   } else {
-    ENGINE_WARN("Sound '{}' not found", name);
+    ENGINE_LOG_WARN("Sound '{}' not found", name);
   }
 }
 

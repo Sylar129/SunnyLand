@@ -15,7 +15,7 @@
 namespace game::component::state {
 
 void ClimbState::Enter() {
-  GAME_DEBUG("Enter ClimbState");
+  GAME_LOG_DEBUG("Enter ClimbState");
   PlayAnimation("climb");
   if (auto* physics = player_component_->GetPhysicsComponent(); physics) {
     physics->SetUseGravity(false);
@@ -23,7 +23,7 @@ void ClimbState::Enter() {
 }
 
 void ClimbState::Exit() {
-  GAME_DEBUG("Exit ClimbState");
+  GAME_LOG_DEBUG("Exit ClimbState");
   if (auto* physics = player_component_->GetPhysicsComponent(); physics) {
     physics->SetUseGravity(true);
   }

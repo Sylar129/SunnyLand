@@ -14,7 +14,7 @@ namespace game::scene {
 HelpsScene::HelpsScene(engine::core::Context& context,
                        engine::scene::SceneManager& scene_manager)
     : engine::scene::Scene("HelpsScene", context, scene_manager) {
-  GAME_TRACE("HelpsScene constructed");
+  GAME_LOG_TRACE("HelpsScene constructed");
 }
 
 void HelpsScene::Init() {
@@ -30,14 +30,14 @@ void HelpsScene::Init() {
   ui_manager_->AddElement(std::move(help_image));
 
   Scene::Init();
-  GAME_TRACE("HelpsScene initialized");
+  GAME_LOG_TRACE("HelpsScene initialized");
 }
 
 void HelpsScene::HandleInput() {
   if (!is_initialized_) return;
 
   if (context_.GetInputManager().IsActionPressed("MouseLeftClick")) {
-    GAME_DEBUG("Mouse left click detected, popping HelpsScene.");
+    GAME_LOG_DEBUG("Mouse left click detected, popping HelpsScene.");
     scene_manager_.RequestPopScene();
   }
 }

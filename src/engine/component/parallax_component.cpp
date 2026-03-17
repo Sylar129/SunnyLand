@@ -18,16 +18,16 @@ ParallaxComponent::ParallaxComponent(const std::string& texture_id,
     : sprite_(engine::render::Sprite(texture_id)),
       scroll_factor_(scroll_factor),
       repeat_(repeat) {
-  ENGINE_TRACE("ParallaxComponent constructing finished. texture ID: {}",
-               texture_id);
+  ENGINE_LOG_TRACE("ParallaxComponent constructing finished. texture ID: {}",
+                   texture_id);
 }
 
 void ParallaxComponent::Init() {
-  ENGINE_ASSERT(owner_, "ParallaxComponent: owner is nullptr");
+  ENGINE_LOG_ASSERT(owner_, "ParallaxComponent: owner is nullptr");
 
   transform_ = owner_->GetComponent<TransformComponent>();
   if (!transform_) {
-    ENGINE_ERROR("ParallaxComponent: can't find TransformComponent");
+    ENGINE_LOG_ERROR("ParallaxComponent: can't find TransformComponent");
     return;
   }
 }

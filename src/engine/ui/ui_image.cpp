@@ -14,9 +14,9 @@ UIImage::UIImage(const std::string& texture_id, const glm::vec2& position,
                  const std::optional<SDL_FRect>& source_rect, bool is_flipped)
     : UIElement(position, size), sprite_(texture_id, source_rect, is_flipped) {
   if (texture_id.empty()) {
-    ENGINE_WARN("Empty texture_id provided to UIImage constructor.");
+    ENGINE_LOG_WARN("Empty texture_id provided to UIImage constructor.");
   }
-  ENGINE_TRACE("UIImage created with texture_id '{}'", texture_id);
+  ENGINE_LOG_TRACE("UIImage created with texture_id '{}'", texture_id);
 }
 
 void UIImage::Render(engine::core::Context& context) {
