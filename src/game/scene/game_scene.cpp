@@ -1,6 +1,6 @@
 // Copyright Sylar129
 
-#include "game/game_scene.h"
+#include "game/scene/game_scene.h"
 
 #include "engine/component/animation_component.h"
 #include "engine/component/collider_component.h"

@@ -16,7 +16,7 @@
 #include "engine/resource/resource_manager.h"
 #include "engine/scene/scene_manager.h"
 #include "engine/utils/assert.h"
-#include "game/game_scene.h"
+#include "game/scene/game_scene.h"
 #include "log.h"
 
 namespace engine::core {
