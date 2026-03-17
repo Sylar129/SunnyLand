@@ -51,7 +51,7 @@ void GameScene::Init() {
   if (is_initialized_) {
     return;
   }
-  context_.GetGameState().SetState(engine::core::State::Playing);
+  context_.GetGameState().SetState(engine::core::State::kPlaying);
   InitLevel();
   InitPlayer();
   InitEnemyAndItem();
@@ -240,7 +240,7 @@ void GameScene::HandleTileTriggers() {
   for (const auto& event : tile_trigger_events) {
     auto* obj = event.first;
     auto tile_type = event.second;
-    if (tile_type == engine::component::TileType::HAZARD) {
+    if (tile_type == engine::component::TileType::kHazard) {
       if (obj->GetName() == "player") {
         HandlePlayerDamage(1);
         GAME_DEBUG("Player '{}' taking damage from hazard", obj->GetName());
@@ -292,8 +292,8 @@ void GameScene::PlayerVSEnemyCollision(engine::object::GameObject* player,
 
       CreateEffect(enemy_center, enemy->GetTag());
     }
-    player->GetComponent<engine::component::PhysicsComponent>()->velocity_.y =
-        -300.0f;
+    player->GetComponent<engine::component::PhysicsComponent>()->SetVelocityY(
+        -300.0f);
   } else {
     GAME_INFO("Enemy {} collided with player {}, causing damage",
               enemy->GetName(), player->GetName());
@@ -324,17 +324,17 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
   if (tag == "enemy") {
     effect_obj->AddComponent<engine::component::SpriteComponent>(
         "assets/textures/FX/enemy-deadth.png", context_.GetResourceManager(),
-        engine::utils::Alignment::CENTER);
+        engine::utils::Alignment::kCenter);
     for (auto i = 0; i < 5; ++i) {
-      animation->addFrame({static_cast<float>(i * 40), 0.0f, 40.0f, 41.0f},
+      animation->AddFrame({static_cast<float>(i * 40), 0.0f, 40.0f, 41.0f},
                           0.1f);
     }
   } else if (tag == "item") {
     effect_obj->AddComponent<engine::component::SpriteComponent>(
         "assets/textures/FX/item-feedback.png", context_.GetResourceManager(),
-        engine::utils::Alignment::CENTER);
+        engine::utils::Alignment::kCenter);
     for (auto i = 0; i < 4; ++i) {
-      animation->addFrame({static_cast<float>(i * 32), 0.0f, 32.0f, 32.0f},
+      animation->AddFrame({static_cast<float>(i * 32), 0.0f, 32.0f, 32.0f},
                           0.1f);
     }
   } else {

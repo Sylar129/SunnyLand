@@ -27,7 +27,7 @@ MenuScene::MenuScene(engine::core::Context& context,
 }
 
 void MenuScene::Init() {
-  context_.GetGameState().SetState(engine::core::State::Paused);
+  context_.GetGameState().SetState(engine::core::State::kPaused);
   CreateUI();
 
   Scene::Init();
@@ -102,14 +102,14 @@ void MenuScene::HandleInput() {
   if (context_.GetInputManager().IsActionPressed("pause")) {
     GAME_DEBUG("Pause action detected in MenuScene, resuming game.");
     scene_manager_.RequestPopScene();
-    context_.GetGameState().SetState(engine::core::State::Playing);
+    context_.GetGameState().SetState(engine::core::State::kPlaying);
   }
 }
 
 void MenuScene::OnResumeClicked() {
   GAME_DEBUG("OnResumeClicked");
   scene_manager_.RequestPopScene();
-  context_.GetGameState().SetState(engine::core::State::Playing);
+  context_.GetGameState().SetState(engine::core::State::kPlaying);
 }
 
 void MenuScene::OnSaveClicked() {

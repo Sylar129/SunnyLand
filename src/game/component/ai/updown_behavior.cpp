@@ -41,11 +41,11 @@ void UpDownBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   auto current_y = transform_component->GetPosition().y;
 
   if (physics_component->HasCollidedAbove() || current_y <= patrol_min_y_) {
-    physics_component->velocity_.y = move_speed_;
+    physics_component->SetVelocityY(move_speed_);
     moving_down_ = true;
   } else if (physics_component->HasCollidedBelow() ||
              current_y >= patrol_max_y_) {
-    physics_component->velocity_.y = -move_speed_;
+    physics_component->SetVelocityY(-move_speed_);
     moving_down_ = false;
   }
 }

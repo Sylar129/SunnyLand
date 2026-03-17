@@ -52,7 +52,7 @@ void TitleScene::Init() {
 
 void TitleScene::CreateUI() {
   GAME_TRACE("Creating TitleScene UI...");
-  context_.GetGameState().SetState(engine::core::State::Title);
+  context_.GetGameState().SetState(engine::core::State::kTitle);
   auto window_size = context_.GetGameState().GetLogicalSize();
 
   if (!ui_manager_->Init(window_size)) {

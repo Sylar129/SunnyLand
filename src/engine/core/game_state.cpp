@@ -39,7 +39,7 @@ void GameState::SetWindowSize(const glm::vec2& new_size) {
 
 glm::vec2 GameState::GetLogicalSize() const {
   int width, height;
-  SDL_GetRenderLogicalPresentation(renderer_, &width, &height, NULL);
+  SDL_GetRenderLogicalPresentation(renderer_, &width, &height, nullptr);
   return glm::vec2(width, height);
 }
 

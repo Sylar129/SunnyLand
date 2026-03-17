@@ -21,10 +21,10 @@ class UIButton final : public UIInteractive {
 
   void Clicked() override;
 
-  void setCallback(std::function<void()> callback) {
+  void SetCallback(std::function<void()> callback) {
     callback_ = std::move(callback);
   }
-  std::function<void()> getCallback() const { return callback_; }
+  std::function<void()> GetCallback() const { return callback_; }
 
  private:
   std::function<void()> callback_;

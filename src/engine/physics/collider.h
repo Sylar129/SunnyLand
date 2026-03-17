@@ -9,9 +9,9 @@
 namespace engine::physics {
 
 enum class ColliderType {
-  NONE,
-  AABB,
-  CIRCLE,
+  kNone,
+  kAabb,
+  kCircle,
 };
 
 class Collider {
@@ -33,7 +33,7 @@ class AABBCollider final : public Collider {
   }
   ~AABBCollider() override = default;
 
-  ColliderType GetType() const override { return ColliderType::AABB; }
+  ColliderType GetType() const override { return ColliderType::kAabb; }
   const glm::vec2& GetSize() const { return size_; }
   void SetSize(glm::vec2 size) {
     size_ = std::move(size);
@@ -51,7 +51,7 @@ class CircleCollider final : public Collider {
   }
   ~CircleCollider() override = default;
 
-  ColliderType GetType() const override { return ColliderType::CIRCLE; }
+  ColliderType GetType() const override { return ColliderType::kCircle; }
   float GetRadius() const { return radius_; }
   void SetRadius(float radius) {
     radius_ = radius;

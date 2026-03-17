@@ -10,17 +10,17 @@ class Log {
  public:
   static void Init();
 
-  inline static std::shared_ptr<spdlog::logger>& GetEngineLogger() {
-    return s_EngineLogger;
+  static std::shared_ptr<spdlog::logger>& GetEngineLogger() {
+    return engine_logger_;
   }
 
-  inline static std::shared_ptr<spdlog::logger>& GetGameLogger() {
-    return s_GameLogger;
+  static std::shared_ptr<spdlog::logger>& GetGameLogger() {
+    return game_logger_;
   }
 
  private:
-  static std::shared_ptr<spdlog::logger> s_EngineLogger;
-  static std::shared_ptr<spdlog::logger> s_GameLogger;
+  static std::shared_ptr<spdlog::logger> engine_logger_;
+  static std::shared_ptr<spdlog::logger> game_logger_;
 };
 
 #define ENGINE_TRACE(...) ::Log::GetEngineLogger()->trace(__VA_ARGS__)

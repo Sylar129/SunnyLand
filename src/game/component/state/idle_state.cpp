@@ -50,7 +50,8 @@ std::unique_ptr<PlayerState> IdleState::HandleInput(
 std::unique_ptr<PlayerState> IdleState::Update(float, engine::core::Context&) {
   auto physics_component = player_component_->GetPhysicsComponent();
   auto friction_factor = player_component_->SetFrictionFactor();
-  physics_component->velocity_.x *= friction_factor;
+  physics_component->SetVelocityX(physics_component->GetVelocity().x *
+                                  friction_factor);
 
   if (!player_component_->IsOnGround()) {
     return std::make_unique<FallState>(player_component_);

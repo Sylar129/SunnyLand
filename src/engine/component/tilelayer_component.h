@@ -23,24 +23,24 @@ class PhysicsEngine;
 namespace engine::component {
 
 enum class TileType {
-  EMPTY,
-  NORMAL,
-  SOLID,
-  UNISOLID,
-  SLOPE_0_1,  ///< @brief Slope tile, height: left 0,   right 1
-  SLOPE_1_0,  ///< @brief Slope tile, height: left 1,   right 0
-  SLOPE_0_2,  ///< @brief Slope tile, height: left 0,   right 0.5
-  SLOPE_2_1,  ///< @brief Slope tile, height: left 0.5, right 1
-  SLOPE_1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
-  SLOPE_2_0,  ///< @brief Slope tile, height: left 0.5, right 0
-  HAZARD,     ///< @brief damaging tile, e.g. spikes, lava, etc.
-  LADDER,     ///< @brief ladder tile that allows climbing
+  kEmpty,
+  kNormal,
+  kSolid,
+  kUnisolid,
+  kSlope0_1,  ///< @brief Slope tile, height: left 0,   right 1
+  kSlope1_0,  ///< @brief Slope tile, height: left 1,   right 0
+  kSlope0_2,  ///< @brief Slope tile, height: left 0,   right 0.5
+  kSlope2_1,  ///< @brief Slope tile, height: left 0.5, right 1
+  kSlope1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
+  kSlope2_0,  ///< @brief Slope tile, height: left 0.5, right 0
+  kHazard,    ///< @brief damaging tile, e.g. spikes, lava, etc.
+  kLadder,    ///< @brief ladder tile that allows climbing
 };
 
 struct TileInfo {
   render::Sprite sprite;
   TileType type;
-  TileInfo(render::Sprite s = render::Sprite(), TileType t = TileType::EMPTY)
+  TileInfo(render::Sprite s = render::Sprite(), TileType t = TileType::kEmpty)
       : sprite(std::move(s)), type(t) {}
 };
 
@@ -71,7 +71,7 @@ class TileLayerComponent final : public Component {
   void SetOffset(const glm::vec2& offset) { offset_ = offset; }
   void SetHidden(bool hidden) { is_hidden_ = hidden; }
 
-  void setPhysicsEngine(engine::physics::PhysicsEngine* physics_engine) {
+  void SetPhysicsEngine(engine::physics::PhysicsEngine* physics_engine) {
     physics_engine_ = physics_engine;
   }
 

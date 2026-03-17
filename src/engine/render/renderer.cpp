@@ -64,7 +64,7 @@ void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
 
   // Execute drawing (default rotation center is the sprite's center)
   if (!SDL_RenderTextureRotated(
-          renderer_, texture, &src_rect.value(), &dest_rect, angle, NULL,
+          renderer_, texture, &src_rect.value(), &dest_rect, angle, nullptr,
           sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
     ENGINE_ERROR("Failed to render rotated texture (ID: {}): {}",
                  sprite.GetTextureId(), SDL_GetError());

@@ -31,7 +31,7 @@ void EndScene::Init() {
     return;
   }
 
-  context_.GetGameState().SetState(engine::core::State::GameOver);
+  context_.GetGameState().SetState(engine::core::State::kGameOver);
 
   CreateUI();
 

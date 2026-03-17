@@ -21,7 +21,7 @@ class ColliderComponent final : public Component {
  public:
   explicit ColliderComponent(
       std::unique_ptr<engine::physics::Collider> collider,
-      engine::utils::Alignment alignment = engine::utils::Alignment::NONE,
+      engine::utils::Alignment alignment = engine::utils::Alignment::kNone,
       bool is_trigger = false, bool is_active = true);
 
   void UpdateOffset();
@@ -49,7 +49,7 @@ class ColliderComponent final : public Component {
 
   std::unique_ptr<engine::physics::Collider> collider_;
   glm::vec2 offset_ = {0.0f, 0.0f};
-  engine::utils::Alignment alignment_ = engine::utils::Alignment::NONE;
+  engine::utils::Alignment alignment_ = engine::utils::Alignment::kNone;
 
   bool is_trigger_ = false;
   bool is_active_ = true;

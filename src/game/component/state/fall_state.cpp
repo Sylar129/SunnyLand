@@ -25,13 +25,13 @@ std::unique_ptr<PlayerState> FallState::HandleInput(
   auto sprite_component = player_component_->GetSpriteComponent();
 
   if (input_manager.IsActionDown("move_left")) {
-    if (physics_component->velocity_.x > 0.0f)
-      physics_component->velocity_.x = 0.0f;
+    if (physics_component->GetVelocity().x > 0.0f)
+      physics_component->SetVelocityX(0.0f);
     physics_component->AddForce({-player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(true);
   } else if (input_manager.IsActionDown("move_right")) {
-    if (physics_component->velocity_.x < 0.0f)
-      physics_component->velocity_.x = 0.0f;
+    if (physics_component->GetVelocity().x < 0.0f)
+      physics_component->SetVelocityX(0.0f);
     physics_component->AddForce({player_component_->GetMoveForce(), 0.0f});
     sprite_component->SetFlipped(false);
   }
@@ -47,11 +47,11 @@ std::unique_ptr<PlayerState> FallState::HandleInput(
 std::unique_ptr<PlayerState> FallState::Update(float, engine::core::Context&) {
   auto physics_component = player_component_->GetPhysicsComponent();
   auto max_speed = player_component_->GetMaxSpeed();
-  physics_component->velocity_.x =
-      glm::clamp(physics_component->velocity_.x, -max_speed, max_speed);
+  physics_component->SetVelocityX(
+      glm::clamp(physics_component->GetVelocity().x, -max_speed, max_speed));
 
   if (physics_component->HasCollidedBelow()) {
-    if (glm::abs(physics_component->velocity_.x) < 1.0f) {
+    if (glm::abs(physics_component->GetVelocity().x) < 1.0f) {
       return std::make_unique<IdleState>(player_component_);
     } else {
       return std::make_unique<WalkState>(player_component_);

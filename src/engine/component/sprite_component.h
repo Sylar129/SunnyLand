@@ -25,13 +25,13 @@ class SpriteComponent final : public engine::component::Component {
   SpriteComponent(
       const std::string& texture_id,
       engine::resource::ResourceManager& resource_manager,
-      engine::utils::Alignment alignment = engine::utils::Alignment::NONE,
+      engine::utils::Alignment alignment = engine::utils::Alignment::kNone,
       const std::optional<SDL_FRect>& source_rect_opt = std::nullopt,
       bool is_flipped = false);
   SpriteComponent(
       engine::render::Sprite&& sprite,
       engine::resource::ResourceManager& resource_manager,
-      engine::utils::Alignment alignment = engine::utils::Alignment::NONE);
+      engine::utils::Alignment alignment = engine::utils::Alignment::kNone);
   ~SpriteComponent() override = default;
 
   void UpdateOffset();
@@ -63,7 +63,7 @@ class SpriteComponent final : public engine::component::Component {
   TransformComponent* transform_ = nullptr;
 
   engine::render::Sprite sprite_;
-  engine::utils::Alignment alignment_ = engine::utils::Alignment::NONE;
+  engine::utils::Alignment alignment_ = engine::utils::Alignment::kNone;
   glm::vec2 sprite_size_ = {0.0f, 0.0f};
   glm::vec2 offset_ = {0.0f, 0.0f};
   bool is_hidden_ = false;

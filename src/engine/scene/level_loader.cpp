@@ -209,7 +209,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
 
       auto tile_json = GetTileJsonByGid(gid);
 
-      if (tile_info.type == engine::component::TileType::SOLID) {
+      if (tile_info.type == engine::component::TileType::kSolid) {
         auto collider =
             std::make_unique<engine::physics::AABBCollider>(src_size);
         game_object->AddComponent<engine::component::ColliderComponent>(
@@ -231,7 +231,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       auto tag = GetTileProperty<std::string>(tile_json, "tag");
       if (tag) {
         game_object->SetTag(tag.value());
-      } else if (tile_info.type == engine::component::TileType::HAZARD) {
+      } else if (tile_info.type == engine::component::TileType::kHazard) {
         game_object->SetTag("hazard");
       }
 
@@ -315,7 +315,7 @@ void LevelLoader::AddAnimation(const nlohmann::json& anim_json,
       auto column = frame.get<int>();
       SDL_FRect src_rect = {column * sprite_size.x, row * sprite_size.y,
                             sprite_size.x, sprite_size.y};
-      animation->addFrame(src_rect, duration);
+      animation->AddFrame(src_rect, duration);
     }
     ac->AddAnimation(std::move(animation));
   }
@@ -408,41 +408,41 @@ engine::component::TileType LevelLoader::GetTileType(
     for (const auto& property : tile_json["properties"]) {
       if (property.value("name", "") == "solid") {
         return property.value("value", false)
-                   ? engine::component::TileType::SOLID
-                   : engine::component::TileType::NORMAL;
+                   ? engine::component::TileType::kSolid
+                   : engine::component::TileType::kNormal;
       } else if (property.value("name", "") == "unisolid") {
-        return property.value("value", false) ? component::TileType::UNISOLID
-                                              : component::TileType::NORMAL;
+        return property.value("value", false) ? component::TileType::kUnisolid
+                                              : component::TileType::kNormal;
       } else if (property.contains("name") && property["name"] == "slope") {
         auto slope_type = property.value("value", "");
         if (slope_type == "0_1") {
-          return engine::component::TileType::SLOPE_0_1;
+          return engine::component::TileType::kSlope0_1;
         } else if (slope_type == "1_0") {
-          return engine::component::TileType::SLOPE_1_0;
+          return engine::component::TileType::kSlope1_0;
         } else if (slope_type == "0_2") {
-          return engine::component::TileType::SLOPE_0_2;
+          return engine::component::TileType::kSlope0_2;
         } else if (slope_type == "2_0") {
-          return engine::component::TileType::SLOPE_2_0;
+          return engine::component::TileType::kSlope2_0;
         } else if (slope_type == "2_1") {
-          return engine::component::TileType::SLOPE_2_1;
+          return engine::component::TileType::kSlope2_1;
         } else if (slope_type == "1_2") {
-          return engine::component::TileType::SLOPE_1_2;
+          return engine::component::TileType::kSlope1_2;
         } else {
           ENGINE_ERROR("Unknown slope type: {}", slope_type);
-          return engine::component::TileType::NORMAL;
+          return engine::component::TileType::kNormal;
         }
       } else if (property.contains("name") && property["name"] == "hazard") {
         auto is_hazard = property.value("value", false);
-        return is_hazard ? engine::component::TileType::HAZARD
-                         : engine::component::TileType::NORMAL;
+        return is_hazard ? engine::component::TileType::kHazard
+                         : engine::component::TileType::kNormal;
       } else if (property.contains("name") && property["name"] == "ladder") {
         auto is_ladder = property.value("value", false);
-        return is_ladder ? engine::component::TileType::LADDER
-                         : engine::component::TileType::NORMAL;
+        return is_ladder ? engine::component::TileType::kLadder
+                         : engine::component::TileType::kNormal;
       }
     }
   }
-  return engine::component::TileType::NORMAL;
+  return engine::component::TileType::kNormal;
 }
 
 engine::component::TileType LevelLoader::GetTileTypeById(
@@ -454,7 +454,7 @@ engine::component::TileType LevelLoader::GetTileTypeById(
       }
     }
   }
-  return engine::component::TileType::NORMAL;
+  return engine::component::TileType::kNormal;
 }
 
 std::optional<engine::utils::Rect> LevelLoader::GetColliderRect(

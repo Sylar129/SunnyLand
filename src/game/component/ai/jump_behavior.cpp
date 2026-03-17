@@ -43,7 +43,7 @@ void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
   auto is_on_ground = physics_component->HasCollidedBelow();
   if (is_on_ground) {
     jump_timer_ += delta_time;
-    physics_component->velocity_.x = 0.0f;
+    physics_component->SetVelocityX(0.0f);
 
     if (jump_timer_ >= jump_interval_) {
       jump_timer_ = 0.0f;
@@ -57,7 +57,7 @@ void JumpBehavior::Update(float delta_time, AIComponent& ai_component) {
         jumping_right_ = true;
       }
       auto jump_vel_x = jumping_right_ ? jump_vel_.x : -jump_vel_.x;
-      physics_component->velocity_ = {jump_vel_x, jump_vel_.y};
+      physics_component->SetVelocity({jump_vel_x, jump_vel_.y});
       animation_component->PlayAnimation("jump");
       sprite_component->SetFlipped(jumping_right_);
 

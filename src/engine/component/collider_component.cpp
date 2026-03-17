@@ -52,32 +52,32 @@ void ColliderComponent::UpdateOffset() {
   auto scale = transform_->GetScale();
 
   switch (alignment_) {
-    case engine::utils::Alignment::TOP_LEFT:
+    case engine::utils::Alignment::kTopLeft:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::TOP_CENTER:
+    case engine::utils::Alignment::kTopCenter:
       offset_ = glm::vec2{-collider_size.x / 2.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::TOP_RIGHT:
+    case engine::utils::Alignment::kTopRight:
       offset_ = glm::vec2{-collider_size.x, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER_LEFT:
+    case engine::utils::Alignment::kCenterLeft:
       offset_ = glm::vec2{0.0f, -collider_size.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER:
+    case engine::utils::Alignment::kCenter:
       offset_ =
           glm::vec2{-collider_size.x / 2.0f, -collider_size.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER_RIGHT:
+    case engine::utils::Alignment::kCenterRight:
       offset_ = glm::vec2{-collider_size.x, -collider_size.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_LEFT:
+    case engine::utils::Alignment::kBottomLeft:
       offset_ = glm::vec2{0.0f, -collider_size.y} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_CENTER:
+    case engine::utils::Alignment::kBottomCenter:
       offset_ = glm::vec2{-collider_size.x / 2.0f, -collider_size.y} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_RIGHT:
+    case engine::utils::Alignment::kBottomRight:
       offset_ = glm::vec2{-collider_size.x, -collider_size.y} * scale;
       break;
     default:

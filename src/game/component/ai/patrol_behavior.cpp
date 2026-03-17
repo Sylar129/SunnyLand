@@ -38,11 +38,11 @@ void PatrolBehavior::Update(float /*delta_time*/, AIComponent& ai_component) {
   auto current_x = transform_component->GetPosition().x;
 
   if (physics_component->HasCollidedRight() || current_x >= patrol_max_x_) {
-    physics_component->velocity_.x = -move_speed_;
+    physics_component->SetVelocityX(-move_speed_);
     moving_right_ = false;
   } else if (physics_component->HasCollidedLeft() ||
              current_x <= patrol_min_x_) {
-    physics_component->velocity_.x = move_speed_;
+    physics_component->SetVelocityX(move_speed_);
     moving_right_ = true;
   }
 

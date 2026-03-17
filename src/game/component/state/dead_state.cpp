@@ -15,7 +15,7 @@ void DeadState::Enter() {
   PlayAnimation("hurt");
 
   auto physics_component = player_component_->GetPhysicsComponent();
-  physics_component->velocity_ = glm::vec2(0.0f, -200.0f);
+  physics_component->SetVelocity({0.0f, -200.0f});
 
   auto collider_component =
       player_component_->GetOwner()

@@ -62,35 +62,35 @@ void SpriteComponent::UpdateOffset() {
   }
   auto scale = transform_->GetScale();
   switch (alignment_) {
-    case engine::utils::Alignment::TOP_LEFT:
+    case engine::utils::Alignment::kTopLeft:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::TOP_CENTER:
+    case engine::utils::Alignment::kTopCenter:
       offset_ = glm::vec2{-sprite_size_.x / 2.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::TOP_RIGHT:
+    case engine::utils::Alignment::kTopRight:
       offset_ = glm::vec2{-sprite_size_.x, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER_LEFT:
+    case engine::utils::Alignment::kCenterLeft:
       offset_ = glm::vec2{0.0f, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER:
+    case engine::utils::Alignment::kCenter:
       offset_ =
           glm::vec2{-sprite_size_.x / 2.0f, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::CENTER_RIGHT:
+    case engine::utils::Alignment::kCenterRight:
       offset_ = glm::vec2{-sprite_size_.x, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_LEFT:
+    case engine::utils::Alignment::kBottomLeft:
       offset_ = glm::vec2{0.0f, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_CENTER:
+    case engine::utils::Alignment::kBottomCenter:
       offset_ = glm::vec2{-sprite_size_.x / 2.0f, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::BOTTOM_RIGHT:
+    case engine::utils::Alignment::kBottomRight:
       offset_ = glm::vec2{-sprite_size_.x, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::NONE:
+    case engine::utils::Alignment::kNone:
     default:
       break;
   }
