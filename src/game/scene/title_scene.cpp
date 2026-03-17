@@ -134,7 +134,7 @@ void TitleScene::CreateUI() {
   auto credits_label = std::make_unique<engine::ui::UILabel>(
       context_.GetTextRenderer(), "SunnyLand Credits: XXX - 2025",
       "assets/fonts/VonwaonBitmap-16px.ttf", 16,
-      engine::utils::FColor{0.8f, 0.8f, 0.8f, 1.0f});
+      utils::FColor{0.8f, 0.8f, 0.8f, 1.0f});
   credits_label->SetPosition(
       glm::vec2{(window_size.x - credits_label->GetSize().x) / 2.0f,
                 window_size.y - credits_label->GetSize().y - 10.0f});

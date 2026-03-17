@@ -46,7 +46,7 @@ class UIElement {
   void SetPosition(const glm::vec2& position) { position_ = position; }
   void SetNeedRemove(bool need_remove) { need_remove_ = need_remove; }
 
-  engine::utils::Rect GetBounds() const;
+  utils::Rect GetBounds() const;
   glm::vec2 GetScreenPosition() const;
   bool IsPointInside(const glm::vec2& point) const;
 

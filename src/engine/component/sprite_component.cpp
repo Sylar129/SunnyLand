@@ -16,8 +16,8 @@ namespace engine::component {
 SpriteComponent::SpriteComponent(
     const std::string& texture_id,
     engine::resource::ResourceManager& resource_manager,
-    engine::utils::Alignment alignment,
-    const std::optional<SDL_FRect>& source_rect_opt, bool is_flipped)
+    utils::Alignment alignment, const std::optional<SDL_FRect>& source_rect_opt,
+    bool is_flipped)
     : resource_manager_(resource_manager),
       sprite_(texture_id, source_rect_opt, is_flipped),
       alignment_(alignment) {
@@ -27,7 +27,7 @@ SpriteComponent::SpriteComponent(
 SpriteComponent::SpriteComponent(
     engine::render::Sprite&& sprite,
     engine::resource::ResourceManager& resource_manager,
-    engine::utils::Alignment alignment)
+    utils::Alignment alignment)
     : resource_manager_(resource_manager),
       sprite_(std::move(sprite)),
       alignment_(alignment) {
@@ -51,7 +51,7 @@ void SpriteComponent::Init() {
   UpdateOffset();
 }
 
-void SpriteComponent::SetAlignment(engine::utils::Alignment anchor) {
+void SpriteComponent::SetAlignment(utils::Alignment anchor) {
   alignment_ = anchor;
   UpdateOffset();
 }
@@ -63,35 +63,35 @@ void SpriteComponent::UpdateOffset() {
   }
   auto scale = transform_->GetScale();
   switch (alignment_) {
-    case engine::utils::Alignment::kTopLeft:
+    case utils::Alignment::kTopLeft:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::kTopCenter:
+    case utils::Alignment::kTopCenter:
       offset_ = glm::vec2{-sprite_size_.x / 2.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::kTopRight:
+    case utils::Alignment::kTopRight:
       offset_ = glm::vec2{-sprite_size_.x, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::kCenterLeft:
+    case utils::Alignment::kCenterLeft:
       offset_ = glm::vec2{0.0f, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::kCenter:
+    case utils::Alignment::kCenter:
       offset_ =
           glm::vec2{-sprite_size_.x / 2.0f, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::kCenterRight:
+    case utils::Alignment::kCenterRight:
       offset_ = glm::vec2{-sprite_size_.x, -sprite_size_.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::kBottomLeft:
+    case utils::Alignment::kBottomLeft:
       offset_ = glm::vec2{0.0f, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::kBottomCenter:
+    case utils::Alignment::kBottomCenter:
       offset_ = glm::vec2{-sprite_size_.x / 2.0f, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::kBottomRight:
+    case utils::Alignment::kBottomRight:
       offset_ = glm::vec2{-sprite_size_.x, -sprite_size_.y} * scale;
       break;
-    case engine::utils::Alignment::kNone:
+    case utils::Alignment::kNone:
     default:
       break;
   }

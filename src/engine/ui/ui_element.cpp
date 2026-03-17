@@ -83,9 +83,9 @@ glm::vec2 UIElement::GetScreenPosition() const {
   return position_;
 }
 
-engine::utils::Rect UIElement::GetBounds() const {
+utils::Rect UIElement::GetBounds() const {
   auto abs_pos = GetScreenPosition();
-  return engine::utils::Rect(abs_pos, size_);
+  return utils::Rect(abs_pos, size_);
 }
 
 bool UIElement::IsPointInside(const glm::vec2& point) const {

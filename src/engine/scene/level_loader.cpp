@@ -457,14 +457,14 @@ engine::component::TileType LevelLoader::GetTileTypeById(
   return engine::component::TileType::kNormal;
 }
 
-std::optional<engine::utils::Rect> LevelLoader::GetColliderRect(
+std::optional<utils::Rect> LevelLoader::GetColliderRect(
     const nlohmann::json& tile_json) const {
   if (!tile_json.contains("objectgroup")) return std::nullopt;
   auto& objectgroup = tile_json["objectgroup"];
   if (!objectgroup.contains("objects")) return std::nullopt;
   auto& objects = objectgroup["objects"];
   for (const auto& object : objects) {
-    auto rect = engine::utils::Rect(
+    auto rect = utils::Rect(
         glm::vec2(object.value("x", 0.0f), object.value("y", 0.0f)),
         glm::vec2(object.value("width", 0.0f), object.value("height", 0.0f)));
     if (rect.size.x > 0 && rect.size.y > 0) {

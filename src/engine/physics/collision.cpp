@@ -67,8 +67,7 @@ bool CheckAABBOverlap(const glm::vec2& a_pos, const glm::vec2& a_size,
   return true;
 }
 
-bool CheckRectOverlap(const engine::utils::Rect& a,
-                      const engine::utils::Rect& b) {
+bool CheckRectOverlap(const utils::Rect& a, const utils::Rect& b) {
   return CheckAABBOverlap(a.position, a.size, b.position, b.size);
 }
 

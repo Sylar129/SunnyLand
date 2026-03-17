@@ -109,12 +109,11 @@ void GameScene::InitLevel() {
   auto world_size =
       main_layer_obj->GetComponent<engine::component::TileLayerComponent>()
           ->GetWorldSize();
-  context_.GetCamera().SetLimitBounds(
-      engine::utils::Rect(glm::vec2(0.0f), world_size));
+  context_.GetCamera().SetLimitBounds(utils::Rect(glm::vec2(0.0f), world_size));
   context_.GetCamera().SetPosition(glm::vec2(0.0f));
 
   context_.GetPhysicsEngine().SetWorldBounds(
-      engine::utils::Rect(glm::vec2(0.0f), world_size));
+      utils::Rect(glm::vec2(0.0f), world_size));
 }
 
 void GameScene::InitPlayer() {
@@ -325,7 +324,7 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
   if (tag == "enemy") {
     effect_obj->AddComponent<engine::component::SpriteComponent>(
         "assets/textures/FX/enemy-deadth.png", context_.GetResourceManager(),
-        engine::utils::Alignment::kCenter);
+        utils::Alignment::kCenter);
     for (auto i = 0; i < 5; ++i) {
       animation->AddFrame({static_cast<float>(i * 40), 0.0f, 40.0f, 41.0f},
                           0.1f);
@@ -333,7 +332,7 @@ void GameScene::CreateEffect(const glm::vec2& center_pos,
   } else if (tag == "item") {
     effect_obj->AddComponent<engine::component::SpriteComponent>(
         "assets/textures/FX/item-feedback.png", context_.GetResourceManager(),
-        engine::utils::Alignment::kCenter);
+        utils::Alignment::kCenter);
     for (auto i = 0; i < 4; ++i) {
       animation->AddFrame({static_cast<float>(i * 32), 0.0f, 32.0f, 32.0f},
                           0.1f);

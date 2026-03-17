@@ -42,7 +42,7 @@ void TextRenderer::Close() {
 void TextRenderer::DrawUIText(const std::string& text,
                               const std::string& font_id, int font_size,
                               const glm::vec2& position,
-                              const engine::utils::FColor& color) {
+                              const utils::FColor& color) {
   TTF_Font* font = resource_manager_->GetFont(font_id, font_size);
   if (!font) {
     ENGINE_LOG_WARN("drawUIText Failed to get font: {} size {}", font_id,
@@ -76,7 +76,7 @@ void TextRenderer::DrawUIText(const std::string& text,
 void TextRenderer::DrawText(const Camera& camera, const std::string& text,
                             const std::string& font_id, int font_size,
                             const glm::vec2& position,
-                            const engine::utils::FColor& color) {
+                            const utils::FColor& color) {
   glm::vec2 position_screen = camera.WorldToScreen(position);
 
   DrawUIText(text, font_id, font_size, position_screen, color);

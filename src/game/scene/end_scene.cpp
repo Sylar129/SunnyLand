@@ -50,9 +50,8 @@ void EndScene::CreateUI() {
 
   std::string main_message =
       is_win ? "YOU WIN! CONGRATS!" : "YOU DIED! TRY AGAIN!";
-  engine::utils::FColor message_color =
-      is_win ? engine::utils::FColor{0.0f, 1.0f, 0.0f, 1.0f}
-             : engine::utils::FColor{1.0f, 0.0f, 0.0f, 1.0f};
+  utils::FColor message_color = is_win ? utils::FColor{0.0f, 1.0f, 0.0f, 1.0f}
+                                       : utils::FColor{1.0f, 0.0f, 0.0f, 1.0f};
 
   auto main_label = std::make_unique<engine::ui::UILabel>(
       context_.GetTextRenderer(), main_message,
@@ -66,7 +65,7 @@ void EndScene::CreateUI() {
 
   int current_score = session_data_->GetCurrentScore();
   int high_score = session_data_->GetHighScore();
-  engine::utils::FColor score_color = {1.0f, 1.0f, 1.0f, 1.0f};
+  utils::FColor score_color = {1.0f, 1.0f, 1.0f, 1.0f};
   int score_font_size = 24;
 
   std::string score_text = "Score: " + std::to_string(current_score);

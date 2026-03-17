@@ -35,10 +35,10 @@ class PhysicsEngine {
   const glm::vec2& GetGravity() const { return gravity_; }
   void SetMaxSpeed(float max_speed) { max_speed_ = max_speed; }
   float GetMaxSpeed() const { return max_speed_; }
-  void SetWorldBounds(const engine::utils::Rect& world_bounds) {
+  void SetWorldBounds(const utils::Rect& world_bounds) {
     world_bounds_ = world_bounds;
   }
-  const std::optional<engine::utils::Rect>& GetWorldBounds() const {
+  const std::optional<utils::Rect>& GetWorldBounds() const {
     return world_bounds_;
   }
 
@@ -61,7 +61,7 @@ class PhysicsEngine {
   std::vector<engine::component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
   float max_speed_ = 500.0f;
-  std::optional<engine::utils::Rect> world_bounds_;
+  std::optional<utils::Rect> world_bounds_;
 
   std::vector<
       std::pair<engine::object::GameObject*, engine::object::GameObject*>>

@@ -19,8 +19,7 @@ bool CheckCircleOverlap(const glm::vec2& a_center, const float a_radius,
 bool CheckAABBOverlap(const glm::vec2& a_pos, const glm::vec2& a_size,
                       const glm::vec2& b_pos, const glm::vec2& b_size);
 
-bool CheckRectOverlap(const engine::utils::Rect& a,
-                      const engine::utils::Rect& b);
+bool CheckRectOverlap(const utils::Rect& a, const utils::Rect& b);
 
 bool CheckPointInCircle(const glm::vec2& point, const glm::vec2& center,
                         const float radius);

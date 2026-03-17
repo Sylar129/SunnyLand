@@ -21,7 +21,7 @@ class ColliderComponent final : public Component {
  public:
   explicit ColliderComponent(
       std::unique_ptr<engine::physics::Collider> collider,
-      engine::utils::Alignment alignment = engine::utils::Alignment::kNone,
+      utils::Alignment alignment = utils::Alignment::kNone,
       bool is_trigger = false, bool is_active = true);
 
   void UpdateOffset();
@@ -31,12 +31,12 @@ class ColliderComponent final : public Component {
     return collider_.get();
   }
   const glm::vec2& GetOffset() const { return offset_; }
-  engine::utils::Alignment GetAlignment() const { return alignment_; }
-  engine::utils::Rect GetWorldAABB() const;
+  utils::Alignment GetAlignment() const { return alignment_; }
+  utils::Rect GetWorldAABB() const;
   bool IsTrigger() const { return is_trigger_; }
   bool IsActive() const { return is_active_; }
 
-  void SetAlignment(engine::utils::Alignment anchor);
+  void SetAlignment(utils::Alignment anchor);
   void SetOffset(const glm::vec2& offset) { offset_ = offset; }
   void SetTrigger(bool is_trigger) { is_trigger_ = is_trigger; }
   void SetActive(bool is_active) { is_active_ = is_active; }
@@ -49,7 +49,7 @@ class ColliderComponent final : public Component {
 
   std::unique_ptr<engine::physics::Collider> collider_;
   glm::vec2 offset_ = {0.0f, 0.0f};
-  engine::utils::Alignment alignment_ = engine::utils::Alignment::kNone;
+  utils::Alignment alignment_ = utils::Alignment::kNone;
 
   bool is_trigger_ = false;
   bool is_active_ = true;

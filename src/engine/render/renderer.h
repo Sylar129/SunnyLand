@@ -85,8 +85,7 @@ class Renderer final {
   void DrawUISprite(const Sprite& sprite, const glm::vec2& position,
                     const std::optional<glm::vec2>& size = std::nullopt);
 
-  void DrawUIFilledRect(const engine::utils::Rect& rect,
-                        const engine::utils::FColor& color);
+  void DrawUIFilledRect(const utils::Rect& rect, const utils::FColor& color);
 
   void Present();  ///< @brief Update screen, wraps SDL_RenderPresent function
   void ClearScreen();  ///< @brief Clear screen, wraps SDL_RenderClear function

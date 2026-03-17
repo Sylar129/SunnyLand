@@ -17,7 +17,7 @@ class Camera final {
  public:
   Camera(const glm::vec2& viewport_size,
          const glm::vec2& position = glm::vec2(0.0f, 0.0f),
-         const std::optional<engine::utils::Rect> limit_bounds = std::nullopt);
+         const std::optional<utils::Rect> limit_bounds = std::nullopt);
   DISABLE_COPY_AND_MOVE(Camera);
 
   void Update(float delta_time);
@@ -29,11 +29,11 @@ class Camera final {
   glm::vec2 ScreenToWorld(const glm::vec2& screen_pos) const;
 
   void SetPosition(const glm::vec2& position);
-  void SetLimitBounds(const engine::utils::Rect& bounds);
+  void SetLimitBounds(const utils::Rect& bounds);
   void SetTarget(engine::component::TransformComponent* target);
 
   const glm::vec2& GetPosition() const;
-  std::optional<engine::utils::Rect> GetLimitBounds() const;
+  std::optional<utils::Rect> GetLimitBounds() const;
   glm::vec2 GetViewportSize() const;
   engine::component::TransformComponent* GetTarget() const;
 
@@ -42,7 +42,7 @@ class Camera final {
 
   glm::vec2 viewport_size_;
   glm::vec2 position_;
-  std::optional<engine::utils::Rect> limit_bounds_;
+  std::optional<utils::Rect> limit_bounds_;
 
   float smooth_speed_ = 5.0f;
   engine::component::TransformComponent* target_ = nullptr;

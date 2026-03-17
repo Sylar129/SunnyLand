@@ -10,7 +10,7 @@ namespace engine::ui {
 
 UILabel::UILabel(engine::render::TextRenderer& text_renderer,
                  const std::string& text, const std::string& font_id,
-                 int font_size, const engine::utils::FColor& text_color,
+                 int font_size, const utils::FColor& text_color,
                  const glm::vec2& position)
     : UIElement(position),
       text_renderer_(text_renderer),
@@ -46,7 +46,7 @@ void UILabel::SetFontSize(int font_size) {
   size_ = text_renderer_.GetTextSize(text_, font_id_, font_size_);
 }
 
-void UILabel::SetTextFColor(const engine::utils::FColor& text_fcolor) {
+void UILabel::SetTextFColor(const utils::FColor& text_fcolor) {
   text_fcolor_ = text_fcolor;
 }
 

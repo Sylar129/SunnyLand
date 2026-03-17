@@ -12,7 +12,7 @@ namespace engine::component {
 
 ColliderComponent::ColliderComponent(
     std::unique_ptr<engine::physics::Collider> collider,
-    engine::utils::Alignment alignment, bool is_trigger, bool is_active)
+    utils::Alignment alignment, bool is_trigger, bool is_active)
     : collider_(std::move(collider)),
       alignment_(alignment),
       is_trigger_(is_trigger),
@@ -33,7 +33,7 @@ void ColliderComponent::Init() {
   UpdateOffset();
 }
 
-void ColliderComponent::SetAlignment(engine::utils::Alignment anchor) {
+void ColliderComponent::SetAlignment(utils::Alignment anchor) {
   alignment_ = anchor;
   if (transform_ && collider_) {
     UpdateOffset();
@@ -52,32 +52,32 @@ void ColliderComponent::UpdateOffset() {
   auto scale = transform_->GetScale();
 
   switch (alignment_) {
-    case engine::utils::Alignment::kTopLeft:
+    case utils::Alignment::kTopLeft:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::kTopCenter:
+    case utils::Alignment::kTopCenter:
       offset_ = glm::vec2{-collider_size.x / 2.0f, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::kTopRight:
+    case utils::Alignment::kTopRight:
       offset_ = glm::vec2{-collider_size.x, 0.0f} * scale;
       break;
-    case engine::utils::Alignment::kCenterLeft:
+    case utils::Alignment::kCenterLeft:
       offset_ = glm::vec2{0.0f, -collider_size.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::kCenter:
+    case utils::Alignment::kCenter:
       offset_ =
           glm::vec2{-collider_size.x / 2.0f, -collider_size.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::kCenterRight:
+    case utils::Alignment::kCenterRight:
       offset_ = glm::vec2{-collider_size.x, -collider_size.y / 2.0f} * scale;
       break;
-    case engine::utils::Alignment::kBottomLeft:
+    case utils::Alignment::kBottomLeft:
       offset_ = glm::vec2{0.0f, -collider_size.y} * scale;
       break;
-    case engine::utils::Alignment::kBottomCenter:
+    case utils::Alignment::kBottomCenter:
       offset_ = glm::vec2{-collider_size.x / 2.0f, -collider_size.y} * scale;
       break;
-    case engine::utils::Alignment::kBottomRight:
+    case utils::Alignment::kBottomRight:
       offset_ = glm::vec2{-collider_size.x, -collider_size.y} * scale;
       break;
     default:
@@ -85,7 +85,7 @@ void ColliderComponent::UpdateOffset() {
   }
 }
 
-engine::utils::Rect ColliderComponent::GetWorldAABB() const {
+utils::Rect ColliderComponent::GetWorldAABB() const {
   if (!transform_ || !collider_) {
     return {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
   }

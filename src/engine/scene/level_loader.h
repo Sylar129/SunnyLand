@@ -56,7 +56,7 @@ class LevelLoader final {
     return std::nullopt;
   }
 
-  std::optional<engine::utils::Rect> GetColliderRect(
+  std::optional<utils::Rect> GetColliderRect(
       const nlohmann::json& tile_json) const;
 
   std::optional<nlohmann::json> GetTileJsonByGid(int gid) const;

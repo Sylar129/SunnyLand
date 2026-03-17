@@ -31,13 +31,12 @@ class TextRenderer final {
 
   void DrawUIText(const std::string& text, const std::string& font_id,
                   int font_size, const glm::vec2& position,
-                  const engine::utils::FColor& color = {1.0f, 1.0f, 1.0f,
-                                                        1.0f});
+                  const utils::FColor& color = {1.0f, 1.0f, 1.0f, 1.0f});
 
   void DrawText(const Camera& camera, const std::string& text,
                 const std::string& font_id, int font_size,
                 const glm::vec2& position,
-                const engine::utils::FColor& color = {1.0f, 1.0f, 1.0f, 1.0f});
+                const utils::FColor& color = {1.0f, 1.0f, 1.0f, 1.0f});
 
   glm::vec2 GetTextSize(const std::string& text, const std::string& font_id,
                         int font_size);

@@ -2,7 +2,7 @@
 
 #pragma once
 
-namespace engine::utils {
+namespace utils {
 
 enum class Alignment {
   kNone,
@@ -17,4 +17,4 @@ enum class Alignment {
   kBottomRight
 };
 
-}  // namespace engine::utils
+}  // namespace utils
