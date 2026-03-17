@@ -13,7 +13,7 @@ namespace engine::render {
 
 // Constructor: Performs initialization, adds ResourceManager
 Renderer::Renderer(SDL_Renderer* sdl_renderer,
-                   engine::resource::ResourceManager* resource_manager)
+                   resource::ResourceManager* resource_manager)
     : renderer_(sdl_renderer), resource_manager_(resource_manager) {
   ENGINE_LOG_TRACE("Constructing Renderer...");
 

@@ -11,19 +11,19 @@ GameObject::GameObject(const std::string& name, const std::string& tag)
   ENGINE_LOG_TRACE("GameObject created: {} {}", name_, tag_);
 }
 
-void GameObject::HandleInput(engine::core::Context& context) {
+void GameObject::HandleInput(core::Context& context) {
   for (auto& pair : components_) {
     pair.second->HandleInput(context);
   }
 }
 
-void GameObject::Update(float delta_time, engine::core::Context& context) {
+void GameObject::Update(float delta_time, core::Context& context) {
   for (auto& pair : components_) {
     pair.second->Update(delta_time, context);
   }
 }
 
-void GameObject::Render(engine::core::Context& context) {
+void GameObject::Render(core::Context& context) {
   for (auto& pair : components_) {
     pair.second->Render(context);
   }

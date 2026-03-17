@@ -10,13 +10,11 @@
 
 namespace engine::core {
 
-Context::Context(engine::input::InputManager& input_manager,
-                 engine::render::Renderer& renderer,
-                 engine::render::Camera& camera,
-                 engine::render::TextRenderer& text_renderer,
-                 engine::resource::ResourceManager& resource_manager,
-                 engine::physics::PhysicsEngine& physics_engine,
-                 engine::core::GameState& game_state)
+Context::Context(input::InputManager& input_manager, render::Renderer& renderer,
+                 render::Camera& camera, render::TextRenderer& text_renderer,
+                 resource::ResourceManager& resource_manager,
+                 physics::PhysicsEngine& physics_engine,
+                 core::GameState& game_state)
     : input_manager_(input_manager),
       renderer_(renderer),
       camera_(camera),

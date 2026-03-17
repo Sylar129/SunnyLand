@@ -8,10 +8,9 @@
 
 namespace engine::ui {
 
-UILabel::UILabel(engine::render::TextRenderer& text_renderer,
-                 const std::string& text, const std::string& font_id,
-                 int font_size, const utils::FColor& text_color,
-                 const glm::vec2& position)
+UILabel::UILabel(render::TextRenderer& text_renderer, const std::string& text,
+                 const std::string& font_id, int font_size,
+                 const utils::FColor& text_color, const glm::vec2& position)
     : UIElement(position),
       text_renderer_(text_renderer),
       text_(text),
@@ -22,7 +21,7 @@ UILabel::UILabel(engine::render::TextRenderer& text_renderer,
   ENGINE_LOG_TRACE("UILabel constructed.");
 }
 
-void UILabel::Render(engine::core::Context& context) {
+void UILabel::Render(core::Context& context) {
   if (!visible_ || text_.empty()) return;
 
   text_renderer_.DrawUIText(text_, font_id_, font_size_, GetScreenPosition(),

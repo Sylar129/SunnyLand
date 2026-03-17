@@ -6,8 +6,8 @@
 
 namespace engine::component {
 
-class HealthComponent final : public engine::component::Component {
-  friend class engine::object::GameObject;
+class HealthComponent final : public Component {
+  friend class object::GameObject;
 
  public:
   explicit HealthComponent(int max_health = 1,
@@ -27,7 +27,7 @@ class HealthComponent final : public engine::component::Component {
   void SetInvincible(float duration);
 
  protected:
-  void Update(float, engine::core::Context&) override;
+  void Update(float, core::Context&) override;
 
  private:
   int max_health_ = 1;

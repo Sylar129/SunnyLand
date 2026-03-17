@@ -11,8 +11,8 @@
 namespace engine::component {
 
 ColliderComponent::ColliderComponent(
-    std::unique_ptr<engine::physics::Collider> collider,
-    utils::Alignment alignment, bool is_trigger, bool is_active)
+    std::unique_ptr<physics::Collider> collider, utils::Alignment alignment,
+    bool is_trigger, bool is_active)
     : collider_(std::move(collider)),
       alignment_(alignment),
       is_trigger_(is_trigger),

@@ -15,7 +15,7 @@ UIPanel::UIPanel(const glm::vec2& position, const glm::vec2& size,
                    position.x, position.y, size.x, size.y);
 }
 
-void UIPanel::Render(engine::core::Context& context) {
+void UIPanel::Render(core::Context& context) {
   if (!visible_) return;
 
   if (background_color_) {

@@ -29,7 +29,7 @@ void TileLayerComponent::Init() {
   ENGINE_LOG_TRACE("TileLayerComponent initialized.");
 }
 
-void TileLayerComponent::Render(engine::core::Context& context) {
+void TileLayerComponent::Render(core::Context& context) {
   if (tile_size_.x <= 0 || tile_size_.y <= 0) {
     return;
   }

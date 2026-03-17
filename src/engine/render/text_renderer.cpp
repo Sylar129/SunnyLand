@@ -11,7 +11,7 @@
 namespace engine::render {
 
 TextRenderer::TextRenderer(SDL_Renderer* sdl_renderer,
-                           engine::resource::ResourceManager* resource_manager)
+                           resource::ResourceManager* resource_manager)
     : sdl_renderer_(sdl_renderer), resource_manager_(resource_manager) {
   ENGINE_LOG_ASSERT(
       sdl_renderer_ && resource_manager_,

@@ -22,7 +22,7 @@ void AnimationComponent::Init() {
       "AnimationComponent requires a SpriteComponent on the same GameObject!");
 }
 
-void AnimationComponent::Update(float delta_time, engine::core::Context&) {
+void AnimationComponent::Update(float delta_time, core::Context&) {
   if (!is_playing_ || !current_animation_ || !sprite_component_ ||
       current_animation_->IsEmpty()) {
     ENGINE_LOG_TRACE(
@@ -49,7 +49,7 @@ void AnimationComponent::Update(float delta_time, engine::core::Context&) {
 }
 
 void AnimationComponent::AddAnimation(
-    std::unique_ptr<engine::render::Animation> animation) {
+    std::unique_ptr<render::Animation> animation) {
   if (!animation) return;
   std::string name = animation->GetName();
   animations_[name] = std::move(animation);

@@ -51,7 +51,7 @@ void Camera::SetLimitBounds(const utils::Rect& bounds) {
   ClampPosition();
 }
 
-void Camera::SetTarget(engine::component::TransformComponent* target) {
+void Camera::SetTarget(component::TransformComponent* target) {
   target_ = target;
 }
 
@@ -87,9 +87,7 @@ glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
 
 glm::vec2 Camera::GetViewportSize() const { return viewport_size_; }
 
-engine::component::TransformComponent* Camera::GetTarget() const {
-  return target_;
-}
+component::TransformComponent* Camera::GetTarget() const { return target_; }
 
 std::optional<utils::Rect> Camera::GetLimitBounds() const {
   return limit_bounds_;

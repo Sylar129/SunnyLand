@@ -7,8 +7,8 @@
 
 namespace engine::physics::collision {
 
-bool CheckCollision(const engine::component::ColliderComponent& a,
-                    const engine::component::ColliderComponent& b) {
+bool CheckCollision(const component::ColliderComponent& a,
+                    const component::ColliderComponent& b) {
   auto a_collider = a.GetCollider();
   auto b_collider = b.GetCollider();
   auto a_transform = a.GetTransform();
@@ -27,24 +27,24 @@ bool CheckCollision(const engine::component::ColliderComponent& a,
     return false;
   }
 
-  if (a_collider->GetType() == engine::physics::ColliderType::kAabb &&
-      b_collider->GetType() == engine::physics::ColliderType::kAabb) {
+  if (a_collider->GetType() == ColliderType::kAabb &&
+      b_collider->GetType() == ColliderType::kAabb) {
     return true;
-  } else if (a_collider->GetType() == engine::physics::ColliderType::kCircle &&
-             b_collider->GetType() == engine::physics::ColliderType::kCircle) {
+  } else if (a_collider->GetType() == ColliderType::kCircle &&
+             b_collider->GetType() == ColliderType::kCircle) {
     auto a_center = a_pos + 0.5f * a_size;
     auto b_center = b_pos + 0.5f * b_size;
     auto a_radius = 0.5f * a_size.x;
     auto b_radius = 0.5f * b_size.x;
     return CheckCircleOverlap(a_center, a_radius, b_center, b_radius);
-  } else if (a_collider->GetType() == engine::physics::ColliderType::kAabb &&
-             b_collider->GetType() == engine::physics::ColliderType::kCircle) {
+  } else if (a_collider->GetType() == ColliderType::kAabb &&
+             b_collider->GetType() == ColliderType::kCircle) {
     auto b_center = b_pos + 0.5f * b_size;
     auto b_radius = 0.5f * b_size.x;
     auto nearest_point = glm::clamp(b_center, a_pos, a_pos + a_size);
     return CheckPointInCircle(nearest_point, b_center, b_radius);
-  } else if (a_collider->GetType() == engine::physics::ColliderType::kCircle &&
-             b_collider->GetType() == engine::physics::ColliderType::kAabb) {
+  } else if (a_collider->GetType() == ColliderType::kCircle &&
+             b_collider->GetType() == ColliderType::kAabb) {
     auto a_center = a_pos + 0.5f * a_size;
     auto a_radius = 0.5f * a_size.x;
     auto nearest_point = glm::clamp(a_center, b_pos, b_pos + b_size);

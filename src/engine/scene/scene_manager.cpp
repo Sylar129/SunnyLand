@@ -8,7 +8,7 @@
 
 namespace engine::scene {
 
-SceneManager::SceneManager(engine::core::Context& context) : context_(context) {
+SceneManager::SceneManager(core::Context& context) : context_(context) {
   ENGINE_LOG_TRACE("SceneManager initialized successfully.");
 }
 

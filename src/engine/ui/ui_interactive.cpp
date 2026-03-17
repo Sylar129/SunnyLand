@@ -12,12 +12,11 @@ namespace engine::ui {
 
 UIInteractive::~UIInteractive() = default;
 
-UIInteractive::UIInteractive(engine::core::Context& context,
-                             const glm::vec2& position, const glm::vec2& size)
+UIInteractive::UIInteractive(core::Context& context, const glm::vec2& position,
+                             const glm::vec2& size)
     : UIElement(position, size), context_(context) {}
 
-void UIInteractive::SetState(
-    std::unique_ptr<engine::ui::state::UIState> state) {
+void UIInteractive::SetState(std::unique_ptr<state::UIState> state) {
   if (!state) {
     ENGINE_LOG_WARN(
         "Trying to set null state for UIInteractive. Operation ignored.");
@@ -29,7 +28,7 @@ void UIInteractive::SetState(
 }
 
 void UIInteractive::AddSprite(const std::string& name,
-                              std::unique_ptr<engine::render::Sprite> sprite) {
+                              std::unique_ptr<render::Sprite> sprite) {
   if (size_.x == 0.0f && size_.y == 0.0f) {
     size_ =
         context_.GetResourceManager().GetTextureSize(sprite->GetTextureId());
@@ -57,7 +56,7 @@ void UIInteractive::PlaySound(const std::string& name) {
   }
 }
 
-bool UIInteractive::HandleInput(engine::core::Context& context) {
+bool UIInteractive::HandleInput(core::Context& context) {
   if (UIElement::HandleInput(context)) {
     return true;
   }
@@ -71,7 +70,7 @@ bool UIInteractive::HandleInput(engine::core::Context& context) {
   return false;
 }
 
-void UIInteractive::Render(engine::core::Context& context) {
+void UIInteractive::Render(core::Context& context) {
   if (!visible_) return;
 
   context.GetRenderer().DrawUISprite(*current_sprite_, GetScreenPosition(),

@@ -30,12 +30,12 @@ class Camera final {
 
   void SetPosition(const glm::vec2& position);
   void SetLimitBounds(const utils::Rect& bounds);
-  void SetTarget(engine::component::TransformComponent* target);
+  void SetTarget(component::TransformComponent* target);
 
   const glm::vec2& GetPosition() const;
   std::optional<utils::Rect> GetLimitBounds() const;
   glm::vec2 GetViewportSize() const;
-  engine::component::TransformComponent* GetTarget() const;
+  component::TransformComponent* GetTarget() const;
 
  private:
   void ClampPosition();
@@ -45,7 +45,7 @@ class Camera final {
   std::optional<utils::Rect> limit_bounds_;
 
   float smooth_speed_ = 5.0f;
-  engine::component::TransformComponent* target_ = nullptr;
+  component::TransformComponent* target_ = nullptr;
 };
 
 }  // namespace engine::render

@@ -15,28 +15,27 @@
 
 namespace engine::physics {
 
-void PhysicsEngine::RegisterComponent(
-    engine::component::PhysicsComponent* component) {
+void PhysicsEngine::RegisterComponent(component::PhysicsComponent* component) {
   ENGINE_LOG_ASSERT(component, "PhysicsComponent is null.");
   components_.push_back(component);
   ENGINE_LOG_TRACE("Register PhysicsComponent complete.");
 }
 
 void PhysicsEngine::UnregisterComponent(
-    engine::component::PhysicsComponent* component) {
+    component::PhysicsComponent* component) {
   std::erase(components_, component);
   ENGINE_LOG_TRACE("Unregister PhysicsComponent complete.");
 }
 
 void PhysicsEngine::RegisterCollisionLayer(
-    engine::component::TileLayerComponent* layer) {
+    component::TileLayerComponent* layer) {
   layer->SetPhysicsEngine(this);
   collision_tile_layers_.push_back(layer);
   ENGINE_LOG_TRACE("Register collision tile layer complete.");
 }
 
 void PhysicsEngine::UnregisterCollisionLayer(
-    engine::component::TileLayerComponent* layer) {
+    component::TileLayerComponent* layer) {
   std::erase(collision_tile_layers_, layer);
   ENGINE_LOG_TRACE("Unregister collision tile layer complete.");
 }
@@ -76,7 +75,7 @@ void PhysicsEngine::CheckObjectCollisions() {
     if (!pc_a->IsEnabled()) continue;
     auto* obj_a = pc_a->GetOwner();
     if (!obj_a) continue;
-    auto* cc_a = obj_a->GetComponent<engine::component::ColliderComponent>();
+    auto* cc_a = obj_a->GetComponent<component::ColliderComponent>();
     if (!cc_a || !cc_a->IsActive()) continue;
 
     for (size_t j = i + 1; j < components_.size(); ++j) {
@@ -84,7 +83,7 @@ void PhysicsEngine::CheckObjectCollisions() {
       if (!pc_b->IsEnabled()) continue;
       auto* obj_b = pc_b->GetOwner();
       if (!obj_b) continue;
-      auto* cc_b = obj_b->GetComponent<engine::component::ColliderComponent>();
+      auto* cc_b = obj_b->GetComponent<component::ColliderComponent>();
       if (!cc_b || !cc_b->IsActive()) continue;
 
       if (collision::CheckCollision(*cc_a, *cc_b)) {
@@ -105,12 +104,12 @@ void PhysicsEngine::CheckTileTriggers() {
     if (!pc || !pc->IsEnabled()) continue;
     auto* obj = pc->GetOwner();
     if (!obj) continue;
-    auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
+    auto* cc = obj->GetComponent<component::ColliderComponent>();
     if (!cc || !cc->IsActive() || cc->IsTrigger()) continue;
 
     auto world_aabb = cc->GetWorldAABB();
 
-    std::set<engine::component::TileType> triggers_set;
+    std::set<component::TileType> triggers_set;
 
     for (auto* layer : collision_tile_layers_) {
       if (!layer) continue;
@@ -130,9 +129,9 @@ void PhysicsEngine::CheckTileTriggers() {
       for (int x = start_x; x < end_x; ++x) {
         for (int y = start_y; y < end_y; ++y) {
           auto tile_type = layer->GetTileTypeAt({x, y});
-          if (tile_type == engine::component::TileType::kHazard) {
+          if (tile_type == component::TileType::kHazard) {
             triggers_set.insert(tile_type);
-          } else if (tile_type == engine::component::TileType::kLadder) {
+          } else if (tile_type == component::TileType::kLadder) {
             pc->SetCollidedLadder();
           }
         }
@@ -174,16 +173,16 @@ void PhysicsEngine::CheckTileTriggers() {
 //   - Detects continuous collision (movement-aware)
 //   - Sets velocity to 0 when collision occurs (fully absorbs momentum)
 //   - Processes multiple collision layers (checks all layers)
-void PhysicsEngine::ResolveTileCollisions(
-    engine::component::PhysicsComponent* pc, float delta_time) {
+void PhysicsEngine::ResolveTileCollisions(component::PhysicsComponent* pc,
+                                          float delta_time) {
   // Validate that the physics component has an owner object
   auto* obj = pc->GetOwner();
   if (!obj) return;
 
   // Get required components: Transform for position updates, Collider for
   // bounds
-  auto* tc = obj->GetComponent<engine::component::TransformComponent>();
-  auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
+  auto* tc = obj->GetComponent<component::TransformComponent>();
+  auto* cc = obj->GetComponent<component::ColliderComponent>();
 
   // Skip collision resolution if components missing, inactive, or is a trigger
   if (!tc || !cc || cc->IsTrigger()) return;
@@ -231,8 +230,8 @@ void PhysicsEngine::ResolveTileCollisions(
           floor((obj_pos.y + obj_size.y - tolerance) / tile_size.y));
       auto tile_type_bottom = layer->GetTileTypeAt({tile_x, tile_y_bottom});
 
-      if (tile_type_top == engine::component::TileType::kSolid ||
-          tile_type_bottom == engine::component::TileType::kSolid) {
+      if (tile_type_top == component::TileType::kSolid ||
+          tile_type_bottom == component::TileType::kSolid) {
         new_obj_pos.x = tile_x * tile_size.x - obj_size.x;
         pc->velocity_.x = 0.0f;
         pc->SetCollidedRight();
@@ -263,8 +262,8 @@ void PhysicsEngine::ResolveTileCollisions(
           floor((obj_pos.y + obj_size.y - tolerance) / tile_size.y));
       auto tile_type_bottom = layer->GetTileTypeAt({tile_x, tile_y_bottom});
 
-      if (tile_type_top == engine::component::TileType::kSolid ||
-          tile_type_bottom == engine::component::TileType::kSolid) {
+      if (tile_type_top == component::TileType::kSolid ||
+          tile_type_bottom == component::TileType::kSolid) {
         new_obj_pos.x = (tile_x + 1) * tile_size.x;
         pc->velocity_.x = 0.0f;
         pc->SetCollidedLeft();
@@ -298,19 +297,19 @@ void PhysicsEngine::ResolveTileCollisions(
           floor((obj_pos.x + obj_size.x - tolerance) / tile_size.x));
       auto tile_type_right = layer->GetTileTypeAt({tile_x_right, tile_y});
 
-      if (tile_type_left == engine::component::TileType::kSolid ||
-          tile_type_right == engine::component::TileType::kSolid ||
-          tile_type_left == engine::component::TileType::kUnisolid ||
-          tile_type_right == engine::component::TileType::kUnisolid) {
+      if (tile_type_left == component::TileType::kSolid ||
+          tile_type_right == component::TileType::kSolid ||
+          tile_type_left == component::TileType::kUnisolid ||
+          tile_type_right == component::TileType::kUnisolid) {
         new_obj_pos.y = tile_y * tile_size.y - obj_size.y;
         pc->velocity_.y = 0.0f;
         pc->SetCollidedBelow();
-      } else if (tile_type_left == engine::component::TileType::kLadder &&
-                 tile_type_right == engine::component::TileType::kLadder) {
+      } else if (tile_type_left == component::TileType::kLadder &&
+                 tile_type_right == component::TileType::kLadder) {
         auto tile_type_up_l = layer->GetTileTypeAt({tile_x, tile_y - 1});
         auto tile_type_up_r = layer->GetTileTypeAt({tile_x_right, tile_y - 1});
-        if (tile_type_up_r != engine::component::TileType::kLadder &&
-            tile_type_up_l != engine::component::TileType::kLadder) {
+        if (tile_type_up_r != component::TileType::kLadder &&
+            tile_type_up_l != component::TileType::kLadder) {
           if (pc->IsUseGravity()) {
             pc->SetOnTopLadder();
             pc->SetCollidedBelow();
@@ -353,8 +352,8 @@ void PhysicsEngine::ResolveTileCollisions(
 
       // If either corner hits a solid tile, clamp Y position and stop Y
       // velocity
-      if (tile_type_left == engine::component::TileType::kSolid ||
-          tile_type_right == engine::component::TileType::kSolid) {
+      if (tile_type_left == component::TileType::kSolid ||
+          tile_type_right == component::TileType::kSolid) {
         new_obj_pos.y = (tile_y + 1) * tile_size.y;
         pc->velocity_.y = 0.0f;
         pc->SetCollidedAbove();
@@ -369,15 +368,11 @@ void PhysicsEngine::ResolveTileCollisions(
 }
 
 void PhysicsEngine::ResolveSolidObjectCollisions(
-    engine::object::GameObject* move_obj,
-    engine::object::GameObject* solid_obj) {
-  auto* move_tc =
-      move_obj->GetComponent<engine::component::TransformComponent>();
-  auto* move_pc = move_obj->GetComponent<engine::component::PhysicsComponent>();
-  auto* move_cc =
-      move_obj->GetComponent<engine::component::ColliderComponent>();
-  auto* solid_cc =
-      solid_obj->GetComponent<engine::component::ColliderComponent>();
+    object::GameObject* move_obj, object::GameObject* solid_obj) {
+  auto* move_tc = move_obj->GetComponent<component::TransformComponent>();
+  auto* move_pc = move_obj->GetComponent<component::PhysicsComponent>();
+  auto* move_cc = move_obj->GetComponent<component::ColliderComponent>();
+  auto* solid_cc = solid_obj->GetComponent<component::ColliderComponent>();
 
   auto move_aabb = move_cc->GetWorldAABB();
   auto solid_aabb = solid_cc->GetWorldAABB();
@@ -419,34 +414,33 @@ void PhysicsEngine::ResolveSolidObjectCollisions(
   }
 }
 
-float PhysicsEngine::GetTileHeightAtWidth(float width,
-                                          engine::component::TileType type,
+float PhysicsEngine::GetTileHeightAtWidth(float width, component::TileType type,
                                           glm::vec2 tile_size) {
   auto rel_x = glm::clamp(width / tile_size.x, 0.0f, 1.0f);
   switch (type) {
-    case engine::component::TileType::kSlope0_1:
+    case component::TileType::kSlope0_1:
       return rel_x * tile_size.y;
-    case engine::component::TileType::kSlope0_2:
+    case component::TileType::kSlope0_2:
       return rel_x * tile_size.y * 0.5f;
-    case engine::component::TileType::kSlope2_1:
+    case component::TileType::kSlope2_1:
       return rel_x * tile_size.y * 0.5f + tile_size.y * 0.5f;
-    case engine::component::TileType::kSlope1_0:
+    case component::TileType::kSlope1_0:
       return (1.0f - rel_x) * tile_size.y;
-    case engine::component::TileType::kSlope2_0:
+    case component::TileType::kSlope2_0:
       return (1.0f - rel_x) * tile_size.y * 0.5f;
-    case engine::component::TileType::kSlope1_2:
+    case component::TileType::kSlope1_2:
       return (1.0f - rel_x) * tile_size.y * 0.5f + tile_size.y * 0.5f;
     default:
       return 0.0f;
   }
 }
 
-void PhysicsEngine::ApplyWorldBounds(engine::component::PhysicsComponent* pc) {
+void PhysicsEngine::ApplyWorldBounds(component::PhysicsComponent* pc) {
   if (!pc || !world_bounds_) return;
 
   auto* obj = pc->GetOwner();
-  auto* cc = obj->GetComponent<engine::component::ColliderComponent>();
-  auto* tc = obj->GetComponent<engine::component::TransformComponent>();
+  auto* cc = obj->GetComponent<component::ColliderComponent>();
+  auto* tc = obj->GetComponent<component::TransformComponent>();
   auto world_aabb = cc->GetWorldAABB();
   auto obj_pos = world_aabb.position;
   auto obj_size = world_aabb.size;

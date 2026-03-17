@@ -16,8 +16,7 @@ void UIHoverState::Enter() {
   ENGINE_LOG_DEBUG("Switched to hover state");
 }
 
-std::unique_ptr<UIState> UIHoverState::HandleInput(
-    engine::core::Context& context) {
+std::unique_ptr<UIState> UIHoverState::HandleInput(core::Context& context) {
   auto& input_manager = context.GetInputManager();
   auto mouse_pos = input_manager.GetLogicalMousePosition();
   if (!owner_->IsPointInside(mouse_pos)) {

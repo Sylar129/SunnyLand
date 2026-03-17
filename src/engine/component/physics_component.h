@@ -15,11 +15,11 @@ namespace engine::component {
 class TransformComponent;
 
 class PhysicsComponent final : public Component {
-  friend class engine::object::GameObject;
-  friend class engine::physics::PhysicsEngine;
+  friend class object::GameObject;
+  friend class physics::PhysicsEngine;
 
  public:
-  PhysicsComponent(engine::physics::PhysicsEngine* physics_engine,
+  PhysicsComponent(physics::PhysicsEngine* physics_engine,
                    bool use_gravity = true, float mass = 1.0f);
   ~PhysicsComponent() override = default;
 
@@ -66,10 +66,10 @@ class PhysicsComponent final : public Component {
 
  private:
   void Init() override;
-  void Update(float, engine::core::Context&) override {}
+  void Update(float, core::Context&) override {}
   void Clean() override;
 
-  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
+  physics::PhysicsEngine* physics_engine_ = nullptr;
   TransformComponent* transform_ = nullptr;
 
   glm::vec2 velocity_ = {0.0f, 0.0f};

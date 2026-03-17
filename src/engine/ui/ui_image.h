@@ -20,10 +20,10 @@ public:
           const std::optional<SDL_FRect>& source_rect = std::nullopt,
           bool is_flipped = false);
 
-  void Render(engine::core::Context& context) override;
+  void Render(core::Context& context) override;
 
-  const engine::render::Sprite& GetSprite() const { return sprite_; }
-  void SetSprite(const engine::render::Sprite& sprite) { sprite_ = sprite; }
+  const render::Sprite& GetSprite() const { return sprite_; }
+  void SetSprite(const render::Sprite& sprite) { sprite_ = sprite; }
 
   const std::string& GetTextureId() const { return sprite_.GetTextureId(); }
   void SetTextureId(const std::string &texture_id) {
@@ -41,7 +41,7 @@ public:
   void SetFlipped(bool flipped) { sprite_.SetFlipped(flipped); }
 
 protected:
-  engine::render::Sprite sprite_;
+  render::Sprite sprite_;
 };
 
 }  // namespace engine::ui

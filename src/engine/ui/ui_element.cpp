@@ -12,7 +12,7 @@ namespace engine::ui {
 UIElement::UIElement(const glm::vec2& position, const glm::vec2& size)
     : position_(position), size_(size) {}
 
-bool UIElement::HandleInput(engine::core::Context& context) {
+bool UIElement::HandleInput(core::Context& context) {
   if (!visible_) return false;
 
   for (auto it = children_.begin(); it != children_.end();) {
@@ -26,7 +26,7 @@ bool UIElement::HandleInput(engine::core::Context& context) {
   return false;
 }
 
-void UIElement::Update(float delta_time, engine::core::Context& context) {
+void UIElement::Update(float delta_time, core::Context& context) {
   if (!visible_) return;
 
   for (auto it = children_.begin(); it != children_.end();) {
@@ -39,7 +39,7 @@ void UIElement::Update(float delta_time, engine::core::Context& context) {
   }
 }
 
-void UIElement::Render(engine::core::Context& context) {
+void UIElement::Render(core::Context& context) {
   if (!visible_) return;
 
   for (const auto& child : children_) {

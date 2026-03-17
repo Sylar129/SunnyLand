@@ -38,20 +38,20 @@ void UIManager::ClearElements() {
   }
 }
 
-bool UIManager::HandleInput(engine::core::Context& context) {
+bool UIManager::HandleInput(core::Context& context) {
   if (root_element_ && root_element_->IsVisible()) {
     if (root_element_->HandleInput(context)) return true;
   }
   return false;
 }
 
-void UIManager::Update(float delta_time, engine::core::Context& context) {
+void UIManager::Update(float delta_time, core::Context& context) {
   if (root_element_ && root_element_->IsVisible()) {
     root_element_->Update(delta_time, context);
   }
 }
 
-void UIManager::Render(engine::core::Context& context) {
+void UIManager::Render(core::Context& context) {
   if (root_element_ && root_element_->IsVisible()) {
     root_element_->Render(context);
   }

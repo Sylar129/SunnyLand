@@ -14,8 +14,7 @@
 namespace engine::component {
 
 SpriteComponent::SpriteComponent(
-    const std::string& texture_id,
-    engine::resource::ResourceManager& resource_manager,
+    const std::string& texture_id, resource::ResourceManager& resource_manager,
     utils::Alignment alignment, const std::optional<SDL_FRect>& source_rect_opt,
     bool is_flipped)
     : resource_manager_(resource_manager),
@@ -24,10 +23,9 @@ SpriteComponent::SpriteComponent(
   ENGINE_LOG_TRACE("Creating SpriteComponent, texture id: {}", texture_id);
 }
 
-SpriteComponent::SpriteComponent(
-    engine::render::Sprite&& sprite,
-    engine::resource::ResourceManager& resource_manager,
-    utils::Alignment alignment)
+SpriteComponent::SpriteComponent(render::Sprite&& sprite,
+                                 resource::ResourceManager& resource_manager,
+                                 utils::Alignment alignment)
     : resource_manager_(resource_manager),
       sprite_(std::move(sprite)),
       alignment_(alignment) {
@@ -97,7 +95,7 @@ void SpriteComponent::UpdateOffset() {
   }
 }
 
-void SpriteComponent::Render(engine::core::Context& context) {
+void SpriteComponent::Render(core::Context& context) {
   if (is_hidden_ || !transform_) {
     return;
   }

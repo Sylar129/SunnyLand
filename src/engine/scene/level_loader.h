@@ -30,18 +30,17 @@ class LevelLoader final {
   void LoadObjectLayer(const nlohmann::json& layer_json, Scene& scene);
 
   void AddAnimation(const nlohmann::json& anim_json,
-                    engine::component::AnimationComponent* ac,
+                    component::AnimationComponent* ac,
                     const glm::vec2& sprite_size);
 
   void LoadTileset(const std::string& tileset_path, int first_gid);
-  engine::component::TileInfo GetTileInfoByGid(int gid) const;
+  component::TileInfo GetTileInfoByGid(int gid) const;
   std::string ResolvePath(const std::string& relative_path,
                           const std::string& file_path) const;
 
-  engine::component::TileType GetTileType(
-      const nlohmann::json& tile_json) const;
-  engine::component::TileType GetTileTypeById(
-      const nlohmann::json& tileset_json, int local_id) const;
+  component::TileType GetTileType(const nlohmann::json& tile_json) const;
+  component::TileType GetTileTypeById(const nlohmann::json& tileset_json,
+                                      int local_id) const;
 
   template <typename T>
   std::optional<T> GetTileProperty(const nlohmann::json& tile_json,

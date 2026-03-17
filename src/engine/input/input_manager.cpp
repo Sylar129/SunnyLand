@@ -11,7 +11,7 @@
 namespace engine::input {
 
 InputManager::InputManager(SDL_Renderer* sdl_renderer,
-                           const engine::core::Config* config)
+                           const core::Config* config)
     : sdl_renderer_(sdl_renderer) {
   ENGINE_LOG_ASSERT(sdl_renderer_, "InputManager: SDL_Renderer is nullptr");
 
@@ -116,7 +116,7 @@ glm::vec2 InputManager::GetLogicalMousePosition() const {
   return logical_pos;
 }
 
-void InputManager::InitializeMappings(const engine::core::Config* config) {
+void InputManager::InitializeMappings(const core::Config* config) {
   ENGINE_LOG_TRACE("Initializint input mappings...");
 
   ENGINE_LOG_ASSERT(config, "InputManager: Config is nullptr");

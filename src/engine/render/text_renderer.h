@@ -21,7 +21,7 @@ class Camera;
 class TextRenderer final {
  public:
   TextRenderer(SDL_Renderer* sdl_renderer,
-               engine::resource::ResourceManager* resource_manager);
+               resource::ResourceManager* resource_manager);
 
   ~TextRenderer();
 
@@ -43,7 +43,7 @@ class TextRenderer final {
 
  private:
   SDL_Renderer* sdl_renderer_ = nullptr;
-  engine::resource::ResourceManager* resource_manager_ = nullptr;
+  resource::ResourceManager* resource_manager_ = nullptr;
 
   TTF_TextEngine* text_engine_ = nullptr;
 };

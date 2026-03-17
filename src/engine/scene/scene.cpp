@@ -15,12 +15,12 @@
 
 namespace engine::scene {
 
-Scene::Scene(const std::string& name, engine::core::Context& context,
-             engine::scene::SceneManager& scene_manager)
+Scene::Scene(const std::string& name, core::Context& context,
+             SceneManager& scene_manager)
     : scene_name_(name),
       context_(context),
       scene_manager_(scene_manager),
-      ui_manager_(std::make_unique<engine::ui::UIManager>()),
+      ui_manager_(std::make_unique<ui::UIManager>()),
       is_initialized_(false) {
   ENGINE_LOG_TRACE("Scene '{}' created.", scene_name_);
 }
@@ -102,8 +102,7 @@ void Scene::Clean() {
   ENGINE_LOG_TRACE("Scene '{}' clean finished", scene_name_);
 }
 
-void Scene::AddGameObject(
-    std::unique_ptr<engine::object::GameObject>&& game_object) {
+void Scene::AddGameObject(std::unique_ptr<object::GameObject>&& game_object) {
   if (game_object) {
     game_objects_.push_back(std::move(game_object));
   } else {
@@ -112,7 +111,7 @@ void Scene::AddGameObject(
 }
 
 void Scene::SafeAddGameObject(
-    std::unique_ptr<engine::object::GameObject>&& game_object) {
+    std::unique_ptr<object::GameObject>&& game_object) {
   if (game_object) {
     pending_additions_.push_back(std::move(game_object));
   } else {
@@ -120,7 +119,7 @@ void Scene::SafeAddGameObject(
   }
 }
 
-void Scene::RemoveGameObject(engine::object::GameObject* game_object_ptr) {
+void Scene::RemoveGameObject(object::GameObject* game_object_ptr) {
   if (!game_object_ptr) {
     ENGINE_LOG_WARN("Trying to remove empty object ptr from scene '{}'",
                     scene_name_);
@@ -129,7 +128,7 @@ void Scene::RemoveGameObject(engine::object::GameObject* game_object_ptr) {
 
   auto it = std::remove_if(
       game_objects_.begin(), game_objects_.end(),
-      [game_object_ptr](const std::unique_ptr<engine::object::GameObject>& p) {
+      [game_object_ptr](const std::unique_ptr<object::GameObject>& p) {
         return p.get() == game_object_ptr;
       });
 
@@ -142,12 +141,11 @@ void Scene::RemoveGameObject(engine::object::GameObject* game_object_ptr) {
   }
 }
 
-void Scene::SafeRemoveGameObject(engine::object::GameObject* game_object_ptr) {
+void Scene::SafeRemoveGameObject(object::GameObject* game_object_ptr) {
   game_object_ptr->SetNeedRemove(true);
 }
 
-engine::object::GameObject* Scene::FindGameObjectByName(
-    const std::string& name) const {
+object::GameObject* Scene::FindGameObjectByName(const std::string& name) const {
   for (const auto& obj : game_objects_) {
     if (obj->GetName() == name) {
       return obj.get();

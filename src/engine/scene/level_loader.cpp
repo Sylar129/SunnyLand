@@ -100,10 +100,10 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
 
   const std::string& layer_name = layer_json.value("name", "Unnamed");
 
-  auto game_object = std::make_unique<engine::object::GameObject>(layer_name);
+  auto game_object = std::make_unique<object::GameObject>(layer_name);
 
-  game_object->AddComponent<engine::component::TransformComponent>(offset);
-  game_object->AddComponent<engine::component::ParallaxComponent>(
+  game_object->AddComponent<component::TransformComponent>(offset);
+  game_object->AddComponent<component::ParallaxComponent>(
       texture_id, scroll_factor, repeat);
 
   scene.AddGameObject(std::move(game_object));
@@ -112,7 +112,7 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
 
 void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
                                 Scene& scene) {
-  std::vector<engine::component::TileInfo> tiles;
+  std::vector<component::TileInfo> tiles;
   tiles.reserve(map_size_.x * map_size_.y);
 
   const auto& data = layer_json["data"];
@@ -121,9 +121,9 @@ void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
     tiles.push_back(GetTileInfoByGid(gid));
   }
 
-  auto game_object = std::make_unique<engine::object::GameObject>(
-      layer_json.value("name", "Unnamed"));
-  game_object->AddComponent<engine::component::TileLayerComponent>(
+  auto game_object =
+      std::make_unique<object::GameObject>(layer_json.value("name", "Unnamed"));
+  game_object->AddComponent<component::TileLayerComponent>(
       tile_size_, map_size_, std::move(tiles));
   scene.AddGameObject(std::move(game_object));
 }
@@ -149,23 +149,20 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         continue;
       } else {
         const std::string& object_name = object.value("name", "Unnamed");
-        auto game_object =
-            std::make_unique<engine::object::GameObject>(object_name);
+        auto game_object = std::make_unique<object::GameObject>(object_name);
         auto position =
             glm::vec2(object.value("x", 0.0f), object.value("y", 0.0f));
         auto dst_size = glm::vec2(object.value("width", 0.0f),
                                   object.value("height", 0.0f));
         auto rotation = object.value("rotation", 0.0f);
-        game_object->AddComponent<engine::component::TransformComponent>(
+        game_object->AddComponent<component::TransformComponent>(
             position, glm::vec2(1.0f), rotation);
 
-        auto collider =
-            std::make_unique<engine::physics::AABBCollider>(dst_size);
-        auto* cc =
-            game_object->AddComponent<engine::component::ColliderComponent>(
-                std::move(collider));
+        auto collider = std::make_unique<physics::AABBCollider>(dst_size);
+        auto* cc = game_object->AddComponent<component::ColliderComponent>(
+            std::move(collider));
         cc->SetTrigger(object.value("trigger", true));
-        game_object->AddComponent<engine::component::PhysicsComponent>(
+        game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
 
         if (auto tag = GetTileProperty<std::string>(object, "tag"); tag) {
@@ -200,45 +197,40 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
 
       const std::string& object_name = object.value("name", "Unnamed");
 
-      auto game_object =
-          std::make_unique<engine::object::GameObject>(object_name);
-      game_object->AddComponent<engine::component::TransformComponent>(
-          position, scale, rotation);
-      game_object->AddComponent<engine::component::SpriteComponent>(
+      auto game_object = std::make_unique<object::GameObject>(object_name);
+      game_object->AddComponent<component::TransformComponent>(position, scale,
+                                                               rotation);
+      game_object->AddComponent<component::SpriteComponent>(
           std::move(tile_info.sprite), scene.GetContext().GetResourceManager());
 
       auto tile_json = GetTileJsonByGid(gid);
 
-      if (tile_info.type == engine::component::TileType::kSolid) {
-        auto collider =
-            std::make_unique<engine::physics::AABBCollider>(src_size);
-        game_object->AddComponent<engine::component::ColliderComponent>(
+      if (tile_info.type == component::TileType::kSolid) {
+        auto collider = std::make_unique<physics::AABBCollider>(src_size);
+        game_object->AddComponent<component::ColliderComponent>(
             std::move(collider));
-        game_object->AddComponent<engine::component::PhysicsComponent>(
+        game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
         game_object->SetTag("solid");
       } else if (auto rect = GetColliderRect(tile_json); rect) {
-        auto collider =
-            std::make_unique<engine::physics::AABBCollider>(rect->size);
-        auto* cc =
-            game_object->AddComponent<engine::component::ColliderComponent>(
-                std::move(collider));
+        auto collider = std::make_unique<physics::AABBCollider>(rect->size);
+        auto* cc = game_object->AddComponent<component::ColliderComponent>(
+            std::move(collider));
         cc->SetOffset(rect->position);
-        game_object->AddComponent<engine::component::PhysicsComponent>(
+        game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
       }
 
       auto tag = GetTileProperty<std::string>(tile_json, "tag");
       if (tag) {
         game_object->SetTag(tag.value());
-      } else if (tile_info.type == engine::component::TileType::kHazard) {
+      } else if (tile_info.type == component::TileType::kHazard) {
         game_object->SetTag("hazard");
       }
 
       auto gravity = GetTileProperty<bool>(tile_json, "gravity");
       if (gravity) {
-        auto pc =
-            game_object->GetComponent<engine::component::PhysicsComponent>();
+        auto pc = game_object->GetComponent<component::PhysicsComponent>();
         if (pc) {
           pc->SetUseGravity(gravity.value());
         } else {
@@ -246,7 +238,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
               "Object '{}' does not have PhysicsComponent when setting gravity "
               "property.",
               object_name);
-          game_object->AddComponent<engine::component::PhysicsComponent>(
+          game_object->AddComponent<component::PhysicsComponent>(
               &scene.GetContext().GetPhysicsEngine(), gravity.value());
         }
       }
@@ -261,15 +253,13 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
                            object_name, e.what());
           continue;
         }
-        auto* ac =
-            game_object->AddComponent<engine::component::AnimationComponent>();
+        auto* ac = game_object->AddComponent<component::AnimationComponent>();
         AddAnimation(anim_json, ac, src_size);
       }
 
       auto health = GetTileProperty<int>(tile_json, "health");
       if (health) {
-        game_object->AddComponent<engine::component::HealthComponent>(
-            health.value());
+        game_object->AddComponent<component::HealthComponent>(health.value());
       }
 
       scene.AddGameObject(std::move(game_object));
@@ -279,7 +269,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
 }
 
 void LevelLoader::AddAnimation(const nlohmann::json& anim_json,
-                               engine::component::AnimationComponent* ac,
+                               component::AnimationComponent* ac,
                                const glm::vec2& sprite_size) {
   if (!anim_json.is_object() || !ac) {
     ENGINE_LOG_ERROR("Invalid animation JSON or AnimationComponent is null.");
@@ -301,7 +291,7 @@ void LevelLoader::AddAnimation(const nlohmann::json& anim_json,
                       anim_name);
       continue;
     }
-    auto animation = std::make_unique<engine::render::Animation>(anim_name);
+    auto animation = std::make_unique<render::Animation>(anim_name);
 
     for (const auto& frame : anim_info["frames"]) {
       if (!frame.is_number_integer()) {
@@ -334,7 +324,7 @@ void LevelLoader::LoadTileset(const std::string& tileset_path, int first_gid) {
   tileset_data_[first_gid] = std::move(ts_json);
 }
 
-engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
+component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
   if (gid == 0) {
     return {};
   }
@@ -364,7 +354,7 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
     if (!tileset.contains("tiles")) {
       ENGINE_LOG_ERROR("Tileset '{}' missing 'tiles' attribute.",
                        tileset_it->first);
-      return engine::component::TileInfo();
+      return component::TileInfo();
     }
 
     const auto& tiles_json = tileset["tiles"];
@@ -374,7 +364,7 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
         if (!tile_json.contains("image")) {
           ENGINE_LOG_ERROR("Tileset '{}' missing 'image' attribute.",
                            tileset_it->first, tile_id);
-          return engine::component::TileInfo();
+          return component::TileInfo();
         }
 
         auto texture_id =
@@ -386,9 +376,9 @@ engine::component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
             static_cast<float>(tile_json.value("y", 0)),
             static_cast<float>(tile_json.value("width", image_width)),
             static_cast<float>(tile_json.value("height", image_height))};
-        engine::render::Sprite sprite{texture_id, texture_rect};
+        render::Sprite sprite{texture_id, texture_rect};
         auto tile_type = GetTileType(tile_json);
-        return engine::component::TileInfo(sprite, tile_type);
+        return component::TileInfo(sprite, tile_type);
       }
     }
   }
@@ -402,50 +392,49 @@ std::string LevelLoader::ResolvePath(const std::string& relative_path,
   return final_path.string();
 }
 
-engine::component::TileType LevelLoader::GetTileType(
+component::TileType LevelLoader::GetTileType(
     const nlohmann::json& tile_json) const {
   if (tile_json.contains("properties")) {
     for (const auto& property : tile_json["properties"]) {
       if (property.value("name", "") == "solid") {
-        return property.value("value", false)
-                   ? engine::component::TileType::kSolid
-                   : engine::component::TileType::kNormal;
+        return property.value("value", false) ? component::TileType::kSolid
+                                              : component::TileType::kNormal;
       } else if (property.value("name", "") == "unisolid") {
         return property.value("value", false) ? component::TileType::kUnisolid
                                               : component::TileType::kNormal;
       } else if (property.contains("name") && property["name"] == "slope") {
         auto slope_type = property.value("value", "");
         if (slope_type == "0_1") {
-          return engine::component::TileType::kSlope0_1;
+          return component::TileType::kSlope0_1;
         } else if (slope_type == "1_0") {
-          return engine::component::TileType::kSlope1_0;
+          return component::TileType::kSlope1_0;
         } else if (slope_type == "0_2") {
-          return engine::component::TileType::kSlope0_2;
+          return component::TileType::kSlope0_2;
         } else if (slope_type == "2_0") {
-          return engine::component::TileType::kSlope2_0;
+          return component::TileType::kSlope2_0;
         } else if (slope_type == "2_1") {
-          return engine::component::TileType::kSlope2_1;
+          return component::TileType::kSlope2_1;
         } else if (slope_type == "1_2") {
-          return engine::component::TileType::kSlope1_2;
+          return component::TileType::kSlope1_2;
         } else {
           ENGINE_LOG_ERROR("Unknown slope type: {}", slope_type);
-          return engine::component::TileType::kNormal;
+          return component::TileType::kNormal;
         }
       } else if (property.contains("name") && property["name"] == "hazard") {
         auto is_hazard = property.value("value", false);
-        return is_hazard ? engine::component::TileType::kHazard
-                         : engine::component::TileType::kNormal;
+        return is_hazard ? component::TileType::kHazard
+                         : component::TileType::kNormal;
       } else if (property.contains("name") && property["name"] == "ladder") {
         auto is_ladder = property.value("value", false);
-        return is_ladder ? engine::component::TileType::kLadder
-                         : engine::component::TileType::kNormal;
+        return is_ladder ? component::TileType::kLadder
+                         : component::TileType::kNormal;
       }
     }
   }
-  return engine::component::TileType::kNormal;
+  return component::TileType::kNormal;
 }
 
-engine::component::TileType LevelLoader::GetTileTypeById(
+component::TileType LevelLoader::GetTileTypeById(
     const nlohmann::json& tileset_json, int local_id) const {
   if (tileset_json.contains("tiles")) {
     for (const auto& tile : tileset_json["tiles"]) {
@@ -454,7 +443,7 @@ engine::component::TileType LevelLoader::GetTileTypeById(
       }
     }
   }
-  return engine::component::TileType::kNormal;
+  return component::TileType::kNormal;
 }
 
 std::optional<utils::Rect> LevelLoader::GetColliderRect(

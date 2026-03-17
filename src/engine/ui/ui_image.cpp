@@ -19,7 +19,7 @@ UIImage::UIImage(const std::string& texture_id, const glm::vec2& position,
   ENGINE_LOG_TRACE("UIImage created with texture_id '{}'", texture_id);
 }
 
-void UIImage::Render(engine::core::Context& context) {
+void UIImage::Render(core::Context& context) {
   if (!visible_ || sprite_.GetTextureId().empty()) {
     return;
   }

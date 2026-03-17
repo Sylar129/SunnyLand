@@ -15,7 +15,7 @@ namespace engine::component {
 ParallaxComponent::ParallaxComponent(const std::string& texture_id,
                                      const glm::vec2& scroll_factor,
                                      const glm::bvec2& repeat)
-    : sprite_(engine::render::Sprite(texture_id)),
+    : sprite_(render::Sprite(texture_id)),
       scroll_factor_(scroll_factor),
       repeat_(repeat) {
   ENGINE_LOG_TRACE("ParallaxComponent constructing finished. texture ID: {}",
@@ -32,7 +32,7 @@ void ParallaxComponent::Init() {
   }
 }
 
-void ParallaxComponent::Render(engine::core::Context& context) {
+void ParallaxComponent::Render(core::Context& context) {
   if (is_hidden_ || !transform_) {
     return;
   }

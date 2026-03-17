@@ -10,12 +10,12 @@ namespace engine::ui {
 
 class UILabel final : public UIElement {
  public:
-  UILabel(engine::render::TextRenderer& text_renderer, const std::string& text,
+  UILabel(render::TextRenderer& text_renderer, const std::string& text,
           const std::string& font_id, int font_size = 16,
           const utils::FColor& text_color = {1.0f, 1.0f, 1.0f, 1.0f},
           const glm::vec2& position = {0.0f, 0.0f});
 
-  void Render(engine::core::Context& context) override;
+  void Render(core::Context& context) override;
 
   const std::string& GetText() const { return text_; }
   const std::string& GetFontId() const { return font_id_; }
@@ -28,7 +28,7 @@ class UILabel final : public UIElement {
   void SetTextFColor(const utils::FColor& text_fcolor);
 
  private:
-  engine::render::TextRenderer& text_renderer_;
+  render::TextRenderer& text_renderer_;
 
   std::string text_;
   std::string font_id_;

@@ -24,7 +24,7 @@ class UIPanel final : public UIElement {
     return background_color_;
   }
 
-  void Render(engine::core::Context& context) override;
+  void Render(core::Context& context) override;
 
  private:
   std::optional<utils::FColor> background_color_;

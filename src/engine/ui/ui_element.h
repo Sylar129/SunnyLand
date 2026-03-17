@@ -23,9 +23,9 @@ class UIElement {
 
   DISABLE_COPY_AND_MOVE(UIElement);
 
-  virtual bool HandleInput(engine::core::Context& context);
-  virtual void Update(float delta_time, engine::core::Context& context);
-  virtual void Render(engine::core::Context& context);
+  virtual bool HandleInput(core::Context& context);
+  virtual void Update(float delta_time, core::Context& context);
+  virtual void Render(core::Context& context);
 
   void AddChild(std::unique_ptr<UIElement> child);
   std::unique_ptr<UIElement> RemoveChild(UIElement* child_ptr);

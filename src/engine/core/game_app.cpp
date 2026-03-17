@@ -65,10 +65,6 @@ bool GameApp::Init() {
   if (!InitContext()) return false;
   if (!InitSceneManager()) return false;
 
-  auto scene =
-      std::make_unique<game::scene::TitleScene>(*context_, *scene_manager_);
-  scene_manager_->RequestPushScene(std::move(scene));
-
   is_running_ = true;
   return true;
 }
@@ -90,19 +86,19 @@ bool GameApp::InitConfig() {
                        filepath);
     }
 
-    config_ = std::make_unique<engine::core::Config>();
+    config_ = std::make_unique<core::Config>();
     ENGINE_LOG_TRACE("Init Config successfully.");
     return true;
   }
 
   try {
     nlohmann::json j = nlohmann::json::parse(file);
-    config_ = std::make_unique<engine::core::Config>(j.get<Config>());
+    config_ = std::make_unique<core::Config>(j.get<Config>());
   } catch (const std::exception& e) {
     ENGINE_LOG_ERROR(
         "Error reading config file '{}': {}. Using default settings.", filepath,
         e.what());
-    config_ = std::make_unique<engine::core::Config>();
+    config_ = std::make_unique<core::Config>();
   }
 
   ENGINE_LOG_TRACE("Init Config successfully.");
@@ -144,8 +140,8 @@ bool GameApp::InitSDL() {
 }
 
 bool GameApp::InitRenderer() {
-  renderer_ = std::make_unique<engine::render::Renderer>(
-      sdl_renderer_, resource_manager_.get());
+  renderer_ = std::make_unique<render::Renderer>(sdl_renderer_,
+                                                 resource_manager_.get());
 
   SDL_SetRenderDrawBlendMode(sdl_renderer_, SDL_BLENDMODE_BLEND);
 
@@ -156,7 +152,7 @@ bool GameApp::InitRenderer() {
 }
 
 bool GameApp::InitCamera() {
-  camera_ = std::make_unique<engine::render::Camera>(
+  camera_ = std::make_unique<render::Camera>(
       glm::vec2(config_->window.width / 2, config_->window.height / 2));
   ENGINE_LOG_ASSERT(camera_, "Failed to Init Camera!");
 
@@ -165,7 +161,7 @@ bool GameApp::InitCamera() {
 }
 
 bool GameApp::InitTextRenderer() {
-  text_renderer_ = std::make_unique<engine::render::TextRenderer>(
+  text_renderer_ = std::make_unique<render::TextRenderer>(
       sdl_renderer_, resource_manager_.get());
   ENGINE_LOG_TRACE("TextRenderer initialized successfully.");
   return true;
@@ -180,13 +176,13 @@ bool GameApp::InitTime() {
 
 bool GameApp::InitResourceManager() {
   resource_manager_ =
-      std::make_unique<engine::resource::ResourceManager>(sdl_renderer_);
+      std::make_unique<resource::ResourceManager>(sdl_renderer_);
   return true;
 }
 
 bool GameApp::InitInputManager() {
-  input_manager_ = std::make_unique<engine::input::InputManager>(sdl_renderer_,
-                                                                 config_.get());
+  input_manager_ =
+      std::make_unique<input::InputManager>(sdl_renderer_, config_.get());
   ENGINE_LOG_ASSERT(input_manager_, "Failed to Init InputManager!");
 
   ENGINE_LOG_TRACE("Init InputManager successfully.");
@@ -194,14 +190,13 @@ bool GameApp::InitInputManager() {
 }
 
 bool GameApp::InitGameState() {
-  game_state_ =
-      std::make_unique<engine::core::GameState>(window_, sdl_renderer_);
+  game_state_ = std::make_unique<core::GameState>(window_, sdl_renderer_);
 
   return true;
 }
 
 bool GameApp::InitContext() {
-  context_ = std::make_unique<engine::core::Context>(
+  context_ = std::make_unique<core::Context>(
       *input_manager_, *renderer_, *camera_, *text_renderer_,
       *resource_manager_, *physics_engine_, *game_state_);
   ENGINE_LOG_ASSERT(context_, "Failed to Init Context!");
@@ -211,15 +206,19 @@ bool GameApp::InitContext() {
 }
 
 bool GameApp::InitSceneManager() {
-  scene_manager_ = std::make_unique<engine::scene::SceneManager>(*context_);
+  scene_manager_ = std::make_unique<scene::SceneManager>(*context_);
   ENGINE_LOG_ASSERT(scene_manager_, "Failed to Init SceneManager!");
+
+  auto scene =
+      std::make_unique<game::scene::TitleScene>(*context_, *scene_manager_);
+  scene_manager_->RequestPushScene(std::move(scene));
 
   ENGINE_LOG_TRACE("Init SceneManager successfully.");
   return true;
 }
 
 bool GameApp::InitPhysicsEngine() {
-  physics_engine_ = std::make_unique<engine::physics::PhysicsEngine>();
+  physics_engine_ = std::make_unique<physics::PhysicsEngine>();
   return true;
 }
 

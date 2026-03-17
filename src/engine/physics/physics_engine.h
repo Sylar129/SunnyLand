@@ -23,11 +23,11 @@ class PhysicsEngine {
 
   DISABLE_COPY_AND_MOVE(PhysicsEngine);
 
-  void RegisterComponent(engine::component::PhysicsComponent* component);
-  void UnregisterComponent(engine::component::PhysicsComponent* component);
+  void RegisterComponent(component::PhysicsComponent* component);
+  void UnregisterComponent(component::PhysicsComponent* component);
 
-  void RegisterCollisionLayer(engine::component::TileLayerComponent* layer);
-  void UnregisterCollisionLayer(engine::component::TileLayerComponent* layer);
+  void RegisterCollisionLayer(component::TileLayerComponent* layer);
+  void UnregisterCollisionLayer(component::TileLayerComponent* layer);
 
   void Update(float delta_time);
 
@@ -48,28 +48,25 @@ class PhysicsEngine {
  private:
   void CheckObjectCollisions();
   void CheckTileTriggers();
-  void ResolveTileCollisions(engine::component::PhysicsComponent* pc,
-                             float delta_time);
-  void ResolveSolidObjectCollisions(engine::object::GameObject* move_obj,
-                                    engine::object::GameObject* solid_obj);
+  void ResolveTileCollisions(component::PhysicsComponent* pc, float delta_time);
+  void ResolveSolidObjectCollisions(object::GameObject* move_obj,
+                                    object::GameObject* solid_obj);
 
-  float GetTileHeightAtWidth(float width, engine::component::TileType type,
+  float GetTileHeightAtWidth(float width, component::TileType type,
                              glm::vec2 tile_size);
 
-  void ApplyWorldBounds(engine::component::PhysicsComponent* pc);
+  void ApplyWorldBounds(component::PhysicsComponent* pc);
 
-  std::vector<engine::component::PhysicsComponent*> components_;
+  std::vector<component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
   float max_speed_ = 500.0f;
   std::optional<utils::Rect> world_bounds_;
 
-  std::vector<
-      std::pair<engine::object::GameObject*, engine::object::GameObject*>>
+  std::vector<std::pair<object::GameObject*, object::GameObject*>>
       collision_pairs_;
-  std::vector<engine::component::TileLayerComponent*> collision_tile_layers_;
+  std::vector<component::TileLayerComponent*> collision_tile_layers_;
 
-  std::vector<
-      std::pair<engine::object::GameObject*, engine::component::TileType>>
+  std::vector<std::pair<object::GameObject*, component::TileType>>
       tile_trigger_events_;
 };
 

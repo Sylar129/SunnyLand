@@ -18,7 +18,7 @@ namespace engine::ui {
 
 class UIInteractive : public UIElement {
  public:
-  UIInteractive(engine::core::Context& context,
+  UIInteractive(core::Context& context,
                 const glm::vec2& position = {0.0f, 0.0f},
                 const glm::vec2& size = {0.0f, 0.0f});
   ~UIInteractive() override;
@@ -26,27 +26,26 @@ class UIInteractive : public UIElement {
   virtual void Clicked() {}
 
   void AddSprite(const std::string& name,
-                 std::unique_ptr<engine::render::Sprite> sprite);
+                 std::unique_ptr<render::Sprite> sprite);
   void SetSprite(const std::string& name);
   void AddSound(const std::string& name, const std::string& path);
   void PlaySound(const std::string& name);
 
-  void SetState(std::unique_ptr<engine::ui::state::UIState> state);
-  engine::ui::state::UIState* GetState() const { return state_.get(); }
+  void SetState(std::unique_ptr<state::UIState> state);
+  state::UIState* GetState() const { return state_.get(); }
 
   void SetInteractive(bool interactive) { interactive_ = interactive; }
   bool IsInteractive() const { return interactive_; }
 
-  bool HandleInput(engine::core::Context& context) override;
-  void Render(engine::core::Context& context) override;
+  bool HandleInput(core::Context& context) override;
+  void Render(core::Context& context) override;
 
  protected:
-  engine::core::Context& context_;
-  std::unique_ptr<engine::ui::state::UIState> state_;
-  std::unordered_map<std::string, std::unique_ptr<engine::render::Sprite>>
-      sprites_;
+  core::Context& context_;
+  std::unique_ptr<state::UIState> state_;
+  std::unordered_map<std::string, std::unique_ptr<render::Sprite>> sprites_;
   std::unordered_map<std::string, std::string> sounds_;
-  engine::render::Sprite* current_sprite_ = nullptr;
+  render::Sprite* current_sprite_ = nullptr;
   bool interactive_ = true;
 };
 

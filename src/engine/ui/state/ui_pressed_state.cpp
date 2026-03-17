@@ -17,16 +17,15 @@ void UIPressedState::Enter() {
   ENGINE_LOG_DEBUG("Switched to pressed state");
 }
 
-std::unique_ptr<UIState> UIPressedState::HandleInput(
-    engine::core::Context& context) {
+std::unique_ptr<UIState> UIPressedState::HandleInput(core::Context& context) {
   auto& input_manager = context.GetInputManager();
   auto mouse_pos = input_manager.GetLogicalMousePosition();
   if (input_manager.IsActionReleased("MouseLeftClick")) {
     if (!owner_->IsPointInside(mouse_pos)) {
-      return std::make_unique<engine::ui::state::UINormalState>(owner_);
+      return std::make_unique<UINormalState>(owner_);
     } else {
       owner_->Clicked();
-      return std::make_unique<engine::ui::state::UIHoverState>(owner_);
+      return std::make_unique<UIHoverState>(owner_);
     }
   }
 

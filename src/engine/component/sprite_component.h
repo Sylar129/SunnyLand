@@ -18,24 +18,24 @@ class ResourceManager;
 namespace engine::component {
 class TransformComponent;
 
-class SpriteComponent final : public engine::component::Component {
-  friend class engine::object::GameObject;
+class SpriteComponent final : public Component {
+  friend class object::GameObject;
 
  public:
   SpriteComponent(
       const std::string& texture_id,
-      engine::resource::ResourceManager& resource_manager,
+      resource::ResourceManager& resource_manager,
       utils::Alignment alignment = utils::Alignment::kNone,
       const std::optional<SDL_FRect>& source_rect_opt = std::nullopt,
       bool is_flipped = false);
-  SpriteComponent(engine::render::Sprite&& sprite,
-                  engine::resource::ResourceManager& resource_manager,
+  SpriteComponent(render::Sprite&& sprite,
+                  resource::ResourceManager& resource_manager,
                   utils::Alignment alignment = utils::Alignment::kNone);
   ~SpriteComponent() override = default;
 
   void UpdateOffset();
 
-  const engine::render::Sprite& GetSprite() const { return sprite_; }
+  const render::Sprite& GetSprite() const { return sprite_; }
   const std::string& GetTextureId() const { return sprite_.GetTextureId(); }
   bool IsFlipped() const { return sprite_.IsFlipped(); }
   bool IsHidden() const { return is_hidden_; }
@@ -55,13 +55,13 @@ class SpriteComponent final : public engine::component::Component {
   void UpdateSpriteSize();
 
   void Init() override;
-  void Update(float, engine::core::Context&) override {}
-  void Render(engine::core::Context& context) override;
+  void Update(float, core::Context&) override {}
+  void Render(core::Context& context) override;
 
-  engine::resource::ResourceManager& resource_manager_;
+  resource::ResourceManager& resource_manager_;
   TransformComponent* transform_ = nullptr;
 
-  engine::render::Sprite sprite_;
+  render::Sprite sprite_;
   utils::Alignment alignment_ = utils::Alignment::kNone;
   glm::vec2 sprite_size_ = {0.0f, 0.0f};
   glm::vec2 offset_ = {0.0f, 0.0f};

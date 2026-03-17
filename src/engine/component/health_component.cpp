@@ -13,7 +13,7 @@ HealthComponent::HealthComponent(int max_health, float invincibility_duration)
       current_health_(max_health_),
       invincibility_duration_(invincibility_duration) {}
 
-void HealthComponent::Update(float delta_time, engine::core::Context&) {
+void HealthComponent::Update(float delta_time, core::Context&) {
   if (is_invincible_) {
     invincibility_timer_ -= delta_time;
     if (invincibility_timer_ <= 0.0f) {

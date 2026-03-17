@@ -18,13 +18,13 @@ class SpriteComponent;
 namespace engine::component {
 
 class AnimationComponent : public Component {
-  friend class engine::object::GameObject;
+  friend class object::GameObject;
 
  public:
   AnimationComponent() = default;
   ~AnimationComponent() override;
 
-  void AddAnimation(std::unique_ptr<engine::render::Animation> animation);
+  void AddAnimation(std::unique_ptr<render::Animation> animation);
   void PlayAnimation(const std::string& name);
   void StopAnimation() { is_playing_ = false; }
   void ResumeAnimation() { is_playing_ = true; }
@@ -39,13 +39,13 @@ class AnimationComponent : public Component {
 
  protected:
   void Init() override;
-  void Update(float, engine::core::Context&) override;
+  void Update(float, core::Context&) override;
 
  private:
-  std::unordered_map<std::string, std::unique_ptr<engine::render::Animation>>
+  std::unordered_map<std::string, std::unique_ptr<render::Animation>>
       animations_;
   SpriteComponent* sprite_component_ = nullptr;
-  engine::render::Animation* current_animation_ = nullptr;
+  render::Animation* current_animation_ = nullptr;
 
   float animation_timer_ = 0.0f;
   bool is_playing_ = false;

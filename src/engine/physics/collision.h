@@ -10,8 +10,8 @@ class ColliderComponent;
 
 namespace engine::physics::collision {
 
-bool CheckCollision(const engine::component::ColliderComponent& a,
-                    const engine::component::ColliderComponent& b);
+bool CheckCollision(const component::ColliderComponent& a,
+                    const component::ColliderComponent& b);
 
 bool CheckCircleOverlap(const glm::vec2& a_center, const float a_radius,
                         const glm::vec2& b_center, const float b_radius);

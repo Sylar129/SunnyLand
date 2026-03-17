@@ -10,15 +10,14 @@
 namespace engine::core {
 class Context;
 }
-namespace engine::scene {
-class Scene;
-}
 
 namespace engine::scene {
+
+class Scene;
 
 class SceneManager final {
  public:
-  explicit SceneManager(engine::core::Context& context);
+  explicit SceneManager(core::Context& context);
   ~SceneManager();
   DISABLE_COPY_AND_MOVE(SceneManager);
 
@@ -40,7 +39,7 @@ class SceneManager final {
   void PopScene();
   void ReplaceScene(std::unique_ptr<Scene>&& scene);
 
-  engine::core::Context& context_;
+  core::Context& context_;
   std::vector<std::unique_ptr<Scene>> scene_stack_;
 
   enum class PendingAction { None, Push, Pop, Replace };

@@ -45,7 +45,7 @@ struct TileInfo {
 };
 
 class TileLayerComponent final : public Component {
-  friend class engine::object::GameObject;
+  friend class object::GameObject;
 
  public:
   TileLayerComponent() = default;
@@ -71,18 +71,18 @@ class TileLayerComponent final : public Component {
   void SetOffset(const glm::vec2& offset) { offset_ = offset; }
   void SetHidden(bool hidden) { is_hidden_ = hidden; }
 
-  void SetPhysicsEngine(engine::physics::PhysicsEngine* physics_engine) {
+  void SetPhysicsEngine(physics::PhysicsEngine* physics_engine) {
     physics_engine_ = physics_engine;
   }
 
  protected:
   void Init() override;
-  void Update(float, engine::core::Context&) override {}
-  void Render(engine::core::Context& context) override;
+  void Update(float, core::Context&) override {}
+  void Render(core::Context& context) override;
   void Clean() override;
 
  private:
-  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
+  physics::PhysicsEngine* physics_engine_ = nullptr;
   glm::ivec2 tile_size_;
   glm::ivec2 map_size_;
   std::vector<TileInfo> tiles_;
