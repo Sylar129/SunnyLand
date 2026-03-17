@@ -1,31 +1,31 @@
-#include "ui_pressed_state.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/ui/state/ui_pressed_state.h"
 
-#include "../../core/context.h"
-#include "../../input/input_manager.h"
-#include "../ui_interactive.h"
-#include "ui_hover_state.h"
-#include "ui_normal_state.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "engine/ui/state/ui_hover_state.h"
+#include "engine/ui/state/ui_normal_state.h"
+#include "engine/ui/ui_interactive.h"
+#include "log.h"
 
 namespace engine::ui::state {
 
-void UIPressedState::enter() {
-  owner_->setSprite("pressed");
-  owner_->playSound("pressed");
-  spdlog::debug("切换到按下状态");
+void UIPressedState::Enter() {
+  owner_->SetSprite("pressed");
+  owner_->PlaySound("pressed");
+  ENGINE_DEBUG("Switched to pressed state");
 }
 
-std::unique_ptr<UIState> UIPressedState::handleInput(
+std::unique_ptr<UIState> UIPressedState::HandleInput(
     engine::core::Context& context) {
   auto& input_manager = context.GetInputManager();
   auto mouse_pos = input_manager.GetLogicalMousePosition();
   if (input_manager.IsActionReleased("MouseLeftClick")) {
-    if (!owner_->IsPointInside(
-            mouse_pos)) {  // 松开鼠标时，如果不在UI元素内，则切换到正常状态
+    if (!owner_->IsPointInside(mouse_pos)) {
       return std::make_unique<engine::ui::state::UINormalState>(owner_);
-    } else {  // 松开鼠标时，如果还在UI元素内，则触发点击事件
-      owner_->clicked();
+    } else {
+      owner_->Clicked();
       return std::make_unique<engine::ui::state::UIHoverState>(owner_);
     }
   }

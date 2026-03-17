@@ -1,30 +1,29 @@
-#include "ui_hover_state.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/ui/state/ui_hover_state.h"
 
-#include "../../core/context.h"
-#include "../../input/input_manager.h"
-#include "../ui_interactive.h"
-#include "ui_normal_state.h"
-#include "ui_pressed_state.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "engine/ui/state/ui_normal_state.h"
+#include "engine/ui/state/ui_pressed_state.h"
+#include "engine/ui/ui_interactive.h"
+#include "log.h"
 
 namespace engine::ui::state {
 
-void UIHoverState::enter() {
-  owner_->setSprite("hover");
-  spdlog::debug("切换到悬停状态");
+void UIHoverState::Enter() {
+  owner_->SetSprite("hover");
+  ENGINE_DEBUG("Switched to hover state");
 }
 
-std::unique_ptr<UIState> UIHoverState::handleInput(
+std::unique_ptr<UIState> UIHoverState::HandleInput(
     engine::core::Context& context) {
   auto& input_manager = context.GetInputManager();
   auto mouse_pos = input_manager.GetLogicalMousePosition();
-  if (!owner_->IsPointInside(
-          mouse_pos)) {  // 如果鼠标不在UI元素内，则返回正常状态
+  if (!owner_->IsPointInside(mouse_pos)) {
     return std::make_unique<UINormalState>(owner_);
   }
-  if (input_manager.IsActionPressed(
-          "MouseLeftClick")) {  // 如果鼠标按下，则返回按下状态
+  if (input_manager.IsActionPressed("MouseLeftClick")) {
     return std::make_unique<UIPressedState>(owner_);
   }
   return nullptr;

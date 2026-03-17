@@ -1,11 +1,12 @@
-#include "ui_interactive.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/ui/ui_interactive.h"
 
-#include "../core/context.h"
-#include "../render/renderer.h"
-#include "../resource/resource_manager.h"
-#include "state/ui_state.h"
+#include "engine/core/context.h"
+#include "engine/render/renderer.h"
+#include "engine/resource/resource_manager.h"
+#include "engine/ui/state/ui_state.h"
+#include "log.h"
 
 namespace engine::ui {
 
@@ -13,49 +14,46 @@ UIInteractive::~UIInteractive() = default;
 
 UIInteractive::UIInteractive(engine::core::Context &context,
                              const glm::vec2 &position, const glm::vec2 &size)
-    : UIElement(position, size), context_(context) {
-  spdlog::trace("UIInteractive 构造完成");
-}
+    : UIElement(position, size), context_(context) {}
 
-void UIInteractive::setState(
+void UIInteractive::SetState(
     std::unique_ptr<engine::ui::state::UIState> state) {
   if (!state) {
-    spdlog::warn("尝试设置空的状态！");
+    ENGINE_WARN(
+        "Trying to set null state for UIInteractive. Operation ignored.");
     return;
   }
 
   state_ = std::move(state);
-  state_->enter();
+  state_->Enter();
 }
 
-void UIInteractive::addSprite(const std::string &name,
+void UIInteractive::AddSprite(const std::string &name,
                               std::unique_ptr<engine::render::Sprite> sprite) {
-  // 可交互UI元素必须有一个size用于交互检测，因此如果参数列表中没有指定，则用图片大小作为size
   if (size_.x == 0.0f && size_.y == 0.0f) {
     size_ =
         context_.GetResourceManager().GetTextureSize(sprite->GetTextureId());
   }
-  // 添加精灵
   sprites_[name] = std::move(sprite);
 }
 
-void UIInteractive::setSprite(const std::string &name) {
+void UIInteractive::SetSprite(const std::string &name) {
   if (sprites_.find(name) != sprites_.end()) {
     current_sprite_ = sprites_[name].get();
   } else {
-    spdlog::warn("Sprite '{}' 未找到", name);
+    ENGINE_WARN("Sprite '{}' not found", name);
   }
 }
 
-void UIInteractive::addSound(const std::string &name, const std::string &path) {
+void UIInteractive::AddSound(const std::string &name, const std::string &path) {
   sounds_[name] = path;
 }
 
-void UIInteractive::playSound(const std::string &name) {
+void UIInteractive::PlaySound(const std::string &name) {
   if (sounds_.find(name) != sounds_.end()) {
     // context_.getAudioPlayer().playSound(sounds_[name]);
   } else {
-    spdlog::error("Sound '{}' 未找到", name);
+    ENGINE_WARN("Sound '{}' not found", name);
   }
 }
 
@@ -64,10 +62,9 @@ bool UIInteractive::HandleInput(engine::core::Context &context) {
     return true;
   }
 
-  // 先更新子节点，再更新自己（状态）
   if (state_ && interactive_) {
-    if (auto next_state = state_->handleInput(context); next_state) {
-      setState(std::move(next_state));
+    if (auto next_state = state_->HandleInput(context); next_state) {
+      SetState(std::move(next_state));
       return true;
     }
   }
@@ -77,11 +74,9 @@ bool UIInteractive::HandleInput(engine::core::Context &context) {
 void UIInteractive::Render(engine::core::Context &context) {
   if (!visible_) return;
 
-  // 先渲染自身
   context.GetRenderer().DrawUISprite(*current_sprite_, GetScreenPosition(),
                                      size_);
 
-  // 再渲染子元素（调用基类方法）
   UIElement::Render(context);
 }
 

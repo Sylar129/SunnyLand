@@ -1,8 +1,9 @@
-#include "ui_button.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/ui/ui_button.h"
 
-#include "state/ui_normal_state.h"
+#include "engine/ui/state/ui_normal_state.h"
+#include "log.h"
 
 namespace engine::ui {
 UIButton::UIButton(engine::core::Context &context,
@@ -12,22 +13,22 @@ UIButton::UIButton(engine::core::Context &context,
                    const glm::vec2 &position, const glm::vec2 &size,
                    std::function<void()> callback)
     : UIInteractive(context, position, size), callback_(std::move(callback)) {
-  addSprite("normal",
+  AddSprite("normal",
             std::make_unique<engine::render::Sprite>(normal_sprite_id));
-  addSprite("hover", std::make_unique<engine::render::Sprite>(hover_sprite_id));
-  addSprite("pressed",
+  AddSprite("hover", std::make_unique<engine::render::Sprite>(hover_sprite_id));
+  AddSprite("pressed",
             std::make_unique<engine::render::Sprite>(pressed_sprite_id));
 
-  // 设置默认状态为"normal"
-  setState(std::make_unique<engine::ui::state::UINormalState>(this));
+  SetState(std::make_unique<engine::ui::state::UINormalState>(this));
 
-  // 设置默认音效
-  addSound("hover", "assets/audio/button_hover.wav");
-  addSound("pressed", "assets/audio/button_click.wav");
-  spdlog::trace("UIButton 构造完成");
+  AddSound("hover", "assets/audio/button_hover.wav");
+  AddSound("pressed", "assets/audio/button_click.wav");
+  ENGINE_TRACE(
+      "UIButton constructed with normal '{}', hover '{}', pressed '{}' sprites",
+      normal_sprite_id, hover_sprite_id, pressed_sprite_id);
 }
 
-void UIButton::clicked() {
+void UIButton::Clicked() {
   if (callback_) callback_();
 }
 

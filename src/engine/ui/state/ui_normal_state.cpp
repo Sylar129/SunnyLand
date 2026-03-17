@@ -1,26 +1,26 @@
-#include "ui_normal_state.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "engine/ui/state/ui_normal_state.h"
 
-#include "../../core/context.h"
-#include "../../input/input_manager.h"
-#include "../ui_interactive.h"
-#include "ui_hover_state.h"
+#include "engine/core/context.h"
+#include "engine/input/input_manager.h"
+#include "engine/ui/state/ui_hover_state.h"
+#include "engine/ui/ui_interactive.h"
+#include "log.h"
 
 namespace engine::ui::state {
 
-void UINormalState::enter() {
-  owner_->setSprite("normal");
-  spdlog::debug("切换到正常状态");
+void UINormalState::Enter() {
+  owner_->SetSprite("normal");
+  ENGINE_DEBUG("Switched to normal state");
 }
 
-std::unique_ptr<UIState> UINormalState::handleInput(
+std::unique_ptr<UIState> UINormalState::HandleInput(
     engine::core::Context& context) {
   auto& input_manager = context.GetInputManager();
   auto mouse_pos = input_manager.GetLogicalMousePosition();
-  if (owner_->IsPointInside(
-          mouse_pos)) {  // 如果鼠标在UI元素内，则切换到悬停状态
-    owner_->playSound("hover");
+  if (owner_->IsPointInside(mouse_pos)) {
+    owner_->PlaySound("hover");
     return std::make_unique<engine::ui::state::UIHoverState>(owner_);
   }
   return nullptr;
