@@ -23,5 +23,7 @@ add_subdirectory(third_party/SDL_ttf)
 add_subdirectory(third_party/glm)
 
 # nlohmann_json - JSON library
-set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_BuildTests
+    OFF
+    CACHE INTERNAL "")
 add_subdirectory(third_party/json)

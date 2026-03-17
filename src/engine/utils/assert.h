@@ -7,13 +7,13 @@
 #include "log.h"
 
 #ifdef NDEBUG
-  #define DEBUG_BREAK() std::abort()
+#define DEBUG_BREAK() std::abort()
 #else
-  #ifdef _MSC_VER
-    #define DEBUG_BREAK() __debugbreak()
-  #else
-    #define DEBUG_BREAK() __builtin_trap()
-  #endif
+#ifdef _MSC_VER
+#define DEBUG_BREAK() __debugbreak()
+#else
+#define DEBUG_BREAK() __builtin_trap()
+#endif
 #endif
 
 // Assert macros - terminates program with critical log on failure

@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.21.0)
-project(SunnyLand VERSION 0.0.1 LANGUAGES CXX)
+project(
+  SunnyLand
+  VERSION 0.0.1
+  LANGUAGES CXX)
 
 set(TARGET ${PROJECT_NAME})
 

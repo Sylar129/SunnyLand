@@ -13,7 +13,7 @@ namespace engine::component {
 struct TileInfo;
 enum class TileType;
 class AnimationComponent;
-}
+}  // namespace engine::component
 
 namespace engine::scene {
 class Scene;

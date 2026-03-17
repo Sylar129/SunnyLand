@@ -18,7 +18,8 @@ ParallaxComponent::ParallaxComponent(const std::string& texture_id,
     : sprite_(engine::render::Sprite(texture_id)),
       scroll_factor_(scroll_factor),
       repeat_(repeat) {
-  ENGINE_TRACE("ParallaxComponent constructing finished. texture ID: {}", texture_id);
+  ENGINE_TRACE("ParallaxComponent constructing finished. texture ID: {}",
+               texture_id);
 }
 
 void ParallaxComponent::Init() {
