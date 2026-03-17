@@ -12,8 +12,8 @@ namespace engine::ui {
 
 UIInteractive::~UIInteractive() = default;
 
-UIInteractive::UIInteractive(engine::core::Context &context,
-                             const glm::vec2 &position, const glm::vec2 &size)
+UIInteractive::UIInteractive(engine::core::Context& context,
+                             const glm::vec2& position, const glm::vec2& size)
     : UIElement(position, size), context_(context) {}
 
 void UIInteractive::SetState(
@@ -28,7 +28,7 @@ void UIInteractive::SetState(
   state_->Enter();
 }
 
-void UIInteractive::AddSprite(const std::string &name,
+void UIInteractive::AddSprite(const std::string& name,
                               std::unique_ptr<engine::render::Sprite> sprite) {
   if (size_.x == 0.0f && size_.y == 0.0f) {
     size_ =
@@ -37,7 +37,7 @@ void UIInteractive::AddSprite(const std::string &name,
   sprites_[name] = std::move(sprite);
 }
 
-void UIInteractive::SetSprite(const std::string &name) {
+void UIInteractive::SetSprite(const std::string& name) {
   if (sprites_.find(name) != sprites_.end()) {
     current_sprite_ = sprites_[name].get();
   } else {
@@ -45,11 +45,11 @@ void UIInteractive::SetSprite(const std::string &name) {
   }
 }
 
-void UIInteractive::AddSound(const std::string &name, const std::string &path) {
+void UIInteractive::AddSound(const std::string& name, const std::string& path) {
   sounds_[name] = path;
 }
 
-void UIInteractive::PlaySound(const std::string &name) {
+void UIInteractive::PlaySound(const std::string& name) {
   if (sounds_.find(name) != sounds_.end()) {
     // context_.getAudioPlayer().playSound(sounds_[name]);
   } else {
@@ -57,7 +57,7 @@ void UIInteractive::PlaySound(const std::string &name) {
   }
 }
 
-bool UIInteractive::HandleInput(engine::core::Context &context) {
+bool UIInteractive::HandleInput(engine::core::Context& context) {
   if (UIElement::HandleInput(context)) {
     return true;
   }
@@ -71,7 +71,7 @@ bool UIInteractive::HandleInput(engine::core::Context &context) {
   return false;
 }
 
-void UIInteractive::Render(engine::core::Context &context) {
+void UIInteractive::Render(engine::core::Context& context) {
   if (!visible_) return;
 
   context.GetRenderer().DrawUISprite(*current_sprite_, GetScreenPosition(),

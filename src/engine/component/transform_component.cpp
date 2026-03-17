@@ -7,7 +7,7 @@
 
 namespace engine::component {
 
-void TransformComponent::SetScale(const glm::vec2 &scale) {
+void TransformComponent::SetScale(const glm::vec2& scale) {
   scale_ = scale;
   if (owner_) {
     auto sprite_comp = owner_->GetComponent<SpriteComponent>();

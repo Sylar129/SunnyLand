@@ -39,7 +39,9 @@ class Context final {
   }
   engine::render::Renderer& GetRenderer() const { return renderer_; }
   engine::render::Camera& GetCamera() const { return camera_; }
-  engine::render::TextRenderer& GetTextRenderer() const { return text_renderer_; }
+  engine::render::TextRenderer& GetTextRenderer() const {
+    return text_renderer_;
+  }
   engine::resource::ResourceManager& GetResourceManager() const {
     return resource_manager_;
   }

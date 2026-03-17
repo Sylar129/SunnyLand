@@ -3,6 +3,7 @@
 #include "game/data/session_data.h"
 
 #include <fstream>
+
 #include "log.h"
 
 namespace game::data {

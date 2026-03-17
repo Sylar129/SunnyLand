@@ -115,9 +115,6 @@ set(TARGET_SOURCES
     src/game/game_scene.h
     src/log.cpp
     src/log.h
-    src/main.cpp
-)
+    src/main.cpp)
 
-set(TARGET_INCLUDE_DIRS
-    src
-)
+set(TARGET_INCLUDE_DIRS src)
