@@ -13,11 +13,11 @@ namespace engine::component {
 PhysicsComponent::PhysicsComponent(
     engine::physics::PhysicsEngine* physics_engine, bool use_gravity,
     float mass)
-    : physics_ENGINE_LOG_(physics_engine),
+    : physics_engine_(physics_engine),
       mass_(mass > 0.0f ? mass : 1.0f),
       use_gravity_(use_gravity) {
   ENGINE_LOG_ASSERT(
-      physics_ENGINE_LOG_,
+      physics_engine_,
       "In PhysicsComponent constructor, PhysicsEngine pointer cannot be "
       "nullptr!");
 
@@ -38,12 +38,12 @@ void PhysicsComponent::Init() {
         "TransformComponent not found on the same GameObject during physics "
         "component initialization.");
   }
-  physics_ENGINE_LOG_->RegisterComponent(this);
+  physics_engine_->RegisterComponent(this);
   ENGINE_LOG_TRACE("Physics component initialization completed.");
 }
 
 void PhysicsComponent::Clean() {
-  physics_ENGINE_LOG_->UnregisterComponent(this);
+  physics_engine_->UnregisterComponent(this);
   ENGINE_LOG_TRACE("Physics component cleanup completed.");
 }
 

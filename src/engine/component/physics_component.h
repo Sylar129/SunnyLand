@@ -69,7 +69,7 @@ class PhysicsComponent final : public Component {
   void Update(float, engine::core::Context&) override {}
   void Clean() override;
 
-  engine::physics::PhysicsEngine* physics_ENGINE_LOG_ = nullptr;
+  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
   TransformComponent* transform_ = nullptr;
 
   glm::vec2 velocity_ = {0.0f, 0.0f};

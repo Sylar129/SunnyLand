@@ -58,8 +58,8 @@ void TileLayerComponent::Render(engine::core::Context& context) {
 }
 
 void TileLayerComponent::Clean() {
-  if (physics_ENGINE_LOG_) {
-    physics_ENGINE_LOG_->UnregisterCollisionLayer(this);
+  if (physics_engine_) {
+    physics_engine_->UnregisterCollisionLayer(this);
   }
 }
 

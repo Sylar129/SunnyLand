@@ -203,7 +203,7 @@ bool GameApp::InitGameState() {
 bool GameApp::InitContext() {
   context_ = std::make_unique<engine::core::Context>(
       *input_manager_, *renderer_, *camera_, *text_renderer_,
-      *resource_manager_, *physics_ENGINE_LOG_, *game_state_);
+      *resource_manager_, *physics_engine_, *game_state_);
   ENGINE_LOG_ASSERT(context_, "Failed to Init Context!");
 
   ENGINE_LOG_ERROR("Init Context successfully.");
@@ -219,7 +219,7 @@ bool GameApp::InitSceneManager() {
 }
 
 bool GameApp::InitPhysicsEngine() {
-  physics_ENGINE_LOG_ = std::make_unique<engine::physics::PhysicsEngine>();
+  physics_engine_ = std::make_unique<engine::physics::PhysicsEngine>();
   return true;
 }
 

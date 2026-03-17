@@ -72,7 +72,7 @@ class TileLayerComponent final : public Component {
   void SetHidden(bool hidden) { is_hidden_ = hidden; }
 
   void SetPhysicsEngine(engine::physics::PhysicsEngine* physics_engine) {
-    physics_ENGINE_LOG_ = physics_engine;
+    physics_engine_ = physics_engine;
   }
 
  protected:
@@ -82,7 +82,7 @@ class TileLayerComponent final : public Component {
   void Clean() override;
 
  private:
-  engine::physics::PhysicsEngine* physics_ENGINE_LOG_ = nullptr;
+  engine::physics::PhysicsEngine* physics_engine_ = nullptr;
   glm::ivec2 tile_size_;
   glm::ivec2 map_size_;
   std::vector<TileInfo> tiles_;

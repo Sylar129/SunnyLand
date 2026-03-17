@@ -45,7 +45,7 @@ class TextRenderer final {
   SDL_Renderer* sdl_renderer_ = nullptr;
   engine::resource::ResourceManager* resource_manager_ = nullptr;
 
-  TTF_TextEngine* text_ENGINE_LOG_ = nullptr;
+  TTF_TextEngine* text_engine_ = nullptr;
 };
 
 }  // namespace engine::render

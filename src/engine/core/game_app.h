@@ -74,7 +74,7 @@ class GameApp final {
   std::unique_ptr<engine::render::TextRenderer> text_renderer_;
   std::unique_ptr<engine::core::Config> config_;
   std::unique_ptr<engine::input::InputManager> input_manager_;
-  std::unique_ptr<engine::physics::PhysicsEngine> physics_ENGINE_LOG_;
+  std::unique_ptr<engine::physics::PhysicsEngine> physics_engine_;
   std::unique_ptr<engine::core::GameState> game_state_;
   std::unique_ptr<engine::core::Context> context_;
   std::unique_ptr<engine::scene::SceneManager> scene_manager_;

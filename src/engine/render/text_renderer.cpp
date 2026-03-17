@@ -20,20 +20,20 @@ TextRenderer::TextRenderer(SDL_Renderer* sdl_renderer,
     ENGINE_LOG_ASSERT(false, "Failed to initialize SDL_ttf");
   }
 
-  text_ENGINE_LOG_ = TTF_CreateRendererTextEngine(sdl_renderer_);
-  ENGINE_LOG_ASSERT(text_ENGINE_LOG_, "Failed to create TTF_TextEngine");
+  text_engine_ = TTF_CreateRendererTextEngine(sdl_renderer_);
+  ENGINE_LOG_ASSERT(text_engine_, "Failed to create TTF_TextEngine");
 }
 
 TextRenderer::~TextRenderer() {
-  if (text_ENGINE_LOG_) {
+  if (text_engine_) {
     Close();
   }
 }
 
 void TextRenderer::Close() {
-  if (text_ENGINE_LOG_) {
-    TTF_DestroyRendererTextEngine(text_ENGINE_LOG_);
-    text_ENGINE_LOG_ = nullptr;
+  if (text_engine_) {
+    TTF_DestroyRendererTextEngine(text_engine_);
+    text_engine_ = nullptr;
     ENGINE_LOG_TRACE("TTF_TextEngine Destroyed");
   }
   TTF_Quit();
@@ -51,7 +51,7 @@ void TextRenderer::DrawUIText(const std::string& text,
   }
 
   TTF_Text* temp_text_object =
-      TTF_CreateText(text_ENGINE_LOG_, font, text.c_str(), 0);
+      TTF_CreateText(text_engine_, font, text.c_str(), 0);
   if (!temp_text_object) {
     ENGINE_LOG_ERROR("drawUIText Failed to create TTF_Text: {}",
                      SDL_GetError());
@@ -92,7 +92,7 @@ glm::vec2 TextRenderer::GetTextSize(const std::string& text,
   }
 
   TTF_Text* temp_text_object =
-      TTF_CreateText(text_ENGINE_LOG_, font, text.c_str(), 0);
+      TTF_CreateText(text_engine_, font, text.c_str(), 0);
   if (!temp_text_object) {
     ENGINE_LOG_ERROR("getTextSize failed to create TTF_Text: {}",
                      SDL_GetError());

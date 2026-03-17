@@ -22,7 +22,7 @@ Context::Context(engine::input::InputManager& input_manager,
       camera_(camera),
       text_renderer_(text_renderer),
       resource_manager_(resource_manager),
-      physics_ENGINE_LOG_(physics_engine),
+      physics_engine_(physics_engine),
       game_state_(game_state) {
   ENGINE_LOG_TRACE("Context has been initialized.");
 }
