@@ -50,7 +50,7 @@ void GameScene::Init() {
   if (is_initialized_) {
     return;
   }
-  context_.getGameState().setState(engine::core::State::Playing);
+  context_.GetGameState().SetState(engine::core::State::Playing);
   InitLevel();
   InitPlayer();
   InitEnemyAndItem();
@@ -182,7 +182,7 @@ void GameScene::InitEnemyAndItem() {
 }
 
 void GameScene::InitUI() {
-  if (!ui_manager_->Init(context_.getGameState().getLogicalSize())) {
+  if (!ui_manager_->Init(context_.GetGameState().GetLogicalSize())) {
     GAME_ERROR("Failed to initialize UIManager.");
     return;
   }

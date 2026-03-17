@@ -1,63 +1,60 @@
-#include "menu_scene.h"
+// Copyright Sylar129
 
-#include <spdlog/spdlog.h>
+#include "game/scene/menu_scene.h"
 
-#include "../../engine/core/context.h"
-#include "../../engine/core/game_state.h"
-#include "../../engine/input/input_manager.h"
-#include "../../engine/scene/scene_manager.h"
-#include "../../engine/ui/ui_button.h"
-#include "../../engine/ui/ui_label.h"
-#include "../../engine/ui/ui_manager.h"
-#include "../../engine/ui/ui_panel.h"
-#include "../../engine/utils/math.h"
-#include "../data/session_data.h"
-#include "title_scene.h"
+#include "engine/core/context.h"
+#include "engine/core/game_state.h"
+#include "engine/input/input_manager.h"
+#include "engine/scene/scene_manager.h"
+#include "engine/ui/ui_button.h"
+#include "engine/ui/ui_label.h"
+#include "engine/ui/ui_manager.h"
+#include "game/data/session_data.h"
+#include "game/scene/title_scene.h"
+#include "log.h"
 
 namespace game::scene {
 
 MenuScene::MenuScene(engine::core::Context& context,
                      engine::scene::SceneManager& scene_manager,
                      std::shared_ptr<game::data::Session> session_data)
-    : Scene("MenuScene", context, scene_manager),  // 调用基类构造函数
+    : Scene("MenuScene", context, scene_manager),
       session_data_(std::move(session_data)) {
   if (!session_data_) {
-    spdlog::error("菜单场景构造时 SessionData 为空。");
+    GAME_ERROR("MenuScene session_data is null, creating default SessionData.");
   }
-  spdlog::trace("MenuScene 构造完成.");
+  GAME_TRACE("MenuScene constructed");
 }
 
 void MenuScene::Init() {
-  context_.getGameState().setState(engine::core::State::Paused);
-  createUI();
+  context_.GetGameState().SetState(engine::core::State::Paused);
+  CreateUI();
 
   Scene::Init();
-  spdlog::trace("menuScene 初始化完成");
+  GAME_TRACE("MenuScene initialized");
 }
 
-void MenuScene::createUI() {
-  auto window_size = context_.getGameState().getLogicalSize();
+void MenuScene::CreateUI() {
+  auto window_size = context_.GetGameState().GetLogicalSize();
   if (!ui_manager_->Init(window_size)) {
-    spdlog::error("MenuScene 中初始化 UIManager 失败!");
+    GAME_ERROR("MenuScene Failed to initialize UIManager!");
     return;
   }
 
-  // "PAUSE"标签
   auto pause_label = std::make_unique<engine::ui::UILabel>(
       context_.GetTextRenderer(), "PAUSE",
       "assets/fonts/VonwaonBitmap-16px.ttf", 32);
-  // 放在中间靠上的位置
+
   auto size = pause_label->GetSize();
   auto label_y = window_size.y * 0.2;
   pause_label->SetPosition(glm::vec2((window_size.x - size.x) / 2.0f, label_y));
   ui_manager_->AddElement(std::move(pause_label));
 
-  // --- 创建按钮 --- (4个按钮，设定好大小、间距)
-  float button_width = 96.0f;  // 按钮稍微小一点
+  float button_width = 96.0f;
   float button_height = 32.0f;
   float button_spacing = 10.0f;
-  float start_y = label_y + 80.0f;  // 从标签下方开始，增加间距
-  float button_x = (window_size.x - button_width) / 2.0f;  // 水平居中
+  float start_y = label_y + 80.0f;
+  float button_x = (window_size.x - button_width) / 2.0f;
 
   // Resume Button
   auto resume_button = std::make_unique<engine::ui::UIButton>(
@@ -65,7 +62,7 @@ void MenuScene::createUI() {
       "assets/textures/UI/buttons/Resume2.png",
       "assets/textures/UI/buttons/Resume3.png", glm::vec2{button_x, start_y},
       glm::vec2{button_width, button_height},
-      [this]() { this->onResumeClicked(); });
+      [this]() { this->OnResumeClicked(); });
   ui_manager_->AddElement(std::move(resume_button));
 
   // Save Button
@@ -75,7 +72,7 @@ void MenuScene::createUI() {
       "assets/textures/UI/buttons/Save2.png",
       "assets/textures/UI/buttons/Save3.png", glm::vec2{button_x, start_y},
       glm::vec2{button_width, button_height},
-      [this]() { this->onSaveClicked(); });
+      [this]() { this->OnSaveClicked(); });
   ui_manager_->AddElement(std::move(save_button));
 
   // Back Button
@@ -85,7 +82,7 @@ void MenuScene::createUI() {
       "assets/textures/UI/buttons/Back2.png",
       "assets/textures/UI/buttons/Back3.png", glm::vec2{button_x, start_y},
       glm::vec2{button_width, button_height},
-      [this]() { this->onBackClicked(); });
+      [this]() { this->OnBackClicked(); });
   ui_manager_->AddElement(std::move(back_button));
 
   // Quit Button
@@ -95,49 +92,45 @@ void MenuScene::createUI() {
       "assets/textures/UI/buttons/Quit2.png",
       "assets/textures/UI/buttons/Quit3.png", glm::vec2{button_x, start_y},
       glm::vec2{button_width, button_height},
-      [this]() { this->onQuitClicked(); });
+      [this]() { this->OnQuitClicked(); });
   ui_manager_->AddElement(std::move(quit_button));
 }
 
 void MenuScene::HandleInput() {
-  // 先让 UIManager 处理交互
   Scene::HandleInput();
 
-  // 检查暂停键，允许按暂停键恢复游戏
   if (context_.GetInputManager().IsActionPressed("pause")) {
-    spdlog::debug("在菜单场景中按下暂停键，正在恢复游戏...");
-    scene_manager_.RequestPopScene();  // 弹出自身以恢复底层的GameScene
-    context_.getGameState().setState(engine::core::State::Playing);
+    GAME_DEBUG("Pause action detected in MenuScene, resuming game.");
+    scene_manager_.RequestPopScene();
+    context_.GetGameState().SetState(engine::core::State::Playing);
   }
 }
 
-// --- 按钮回调函数实现 ---
-
-void MenuScene::onResumeClicked() {
-  spdlog::debug("继续游戏按钮被点击。");
-  scene_manager_.RequestPopScene();  // 弹出当前场景
-  context_.getGameState().setState(engine::core::State::Playing);
+void MenuScene::OnResumeClicked() {
+  GAME_DEBUG("OnResumeClicked");
+  scene_manager_.RequestPopScene();
+  context_.GetGameState().SetState(engine::core::State::Playing);
 }
 
-void MenuScene::onSaveClicked() {
-  spdlog::debug("保存游戏按钮被点击。");
+void MenuScene::OnSaveClicked() {
+  GAME_DEBUG("OnSaveClicked");
   if (session_data_ && session_data_->SaveToFile("assets/save.json")) {
-    spdlog::debug("菜单场景中成功保存游戏数据。");
+    GAME_DEBUG("Save game successfully to save.json.");
   } else {
-    spdlog::error("菜单场景中保存游戏数据失败。");
+    GAME_ERROR(
+        "Failed to save game. SessionData is null or failed to write to file.");
   }
 }
 
-void MenuScene::onBackClicked() {
-  spdlog::debug("返回按钮被点击。弹出菜单场景和游戏场景，返回标题界面。");
-  // 直接替换为TitleScene
+void MenuScene::OnBackClicked() {
+  GAME_DEBUG("OnBackClicked");
   scene_manager_.RequestReplaceScene(
       std::make_unique<TitleScene>(context_, scene_manager_, session_data_));
 }
 
-void MenuScene::onQuitClicked() {
-  spdlog::debug("退出按钮被点击。请求应用程序退出。");
-  context_.GetInputManager().SetShouldQuit(true);  // 输入管理器设置退出标志
+void MenuScene::OnQuitClicked() {
+  GAME_DEBUG("OnQuitClicked");
+  context_.GetInputManager().SetShouldQuit(true);
 }
 
 }  // namespace game::scene

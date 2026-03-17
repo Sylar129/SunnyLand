@@ -54,7 +54,7 @@ class GameApp final {
   [[nodiscard]] bool InitTime();
   [[nodiscard]] bool InitResourceManager();
   [[nodiscard]] bool InitInputManager();
-  [[nodiscard]] bool initGameState();
+  [[nodiscard]] bool InitGameState();
   [[nodiscard]] bool InitContext();
   [[nodiscard]] bool InitSceneManager();
   [[nodiscard]] bool InitPhysicsEngine();

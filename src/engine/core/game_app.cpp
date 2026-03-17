@@ -61,7 +61,7 @@ bool GameApp::Init() {
   if (!InitTextRenderer()) return false;
   if (!InitInputManager()) return false;
   if (!InitPhysicsEngine()) return false;
-  if (!initGameState()) return false;
+  if (!InitGameState()) return false;
   if (!InitContext()) return false;
   if (!InitSceneManager()) return false;
 
@@ -191,7 +191,7 @@ bool GameApp::InitInputManager() {
   return true;
 }
 
-bool GameApp::initGameState() {
+bool GameApp::InitGameState() {
   game_state_ =
       std::make_unique<engine::core::GameState>(window_, sdl_renderer_);
 

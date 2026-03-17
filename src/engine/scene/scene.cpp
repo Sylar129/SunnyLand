@@ -37,7 +37,7 @@ void Scene::Update(float delta_time) {
     return;
   }
 
-  if (context_.getGameState().isPlaying()) {
+  if (context_.GetGameState().IsPlaying()) {
     context_.GetPhysicsEngine().Update(delta_time);
     context_.GetCamera().Update(delta_time);
   }

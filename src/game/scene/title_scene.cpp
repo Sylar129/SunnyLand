@@ -52,8 +52,8 @@ void TitleScene::Init() {
 
 void TitleScene::CreateUI() {
   GAME_TRACE("Creating TitleScene UI...");
-  context_.getGameState().setState(engine::core::State::Title);
-  auto window_size = context_.getGameState().getLogicalSize();
+  context_.GetGameState().SetState(engine::core::State::Title);
+  auto window_size = context_.GetGameState().GetLogicalSize();
 
   if (!ui_manager_->Init(window_size)) {
     GAME_ERROR("init UIManager failed!");

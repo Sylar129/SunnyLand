@@ -51,7 +51,7 @@ class Context final {
   engine::physics::PhysicsEngine& GetPhysicsEngine() const {
     return physics_engine_;
   }
-  engine::core::GameState& getGameState() const { return game_state_; }
+  engine::core::GameState& GetGameState() const { return game_state_; }
 
  private:
   engine::input::InputManager& input_manager_;
