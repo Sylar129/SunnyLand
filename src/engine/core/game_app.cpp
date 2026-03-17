@@ -16,7 +16,7 @@
 #include "engine/resource/resource_manager.h"
 #include "engine/scene/scene_manager.h"
 #include "engine/utils/assert.h"
-#include "game/scene/game_scene.h"
+#include "game/scene/title_scene.h"
 #include "log.h"
 
 namespace engine::core {
@@ -64,7 +64,7 @@ bool GameApp::Init() {
   if (!InitSceneManager()) return false;
 
   auto scene =
-      std::make_unique<game::scene::GameScene>(*context_, *scene_manager_);
+      std::make_unique<game::scene::TitleScene>(*context_, *scene_manager_);
   scene_manager_->RequestPushScene(std::move(scene));
 
   is_running_ = true;
