@@ -29,6 +29,7 @@
 #include "game/component/ai_component.h"
 #include "game/component/player_component.h"
 #include "game/data/session_data.h"
+#include "game/scene/end_scene.h"
 #include "game/scene/menu_scene.h"
 #include "log.h"
 
@@ -63,6 +64,16 @@ void GameScene::Update(float delta_time) {
   Scene::Update(delta_time);
   HandleObjectCollisions();
   HandleTileTriggers();
+
+  if (player_) {
+    auto pos = player_->GetComponent<engine::component::TransformComponent>()
+                   ->GetPosition();
+    auto world_rect = context_.GetPhysicsEngine().GetWorldBounds();
+    if (world_rect &&
+        pos.y > world_rect->position.y + world_rect->size.y + 100.0f) {
+      ShowEndScene(false);
+    }
+  }
 }
 
 void GameScene::Render() { Scene::Render(); }
@@ -215,6 +226,10 @@ void GameScene::HandleObjectCollisions() {
       ToNextLevel(obj2);
     } else if (obj2->GetName() == "player" && obj1->GetTag() == "next_level") {
       ToNextLevel(obj1);
+    } else if (obj1->GetName() == "player" && obj2->GetName() == "win") {
+      ShowEndScene(true);
+    } else if (obj2->GetName() == "player" && obj1->GetName() == "win") {
+      ShowEndScene(true);
     }
   }
 }
@@ -343,6 +358,13 @@ void GameScene::ToNextLevel(engine::object::GameObject* trigger) {
   auto next_scene = std::make_unique<game::scene::GameScene>(
       context_, scene_manager_, game_session_);
   scene_manager_.RequestReplaceScene(std::move(next_scene));
+}
+
+void GameScene::ShowEndScene(bool is_win) {
+  game_session_->SetIsWin(is_win);
+  auto end_scene = std::make_unique<game::scene::EndScene>(
+      context_, scene_manager_, game_session_);
+  scene_manager_.RequestPushScene(std::move(end_scene));
 }
 
 void GameScene::CreateScoreUI() {
