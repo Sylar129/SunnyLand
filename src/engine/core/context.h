@@ -25,13 +25,16 @@ class PhysicsEngine;
 
 namespace engine::core {
 
+class GameState;
+
 class Context final {
  public:
   Context(engine::input::InputManager& input_manager,
           engine::render::Renderer& renderer, engine::render::Camera& camera,
           engine::render::TextRenderer& text_renderer,
           engine::resource::ResourceManager& resource_manager,
-          engine::physics::PhysicsEngine& physics_engine);
+          engine::physics::PhysicsEngine& physics_engine,
+          engine::core::GameState& game_state);
   DISABLE_COPY_AND_MOVE(Context);
 
   engine::input::InputManager& GetInputManager() const {
@@ -48,6 +51,7 @@ class Context final {
   engine::physics::PhysicsEngine& GetPhysicsEngine() const {
     return physics_engine_;
   }
+  engine::core::GameState& GetGameState() const { return game_state_; }
 
  private:
   engine::input::InputManager& input_manager_;
@@ -56,6 +60,7 @@ class Context final {
   engine::render::TextRenderer& text_renderer_;
   engine::resource::ResourceManager& resource_manager_;
   engine::physics::PhysicsEngine& physics_engine_;
+  engine::core::GameState& game_state_;
 };
 
 }  // namespace engine::core

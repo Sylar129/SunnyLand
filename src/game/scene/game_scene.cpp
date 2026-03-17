@@ -10,6 +10,8 @@
 #include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
+#include "engine/core/game_state.h"
+#include "engine/input/input_manager.h"
 #include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/render/animation.h"
@@ -27,6 +29,7 @@
 #include "game/component/ai_component.h"
 #include "game/component/player_component.h"
 #include "game/data/session_data.h"
+#include "game/scene/menu_scene.h"
 #include "log.h"
 
 namespace game::scene {
@@ -44,6 +47,10 @@ GameScene::GameScene(engine::core::Context& context,
 }
 
 void GameScene::Init() {
+  if (is_initialized_) {
+    return;
+  }
+  context_.GetGameState().SetState(engine::core::State::Playing);
   InitLevel();
   InitPlayer();
   InitEnemyAndItem();
@@ -60,7 +67,13 @@ void GameScene::Update(float delta_time) {
 
 void GameScene::Render() { Scene::Render(); }
 
-void GameScene::HandleInput() { Scene::HandleInput(); }
+void GameScene::HandleInput() {
+  Scene::HandleInput();
+  if (context_.GetInputManager().IsActionPressed("pause")) {
+    scene_manager_.RequestPushScene(
+        std::make_unique<MenuScene>(context_, scene_manager_, game_session_));
+  }
+}
 
 void GameScene::Clean() { Scene::Clean(); }
 
@@ -169,7 +182,7 @@ void GameScene::InitEnemyAndItem() {
 }
 
 void GameScene::InitUI() {
-  if (!ui_manager_->Init(glm::vec2(640.0f, 360.0f))) {
+  if (!ui_manager_->Init(context_.GetGameState().GetLogicalSize())) {
     GAME_ERROR("Failed to initialize UIManager.");
     return;
   }

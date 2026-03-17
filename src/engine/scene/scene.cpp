@@ -2,9 +2,10 @@
 
 #include "engine/scene/scene.h"
 
-#include <algorithm>  // for std::remove_if
+#include <algorithm>
 
 #include "engine/core/context.h"
+#include "engine/core/game_state.h"
 #include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
@@ -36,9 +37,10 @@ void Scene::Update(float delta_time) {
     return;
   }
 
-  context_.GetPhysicsEngine().Update(delta_time);
-
-  context_.GetCamera().Update(delta_time);
+  if (context_.GetGameState().IsPlaying()) {
+    context_.GetPhysicsEngine().Update(delta_time);
+    context_.GetCamera().Update(delta_time);
+  }
 
   for (auto it = game_objects_.begin(); it != game_objects_.end();) {
     auto& object = *it;
