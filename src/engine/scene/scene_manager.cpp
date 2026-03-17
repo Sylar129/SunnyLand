@@ -110,7 +110,7 @@ void SceneManager::PopScene() {
     ENGINE_LOG_WARN("Trying to pop scene from an empty stack.");
     return;
   }
-  ENGINE_LOG_DEBUG("Poping scene '{}' from stack.",
+  ENGINE_LOG_DEBUG("Popping scene '{}' from stack.",
                    scene_stack_.back()->GetName());
 
   if (scene_stack_.back()) {
@@ -122,6 +122,12 @@ void SceneManager::PopScene() {
 void SceneManager::ReplaceScene(std::unique_ptr<Scene>&& scene) {
   if (!scene) {
     ENGINE_LOG_WARN("Trying to replace with an empty scene.");
+    return;
+  }
+  if (scene_stack_.empty()) {
+    ENGINE_LOG_WARN(
+        "Scene stack is empty. ReplaceScene will push the new scene instead.");
+    PushScene(std::move(scene));
     return;
   }
   ENGINE_LOG_DEBUG("Replacing scene '{}' with scene '{}'.",

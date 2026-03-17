@@ -135,7 +135,7 @@ void Scene::RemoveGameObject(object::GameObject* game_object_ptr) {
   if (it != game_objects_.end()) {
     game_object_ptr->Clean();
     game_objects_.erase(it, game_objects_.end());
-    ENGINE_LOG_TRACE("Removing game object from scne '{}'", scene_name_);
+    ENGINE_LOG_TRACE("Removing game object from scene '{}'", scene_name_);
   } else {
     ENGINE_LOG_WARN("Game object is not in the scene '{}'", scene_name_);
   }

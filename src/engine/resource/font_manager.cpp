@@ -25,7 +25,7 @@ FontManager::~FontManager() {
 
 TTF_Font* FontManager::LoadFont(const std::string& file_path, int point_size) {
   if (point_size <= 0) {
-    ENGINE_LOG_ERROR("Falied to load font: {}. Invalid point size: {}",
+    ENGINE_LOG_ERROR("Failed to load font: {}. Invalid point size: {}",
                      file_path, point_size);
     return nullptr;
   }
@@ -40,7 +40,7 @@ TTF_Font* FontManager::LoadFont(const std::string& file_path, int point_size) {
   ENGINE_LOG_DEBUG("Loading font: {} ({}pt)", file_path, point_size);
   TTF_Font* raw_font = TTF_OpenFont(file_path.c_str(), point_size);
   if (!raw_font) {
-    ENGINE_LOG_ERROR("Loading font '{}' ({}pt) falied: {}", file_path,
+    ENGINE_LOG_ERROR("Loading font '{}' ({}pt) failed: {}", file_path,
                      point_size, SDL_GetError());
     return nullptr;
   }

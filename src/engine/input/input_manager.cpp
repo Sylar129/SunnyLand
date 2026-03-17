@@ -117,7 +117,7 @@ glm::vec2 InputManager::GetLogicalMousePosition() const {
 }
 
 void InputManager::InitializeMappings(const core::Config* config) {
-  ENGINE_LOG_TRACE("Initializint input mappings...");
+  ENGINE_LOG_TRACE("Initializing input mappings...");
 
   ENGINE_LOG_ASSERT(config, "InputManager: Config is nullptr");
 
@@ -154,7 +154,7 @@ void InputManager::InitializeMappings(const core::Config* config) {
       } else if (mouse_button != 0) {
         mouse_button_to_actions_map_[mouse_button].push_back(action_name);
         ENGINE_LOG_TRACE(
-            "  Mappding mouse button: {} (Button ID: {}) to Action: {}",
+            "  Mapping mouse button: {} (Button ID: {}) to Action: {}",
             key_name, static_cast<int>(mouse_button), action_name);
       } else {
         ENGINE_LOG_WARN("Unknown key or button: '{}' for action: '{}'.",
