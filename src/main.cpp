@@ -6,6 +6,8 @@
 int main(int /* argc */, char** /* argv */) {
   Log::Init();
   engine::core::GameApp app;
+  app.Init();
   app.Run();
+  app.Close();
   return 0;
 }
