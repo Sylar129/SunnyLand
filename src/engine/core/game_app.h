@@ -6,9 +6,6 @@
 
 #include "utils/non_copyable.h"
 
-struct SDL_Window;
-struct SDL_Renderer;
-
 namespace engine::scene {
 class SceneManager;
 }

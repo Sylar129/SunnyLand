@@ -6,7 +6,10 @@
 int main(int /* argc */, char** /* argv */) {
   Log::Init();
   engine::core::GameApp app;
-  app.Init();
+  if (!app.Init()) {
+    ENGINE_LOG_CRITICAL("Failed to init GameApp!");
+    return -1;
+  }
   app.Run();
   app.Close();
   return 0;

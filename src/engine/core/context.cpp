@@ -5,9 +5,7 @@
 #include <fstream>
 
 #include "SDL3/SDL.h"
-#include "assert.h"
 #include "engine/core/config.h"
-#include "engine/core/context.h"
 #include "engine/core/game_state.h"
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
@@ -17,14 +15,21 @@
 #include "engine/render/text_renderer.h"
 #include "engine/resource/audio_manager.h"
 #include "engine/resource/resource_manager.h"
-#include "engine/scene/scene_manager.h"
 #include "utils/log.h"
 
 namespace engine::core {
 
 Context::Context() {}
 
-Context::~Context() {}
+Context::~Context() {
+  // Ensure SDL and related resources are cleaned up even if Clean() is not
+  // called explicitly. Guarded to avoid redundant work if Clean() was
+  // already invoked.
+  if (sdl_renderer_ != nullptr || window_ != nullptr || resource_manager_ ||
+      audio_manager_) {
+    Clean();
+  }
+}
 
 bool Context::Init() {
   if (!InitConfig()) return false;
@@ -55,8 +60,40 @@ bool Context::Init() {
 }
 
 void Context::Clean() {
-  resource_manager_.reset();
-  audio_manager_.reset();
+  // Tear down all subsystems that may depend on SDL/TTF before destroying
+  // the SDL renderer/window and quitting SDL.
+  if (game_state_) {
+    game_state_.reset();
+  }
+  if (text_renderer_) {
+    text_renderer_.reset();
+  }
+  if (renderer_) {
+    renderer_.reset();
+  }
+  if (camera_) {
+    camera_.reset();
+  }
+  if (input_manager_) {
+    input_manager_.reset();
+  }
+  if (physics_engine_) {
+    physics_engine_.reset();
+  }
+  // Resource and audio managers may also hold SDL-related state.
+  if (resource_manager_) {
+    resource_manager_.reset();
+  }
+  if (audio_manager_) {
+    audio_manager_.reset();
+  }
+  // Clear timing and configuration to avoid accidental use after clean.
+  if (time_) {
+    time_.reset();
+  }
+  if (config_) {
+    config_.reset();
+  }
 
   if (sdl_renderer_ != nullptr) {
     SDL_DestroyRenderer(sdl_renderer_);

@@ -91,9 +91,16 @@ void GameApp::Render() {
 
 void GameApp::Close() {
   ENGINE_LOG_TRACE("Closing GameApp...");
-  context_->Clean();
-  scene_manager_->Close();
+  // Stop the run loop first so no further updates occur during shutdown.
   is_running_ = false;
+  // Close scenes before cleaning the context, since scenes may rely on it.
+  if (scene_manager_) {
+    scene_manager_->Close();
+  }
+  // Clean the context after scenes are closed; safe even if init failed.
+  if (context_) {
+    context_->Clean();
+  }
 }
 
 }  // namespace engine::core

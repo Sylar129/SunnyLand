@@ -2,11 +2,16 @@
 
 #pragma once
 
+#include <memory>
+
 #include "engine/core/config.h"
 #include "engine/core/time.h"
 #include "engine/render/text_renderer.h"
 #include "engine/resource/audio_manager.h"
 #include "utils/non_copyable.h"
+
+struct SDL_Window;
+struct SDL_Renderer;
 
 namespace engine::input {
 class InputManager;
