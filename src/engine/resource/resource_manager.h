@@ -16,7 +16,6 @@ struct TTF_Font;
 namespace engine::resource {
 
 class TextureManager;
-class AudioManager;
 class FontManager;
 
 class ResourceManager final {
@@ -33,11 +32,6 @@ class ResourceManager final {
   glm::vec2 GetTextureSize(const std::string& file_path);
   void ClearTextures();
 
-  MIX_Audio* LoadSound(const std::string& file_path);
-  MIX_Audio* GetSound(const std::string& file_path);
-  void UnloadSound(const std::string& file_path);
-  void ClearSounds();
-
   TTF_Font* LoadFont(const std::string& file_path, int point_size);
   TTF_Font* GetFont(const std::string& file_path, int point_size);
   void UnloadFont(const std::string& file_path, int point_size);
@@ -45,7 +39,6 @@ class ResourceManager final {
 
  private:
   std::unique_ptr<TextureManager> texture_manager_;
-  std::unique_ptr<AudioManager> audio_manager_;
   std::unique_ptr<FontManager> font_manager_;
 };
 

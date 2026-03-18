@@ -44,16 +44,12 @@ void UIInteractive::SetSprite(const std::string& name) {
   }
 }
 
-void UIInteractive::AddSound(const std::string& name, const std::string& path) {
-  sounds_[name] = path;
+void UIInteractive::AddSound(const std::string& id, const std::string& path) {
+  context_.GetAudioManager().LoadAudio(path, id);
 }
 
-void UIInteractive::PlaySound(const std::string& name) {
-  if (sounds_.find(name) != sounds_.end()) {
-    // context_.getAudioPlayer().playSound(sounds_[name]);
-  } else {
-    ENGINE_LOG_WARN("Sound '{}' not found", name);
-  }
+void UIInteractive::PlaySound(const std::string& id) {
+  context_.GetAudioManager().PlayAudio(id);
 }
 
 bool UIInteractive::HandleInput(core::Context& context) {

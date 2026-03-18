@@ -26,7 +26,7 @@ AudioManager::AudioManager() {
 }
 
 AudioManager::~AudioManager() {
-  ClearSounds();
+  ClearAudio();
 
   MIX_DestroyMixer(mixer_);
 
@@ -34,53 +34,50 @@ AudioManager::~AudioManager() {
   ENGINE_LOG_TRACE("Deinit AudioManager successfully");
 }
 
-MIX_Audio* AudioManager::LoadSound(const std::string& file_path) {
-  ENGINE_LOG_DEBUG("Loading sound: {}", file_path);
-  auto it = sounds_.find(file_path);
-  if (it != sounds_.end()) {
-    ENGINE_LOG_WARN("sound already existed");
-    return it->second.get();
+MIX_Audio* AudioManager::LoadAudio(const std::string& file_path,
+                                   const AudioId& id) {
+  ENGINE_LOG_DEBUG("Loading audio: {}", file_path);
+  auto audio_id = id.empty() ? file_path : id;
+  if (audio_.contains(audio_id)) {
+    ENGINE_LOG_WARN("audio already existed");
+    return audio_[audio_id].get();
   }
 
-  MIX_Audio* raw_chunk = MIX_LoadAudio(mixer_, file_path.c_str(), true);
-  if (!raw_chunk) {
-    ENGINE_LOG_ERROR("Loading sound falied: '{}': {}", file_path,
+  MIX_Audio* raw_audio = MIX_LoadAudio(mixer_, file_path.c_str(), true);
+  if (!raw_audio) {
+    ENGINE_LOG_ERROR("Loading audio failed: '{}': {}", file_path,
                      SDL_GetError());
     return nullptr;
   }
 
-  sounds_.emplace(file_path,
-                  std::unique_ptr<MIX_Audio, SDLMixAudioDeleter>(raw_chunk));
-  ENGINE_LOG_DEBUG("Successfully load and cache sound: {}", file_path);
-  return raw_chunk;
+  audio_[audio_id] = std::unique_ptr<MIX_Audio, SDLMixAudioDeleter>(raw_audio);
+  ENGINE_LOG_DEBUG("Successfully load and cache audio: {}", audio_id);
+  return raw_audio;
 }
 
-MIX_Audio* AudioManager::GetSound(const std::string& file_path) {
-  auto it = sounds_.find(file_path);
-  if (it != sounds_.end()) {
-    return it->second.get();
+MIX_Audio* AudioManager::GetAudio(const AudioId& id) {
+  if (audio_.contains(id)) {
+    return audio_[id].get();
   }
-  ENGINE_LOG_WARN("Sound '{}' not found. Try Loading.", file_path);
-  return LoadSound(file_path);
+  ENGINE_LOG_WARN("audio '{}' not found.", id);
+  return nullptr;
 }
 
-void AudioManager::UnloadSound(const std::string& file_path) {
-  auto it = sounds_.find(file_path);
-  if (it != sounds_.end()) {
-    ENGINE_LOG_DEBUG("Unload sound: {}", file_path);
-    sounds_.erase(it);
-  } else {
-    ENGINE_LOG_WARN("Try to unload non-existent sound: {}", file_path);
+bool AudioManager::PlayAudio(const AudioId& id) {
+  bool result = MIX_PlayAudio(mixer_, GetAudio(id));
+  if (!result) {
+    ENGINE_LOG_ERROR("Failed to play audio '{}': {}", id, SDL_GetError());
   }
+  return result;
 }
 
-void AudioManager::ClearSounds() {
-  if (!sounds_.empty()) {
-    ENGINE_LOG_DEBUG("Clear all {} sounds.", sounds_.size());
-    sounds_.clear();
+void AudioManager::UnloadAudio(const std::string& id) { audio_.erase(id); }
+
+void AudioManager::ClearAudio() {
+  if (!audio_.empty()) {
+    ENGINE_LOG_DEBUG("Clear all {} audio.", audio_.size());
+    audio_.clear();
   }
 }
-
-void AudioManager::ClearAudio() { ClearSounds(); }
 
 }  // namespace engine::resource

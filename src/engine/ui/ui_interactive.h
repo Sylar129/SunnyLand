@@ -28,8 +28,8 @@ class UIInteractive : public UIElement {
   void AddSprite(const std::string& name,
                  std::unique_ptr<render::Sprite> sprite);
   void SetSprite(const std::string& name);
-  void AddSound(const std::string& name, const std::string& path);
-  void PlaySound(const std::string& name);
+  void AddSound(const std::string& id, const std::string& path);
+  void PlaySound(const std::string& id);
 
   void SetState(std::unique_ptr<state::UIState> state);
   state::UIState* GetState() const { return state_.get(); }
@@ -44,7 +44,6 @@ class UIInteractive : public UIElement {
   core::Context& context_;
   std::unique_ptr<state::UIState> state_;
   std::unordered_map<std::string, std::unique_ptr<render::Sprite>> sprites_;
-  std::unordered_map<std::string, std::string> sounds_;
   render::Sprite* current_sprite_ = nullptr;
   bool interactive_ = true;
 };

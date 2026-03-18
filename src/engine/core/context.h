@@ -2,7 +2,9 @@
 
 #pragma once
 
+#include "engine/core/game_app.h"
 #include "engine/render/text_renderer.h"
+#include "engine/resource/audio_manager.h"
 #include "utils/non_copyable.h"
 
 namespace engine::input {
@@ -17,7 +19,8 @@ class TextRenderer;
 
 namespace engine::resource {
 class ResourceManager;
-}
+class AudioManager;
+}  // namespace engine::resource
 
 namespace engine::physics {
 class PhysicsEngine;
@@ -32,6 +35,7 @@ class Context final {
   Context(input::InputManager& input_manager, render::Renderer& renderer,
           render::Camera& camera, render::TextRenderer& text_renderer,
           resource::ResourceManager& resource_manager,
+          resource::AudioManager& audio_manager,
           physics::PhysicsEngine& physics_engine, core::GameState& game_state);
   DISABLE_COPY_AND_MOVE(Context);
 
@@ -42,6 +46,7 @@ class Context final {
   resource::ResourceManager& GetResourceManager() const {
     return resource_manager_;
   }
+  resource::AudioManager& GetAudioManager() const { return audio_manager_; }
   physics::PhysicsEngine& GetPhysicsEngine() const { return physics_engine_; }
   core::GameState& GetGameState() const { return game_state_; }
 
@@ -51,6 +56,7 @@ class Context final {
   render::Camera& camera_;
   render::TextRenderer& text_renderer_;
   resource::ResourceManager& resource_manager_;
+  resource::AudioManager& audio_manager_;
   physics::PhysicsEngine& physics_engine_;
   core::GameState& game_state_;
 };
