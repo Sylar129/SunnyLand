@@ -22,6 +22,7 @@ include_directories(${TARGET_INCLUDE_DIRS})
 # Target executable
 # ============================================================================
 add_executable(${TARGET} ${TARGET_SOURCES})
+target_compile_options(${TARGET} PRIVATE ${PROJECT_WARNINGS})
 
 # ============================================================================
 # Link libraries
