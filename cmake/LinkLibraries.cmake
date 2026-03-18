@@ -7,4 +7,5 @@ set(TARGET_LINK_LIBS
     SDL3_mixer::SDL3_mixer
     SDL3_ttf::SDL3_ttf
     glm::glm-header-only
-    nlohmann_json::nlohmann_json)
+    nlohmann_json::nlohmann_json
+    EnTT::EnTT)
