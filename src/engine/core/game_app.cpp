@@ -53,9 +53,11 @@ void GameApp::Run() {
 bool GameApp::Init() {
   ENGINE_LOG_TRACE("Init GameApp ...");
   if (!InitConfig()) return false;
+
   if (!InitSDL()) return false;
   if (!InitTime()) return false;
   if (!InitResourceManager()) return false;
+  if (!InitAudioManager()) return false;
   if (!InitRenderer()) return false;
   if (!InitCamera()) return false;
   if (!InitTextRenderer()) return false;
@@ -63,6 +65,7 @@ bool GameApp::Init() {
   if (!InitPhysicsEngine()) return false;
   if (!InitGameState()) return false;
   if (!InitContext()) return false;
+
   if (!InitSceneManager()) return false;
 
   is_running_ = true;
@@ -180,6 +183,11 @@ bool GameApp::InitResourceManager() {
   return true;
 }
 
+bool GameApp::InitAudioManager() {
+  audio_manager_ = std::make_unique<resource::AudioManager>();
+  return true;
+}
+
 bool GameApp::InitInputManager() {
   input_manager_ =
       std::make_unique<input::InputManager>(sdl_renderer_, config_.get());
@@ -198,7 +206,7 @@ bool GameApp::InitGameState() {
 bool GameApp::InitContext() {
   context_ = std::make_unique<core::Context>(
       *input_manager_, *renderer_, *camera_, *text_renderer_,
-      *resource_manager_, *physics_engine_, *game_state_);
+      *resource_manager_, *audio_manager_, *physics_engine_, *game_state_);
   ENGINE_LOG_ASSERT(context_, "Failed to Init Context!");
 
   ENGINE_LOG_TRACE("Init Context successfully.");

@@ -2,9 +2,7 @@
 
 #include "engine/resource/resource_manager.h"
 
-#include "SDL3_mixer/SDL_mixer.h"
 #include "SDL3_ttf/SDL_ttf.h"
-#include "audio_manager.h"
 #include "font_manager.h"
 #include "texture_manager.h"
 #include "utils/log.h"
@@ -15,7 +13,6 @@ ResourceManager::~ResourceManager() = default;
 
 ResourceManager::ResourceManager(SDL_Renderer* renderer) {
   texture_manager_ = std::make_unique<TextureManager>(renderer);
-  audio_manager_ = std::make_unique<AudioManager>();
   font_manager_ = std::make_unique<FontManager>();
 
   ENGINE_LOG_TRACE("Init ResourceManager successfully");
@@ -23,7 +20,6 @@ ResourceManager::ResourceManager(SDL_Renderer* renderer) {
 
 void ResourceManager::Clear() {
   font_manager_->ClearFonts();
-  audio_manager_->ClearSounds();
   texture_manager_->ClearTextures();
   ENGINE_LOG_TRACE("Clearing ResourceManager Assets");
 }
@@ -45,20 +41,6 @@ void ResourceManager::UnloadTexture(const std::string& file_path) {
 }
 
 void ResourceManager::ClearTextures() { texture_manager_->ClearTextures(); }
-
-MIX_Audio* ResourceManager::LoadSound(const std::string& file_path) {
-  return audio_manager_->LoadSound(file_path);
-}
-
-MIX_Audio* ResourceManager::GetSound(const std::string& file_path) {
-  return audio_manager_->GetSound(file_path);
-}
-
-void ResourceManager::UnloadSound(const std::string& file_path) {
-  audio_manager_->UnloadSound(file_path);
-}
-
-void ResourceManager::ClearSounds() { audio_manager_->ClearSounds(); }
 
 TTF_Font* ResourceManager::LoadFont(const std::string& file_path,
                                     int point_size) {

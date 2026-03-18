@@ -8,6 +8,7 @@
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
 #include "engine/render/text_renderer.h"
+#include "engine/resource/audio_manager.h"
 #include "utils/non_copyable.h"
 
 struct SDL_Window;
@@ -53,6 +54,7 @@ class GameApp final {
   bool InitTextRenderer();
   bool InitTime();
   bool InitResourceManager();
+  bool InitAudioManager();
   bool InitInputManager();
   bool InitGameState();
   bool InitContext();
@@ -69,6 +71,7 @@ class GameApp final {
   bool is_running_ = false;
   std::unique_ptr<Time> time_;
   std::unique_ptr<resource::ResourceManager> resource_manager_;
+  std::unique_ptr<resource::AudioManager> audio_manager_;
   std::unique_ptr<render::Renderer> renderer_;
   std::unique_ptr<render::Camera> camera_;
   std::unique_ptr<render::TextRenderer> text_renderer_;
@@ -77,6 +80,7 @@ class GameApp final {
   std::unique_ptr<physics::PhysicsEngine> physics_engine_;
   std::unique_ptr<core::GameState> game_state_;
   std::unique_ptr<core::Context> context_;
+
   std::unique_ptr<scene::SceneManager> scene_manager_;
 };
 

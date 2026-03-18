@@ -12,20 +12,21 @@
 namespace engine::resource {
 
 class AudioManager final {
-  friend class ResourceManager;
-
  public:
+  using AudioId = std::string;
   AudioManager();
   ~AudioManager();
   DISABLE_COPY_AND_MOVE(AudioManager);
 
- private:
-  MIX_Audio* LoadSound(const std::string& file_path);
-  MIX_Audio* GetSound(const std::string& file_path);
-  void UnloadSound(const std::string& file_path);
-  void ClearSounds();
+  MIX_Audio* LoadAudio(const std::string& file_path, const AudioId& id = "");
+  MIX_Audio* GetAudio(const AudioId& id);
+
+  bool PlayAudio(const AudioId& id);
+
+  void UnloadAudio(const AudioId& id);
   void ClearAudio();
 
+ private:
   struct SDLMixAudioDeleter {
     void operator()(MIX_Audio* audio) const {
       if (audio) {
@@ -35,9 +36,8 @@ class AudioManager final {
   };
 
   MIX_Mixer* mixer_;
-  std::unordered_map<std::string,
-                     std::unique_ptr<MIX_Audio, SDLMixAudioDeleter>>
-      sounds_;
+  std::unordered_map<AudioId, std::unique_ptr<MIX_Audio, SDLMixAudioDeleter>>
+      audio_;
 };
 
 }  // namespace engine::resource
