@@ -58,7 +58,7 @@ class Context final {
   bool InitConfig();
   bool InitCamera();
   bool InitTime();
-  
+
   bool InitSDL();
   bool InitRenderer();
   bool InitTextRenderer();
