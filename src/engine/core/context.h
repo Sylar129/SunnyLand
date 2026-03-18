@@ -56,22 +56,14 @@ class Context final {
 
  private:
   bool InitConfig();
-  bool InitCamera();
-  bool InitTime();
 
   bool InitSDL();
-  bool InitRenderer();
-  bool InitTextRenderer();
-  bool InitResourceManager();
-  bool InitAudioManager();
-  bool InitInputManager();
-  bool InitGameState();
-  bool InitPhysicsEngine();
 
   std::unique_ptr<core::Config> config_;
-  std::unique_ptr<Time> time_;
   SDL_Window* window_ = nullptr;
   SDL_Renderer* sdl_renderer_ = nullptr;
+
+  std::unique_ptr<Time> time_;
   std::unique_ptr<resource::ResourceManager> resource_manager_;
   std::unique_ptr<resource::AudioManager> audio_manager_;
   std::unique_ptr<render::Renderer> renderer_;

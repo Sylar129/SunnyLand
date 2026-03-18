@@ -18,7 +18,6 @@
 #include "engine/resource/audio_manager.h"
 #include "engine/resource/resource_manager.h"
 #include "engine/scene/scene_manager.h"
-#include "utils/assert.h"
 #include "utils/log.h"
 
 namespace engine::core {
@@ -31,15 +30,27 @@ bool Context::Init() {
   if (!InitConfig()) return false;
 
   if (!InitSDL()) return false;
-  if (!InitTime()) return false;
-  if (!InitResourceManager()) return false;
-  if (!InitAudioManager()) return false;
-  if (!InitRenderer()) return false;
-  if (!InitCamera()) return false;
-  if (!InitTextRenderer()) return false;
-  if (!InitInputManager()) return false;
-  if (!InitPhysicsEngine()) return false;
-  if (!InitGameState()) return false;
+
+  time_ = std::make_unique<Time>();
+  time_->SetTargetFps(config_->performance.target_fps);
+
+  resource_manager_ =
+      std::make_unique<resource::ResourceManager>(sdl_renderer_);
+  audio_manager_ = std::make_unique<resource::AudioManager>();
+
+  renderer_ = std::make_unique<render::Renderer>(sdl_renderer_,
+                                                 resource_manager_.get());
+
+  camera_ = std::make_unique<render::Camera>(
+      glm::vec2(config_->window.width / 2, config_->window.height / 2));
+
+  text_renderer_ = std::make_unique<render::TextRenderer>(
+      sdl_renderer_, resource_manager_.get());
+  input_manager_ =
+      std::make_unique<input::InputManager>(sdl_renderer_, config_.get());
+  physics_engine_ = std::make_unique<physics::PhysicsEngine>();
+  game_state_ = std::make_unique<core::GameState>(window_, sdl_renderer_);
+
   return true;
 }
 
@@ -94,22 +105,6 @@ bool Context::InitConfig() {
   return true;
 }
 
-bool Context::InitCamera() {
-  camera_ = std::make_unique<render::Camera>(
-      glm::vec2(config_->window.width / 2, config_->window.height / 2));
-  ENGINE_LOG_ASSERT(camera_, "Failed to Init Camera!");
-
-  ENGINE_LOG_TRACE("Camera initialized successfully.");
-  return true;
-}
-
-bool Context::InitTime() {
-  time_ = std::make_unique<Time>();
-  time_->SetTargetFps(config_->performance.target_fps);
-
-  return true;
-}
-
 bool Context::InitSDL() {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     ENGINE_LOG_ERROR("Failed to init SDL! Error: {}", SDL_GetError());
@@ -137,60 +132,11 @@ bool Context::InitSDL() {
   ENGINE_LOG_TRACE("Setting VSync: {}",
                    config_->graphics.vsync ? "Enabled" : "Disabled");
 
+  SDL_SetRenderDrawBlendMode(sdl_renderer_, SDL_BLENDMODE_BLEND);
   SDL_SetRenderLogicalPresentation(sdl_renderer_, config_->window.width / 2,
                                    config_->window.height / 2,
                                    SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
-  return true;
-}
-
-bool Context::InitRenderer() {
-  renderer_ = std::make_unique<render::Renderer>(sdl_renderer_,
-                                                 resource_manager_.get());
-
-  SDL_SetRenderDrawBlendMode(sdl_renderer_, SDL_BLENDMODE_BLEND);
-
-  ENGINE_LOG_ASSERT(renderer_, "Failed to Init Renderer!");
-
-  ENGINE_LOG_TRACE("Renderer initialized successfully.");
-  return true;
-}
-
-bool Context::InitTextRenderer() {
-  text_renderer_ = std::make_unique<render::TextRenderer>(
-      sdl_renderer_, resource_manager_.get());
-  ENGINE_LOG_TRACE("TextRenderer initialized successfully.");
-  return true;
-}
-
-bool Context::InitResourceManager() {
-  resource_manager_ =
-      std::make_unique<resource::ResourceManager>(sdl_renderer_);
-  return true;
-}
-
-bool Context::InitAudioManager() {
-  audio_manager_ = std::make_unique<resource::AudioManager>();
-  return true;
-}
-
-bool Context::InitInputManager() {
-  input_manager_ =
-      std::make_unique<input::InputManager>(sdl_renderer_, config_.get());
-  ENGINE_LOG_ASSERT(input_manager_, "Failed to Init InputManager!");
-
-  ENGINE_LOG_TRACE("Init InputManager successfully.");
-  return true;
-}
-
-bool Context::InitGameState() {
-  game_state_ = std::make_unique<core::GameState>(window_, sdl_renderer_);
-
-  return true;
-}
-
-bool Context::InitPhysicsEngine() {
-  physics_engine_ = std::make_unique<physics::PhysicsEngine>();
   return true;
 }
 
