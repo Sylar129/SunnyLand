@@ -45,7 +45,7 @@ MIX_Audio* AudioManager::LoadAudio(const std::string& file_path,
 
   MIX_Audio* raw_audio = MIX_LoadAudio(mixer_, file_path.c_str(), true);
   if (!raw_audio) {
-    ENGINE_LOG_ERROR("Loading audio falied: '{}': {}", file_path,
+    ENGINE_LOG_ERROR("Loading audio failed: '{}': {}", file_path,
                      SDL_GetError());
     return nullptr;
   }
@@ -75,7 +75,7 @@ void AudioManager::UnloadAudio(const std::string& id) { audio_.erase(id); }
 
 void AudioManager::ClearAudio() {
   if (!audio_.empty()) {
-    ENGINE_LOG_DEBUG("Clear all {} sounds.", audio_.size());
+    ENGINE_LOG_DEBUG("Clear all {} audio.", audio_.size());
     audio_.clear();
   }
 }
