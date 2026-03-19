@@ -27,3 +27,6 @@ set(JSON_BuildTests
     OFF
     CACHE INTERNAL "")
 add_subdirectory(third_party/json)
+
+# EnTT - entity-component system
+add_subdirectory(third_party/entt)
