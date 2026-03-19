@@ -28,10 +28,6 @@ class ResourceManager;
 class AudioManager;
 }  // namespace engine::resource
 
-namespace engine::physics {
-class PhysicsEngine;
-}
-
 namespace engine::core {
 
 class GameState;
@@ -56,7 +52,6 @@ class Context final {
   }
   core::Time& GetTime() const { return *time_; }
   resource::AudioManager& GetAudioManager() const { return *audio_manager_; }
-  physics::PhysicsEngine& GetPhysicsEngine() const { return *physics_engine_; }
   core::GameState& GetGameState() const { return *game_state_; }
 
  private:
@@ -75,7 +70,6 @@ class Context final {
   std::unique_ptr<render::Camera> camera_;
   std::unique_ptr<render::TextRenderer> text_renderer_;
   std::unique_ptr<input::InputManager> input_manager_;
-  std::unique_ptr<physics::PhysicsEngine> physics_engine_;
   std::unique_ptr<core::GameState> game_state_;
 };
 

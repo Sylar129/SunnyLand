@@ -4,8 +4,8 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
+#include "entt/entt.hpp"
 #include "utils/non_copyable.h"
 
 namespace engine::core {
@@ -14,11 +14,6 @@ class Context;
 
 namespace engine::ui {
 class UIManager;
-
-}
-
-namespace engine::object {
-class GameObject;
 }
 
 namespace engine::scene {
@@ -38,21 +33,10 @@ class Scene {
   virtual void HandleInput();
   virtual void Clean();
 
-  virtual void AddGameObject(std::unique_ptr<object::GameObject>&& game_object);
+  entt::registry& GetRegistry() { return registry_; }
+  const entt::registry& GetRegistry() const { return registry_; }
 
-  virtual void SafeAddGameObject(
-      std::unique_ptr<object::GameObject>&& game_object);
-
-  virtual void RemoveGameObject(object::GameObject* game_object_ptr);
-
-  virtual void SafeRemoveGameObject(object::GameObject* game_object_ptr);
-
-  const std::vector<std::unique_ptr<object::GameObject>>& GetGameObjects()
-      const {
-    return game_objects_;
-  }
-
-  object::GameObject* FindGameObjectByName(const std::string& name) const;
+  entt::entity FindEntityByName(const std::string& name) const;
 
   void SetName(const std::string& name) { scene_name_ = name; }
   const std::string& GetName() const { return scene_name_; }
@@ -61,20 +45,14 @@ class Scene {
 
   core::Context& GetContext() const { return context_; }
   SceneManager& GetSceneManager() const { return scene_manager_; }
-  std::vector<std::unique_ptr<object::GameObject>>& GetGameObjects() {
-    return game_objects_;
-  }
 
  protected:
-  void ProcessPendingAdditions();
-
   std::string scene_name_;
   core::Context& context_;
   SceneManager& scene_manager_;
   std::unique_ptr<ui::UIManager> ui_manager_;
   bool is_initialized_ = false;
-  std::vector<std::unique_ptr<object::GameObject>> game_objects_;
-  std::vector<std::unique_ptr<object::GameObject>> pending_additions_;
+  entt::registry registry_;
 };
 
 }  // namespace engine::scene

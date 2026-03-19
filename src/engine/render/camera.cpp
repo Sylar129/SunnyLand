@@ -2,7 +2,6 @@
 
 #include "engine/render/camera.h"
 
-#include "engine/component/transform_component.h"
 #include "utils/log.h"
 #include "utils/math.h"
 
@@ -24,7 +23,7 @@ void Camera::SetPosition(const glm::vec2& position) {
 
 void Camera::Update(float delta_time) {
   if (target_ == nullptr) return;
-  glm::vec2 target_pos = target_->GetPosition();
+  glm::vec2 target_pos = target_->position;
   glm::vec2 desired_position = target_pos - viewport_size_ / 2.0f;
 
   auto distance_ = glm::distance(position_, desired_position);
@@ -51,9 +50,7 @@ void Camera::SetLimitBounds(const utils::Rect& bounds) {
   ClampPosition();
 }
 
-void Camera::SetTarget(component::TransformComponent* target) {
-  target_ = target;
-}
+void Camera::SetTarget(ecs::TransformComponent* target) { target_ = target; }
 
 const glm::vec2& Camera::GetPosition() const { return position_; }
 
@@ -87,7 +84,7 @@ glm::vec2 Camera::ScreenToWorld(const glm::vec2& screen_pos) const {
 
 glm::vec2 Camera::GetViewportSize() const { return viewport_size_; }
 
-component::TransformComponent* Camera::GetTarget() const { return target_; }
+ecs::TransformComponent* Camera::GetTarget() const { return target_; }
 
 std::optional<utils::Rect> Camera::GetLimitBounds() const {
   return limit_bounds_;

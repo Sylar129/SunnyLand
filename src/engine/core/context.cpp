@@ -9,7 +9,6 @@
 #include "engine/core/game_state.h"
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
-#include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
 #include "engine/render/renderer.h"
 #include "engine/render/text_renderer.h"
@@ -53,7 +52,6 @@ bool Context::Init() {
       sdl_renderer_, resource_manager_.get());
   input_manager_ =
       std::make_unique<input::InputManager>(sdl_renderer_, config_.get());
-  physics_engine_ = std::make_unique<physics::PhysicsEngine>();
   game_state_ = std::make_unique<core::GameState>(window_, sdl_renderer_);
 
   return true;
@@ -76,9 +74,6 @@ void Context::Clean() {
   }
   if (input_manager_) {
     input_manager_.reset();
-  }
-  if (physics_engine_) {
-    physics_engine_.reset();
   }
   // Resource and audio managers may also hold SDL-related state.
   if (resource_manager_) {

@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include "engine/ecs/systems.h"
 #include "engine/scene/scene.h"
 
 namespace game::data {
@@ -22,6 +23,7 @@ class TitleScene final : public engine::scene::Scene {
 
   void Init() override;
   void Update(float delta_time) override;
+  void Render() override;
 
  private:
   void CreateUI();
@@ -32,6 +34,8 @@ class TitleScene final : public engine::scene::Scene {
   void OnQuitClick();
 
   std::shared_ptr<game::data::Session> session_data_;
+  engine::ecs::AnimationSystem animation_system_;
+  engine::ecs::RenderSystem render_system_;
 };
 
 }  // namespace game::scene

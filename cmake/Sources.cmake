@@ -1,23 +1,6 @@
 # Source files configuration
 
 set(TARGET_SOURCES
-    src/engine/component/animation_component.cpp
-    src/engine/component/animation_component.h
-    src/engine/component/collider_component.cpp
-    src/engine/component/collider_component.h
-    src/engine/component/component.h
-    src/engine/component/health_component.cpp
-    src/engine/component/health_component.h
-    src/engine/component/parallax_component.cpp
-    src/engine/component/parallax_component.h
-    src/engine/component/physics_component.cpp
-    src/engine/component/physics_component.h
-    src/engine/component/sprite_component.cpp
-    src/engine/component/sprite_component.h
-    src/engine/component/tilelayer_component.cpp
-    src/engine/component/tilelayer_component.h
-    src/engine/component/transform_component.cpp
-    src/engine/component/transform_component.h
     src/engine/core/config.h
     src/engine/core/context.cpp
     src/engine/core/context.h
@@ -27,15 +10,11 @@ set(TARGET_SOURCES
     src/engine/core/game_state.h
     src/engine/core/time.cpp
     src/engine/core/time.h
+    src/engine/ecs/components.h
+    src/engine/ecs/systems.cpp
+    src/engine/ecs/systems.h
     src/engine/input/input_manager.cpp
     src/engine/input/input_manager.h
-    src/engine/object/game_object.cpp
-    src/engine/object/game_object.h
-    src/engine/physics/collider.h
-    src/engine/physics/collision.cpp
-    src/engine/physics/collision.h
-    src/engine/physics/physics_engine.cpp
-    src/engine/physics/physics_engine.h
     src/engine/render/animation.cpp
     src/engine/render/animation.h
     src/engine/render/camera.cpp
@@ -53,8 +32,8 @@ set(TARGET_SOURCES
     src/engine/resource/resource_manager.h
     src/engine/resource/texture_manager.cpp
     src/engine/resource/texture_manager.h
-    src/engine/scene/level_loader.cpp
-    src/engine/scene/level_loader.h
+    src/engine/scene/ecs_level_loader.cpp
+    src/engine/scene/ecs_level_loader.h
     src/engine/scene/scene_manager.cpp
     src/engine/scene/scene_manager.h
     src/engine/scene/scene.cpp
@@ -80,35 +59,19 @@ set(TARGET_SOURCES
     src/engine/ui/ui_manager.h
     src/engine/ui/ui_panel.cpp
     src/engine/ui/ui_panel.h
-    src/game/component/ai/ai_behavior.h
-    src/game/component/ai/jump_behavior.cpp
-    src/game/component/ai/jump_behavior.h
-    src/game/component/ai/patrol_behavior.cpp
-    src/game/component/ai/patrol_behavior.h
-    src/game/component/ai/updown_behavior.cpp
-    src/game/component/ai/updown_behavior.h
-    src/game/component/ai_component.cpp
-    src/game/component/ai_component.h
-    src/game/component/state/climb_state.cpp
-    src/game/component/state/climb_state.h
-    src/game/component/state/dead_state.cpp
-    src/game/component/state/dead_state.h
-    src/game/component/state/fall_state.cpp
-    src/game/component/state/fall_state.h
-    src/game/component/state/hurt_state.cpp
-    src/game/component/state/hurt_state.h
-    src/game/component/state/idle_state.cpp
-    src/game/component/state/idle_state.h
-    src/game/component/state/jump_state.cpp
-    src/game/component/state/jump_state.h
-    src/game/component/state/player_state.cpp
-    src/game/component/state/player_state.h
-    src/game/component/state/walk_state.cpp
-    src/game/component/state/walk_state.h
-    src/game/component/player_component.cpp
-    src/game/component/player_component.h
     src/game/data/session_data.cpp
     src/game/data/session_data.h
+    src/game/ecs/components.h
+    src/game/ecs/entity/effect_entity.cpp
+    src/game/ecs/entity/effect_entity.h
+    src/game/ecs/entity/enemy_entity.cpp
+    src/game/ecs/entity/enemy_entity.h
+    src/game/ecs/entity/item_entity.cpp
+    src/game/ecs/entity/item_entity.h
+    src/game/ecs/entity/player_entity.cpp
+    src/game/ecs/entity/player_entity.h
+    src/game/ecs/systems.cpp
+    src/game/ecs/systems.h
     src/game/scene/end_scene.cpp
     src/game/scene/end_scene.h
     src/game/scene/game_scene.cpp

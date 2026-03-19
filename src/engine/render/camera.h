@@ -4,12 +4,9 @@
 
 #include <optional>
 
+#include "engine/ecs/components.h"
 #include "utils/math.h"
 #include "utils/non_copyable.h"
-
-namespace engine::component {
-class TransformComponent;
-}
 
 namespace engine::render {
 
@@ -30,12 +27,12 @@ class Camera final {
 
   void SetPosition(const glm::vec2& position);
   void SetLimitBounds(const utils::Rect& bounds);
-  void SetTarget(component::TransformComponent* target);
+  void SetTarget(ecs::TransformComponent* target);
 
   const glm::vec2& GetPosition() const;
   std::optional<utils::Rect> GetLimitBounds() const;
   glm::vec2 GetViewportSize() const;
-  component::TransformComponent* GetTarget() const;
+  ecs::TransformComponent* GetTarget() const;
 
  private:
   void ClampPosition();
@@ -45,7 +42,7 @@ class Camera final {
   std::optional<utils::Rect> limit_bounds_;
 
   float smooth_speed_ = 5.0f;
-  component::TransformComponent* target_ = nullptr;
+  ecs::TransformComponent* target_ = nullptr;
 };
 
 }  // namespace engine::render

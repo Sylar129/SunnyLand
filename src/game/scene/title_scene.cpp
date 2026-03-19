@@ -7,7 +7,7 @@
 #include "engine/input/input_manager.h"
 #include "engine/render/camera.h"
 #include "engine/resource/resource_manager.h"
-#include "engine/scene/level_loader.h"
+#include "engine/scene/ecs_level_loader.h"
 #include "engine/scene/scene_manager.h"
 #include "engine/ui/ui_button.h"
 #include "engine/ui/ui_image.h"
@@ -39,15 +39,15 @@ void TitleScene::Init() {
   if (is_initialized_) {
     return;
   }
-  engine::scene::LevelLoader level_loader;
-  if (!level_loader.LoadLevel("assets/maps/level0.tmj", *this)) {
+  engine::scene::EcsLevelLoader level_loader;
+  if (!level_loader.LoadLevel("assets/maps/level0.tmj", context_, registry_)) {
     GAME_LOG_ERROR("load title scene level failed!");
     return;
   }
 
   CreateUI();
 
-  Scene::Init();
+  engine::scene::Scene::Init();
   GAME_LOG_TRACE("TitleScene initialized");
 }
 
@@ -144,9 +144,19 @@ void TitleScene::CreateUI() {
 }
 
 void TitleScene::Update(float delta_time) {
-  Scene::Update(delta_time);
+  engine::scene::Scene::Update(delta_time);
+  animation_system_.Update(registry_, delta_time);
 
   context_.GetCamera().Move(glm::vec2(delta_time * 100.0f, 0.0f));
+}
+
+void TitleScene::Render() {
+  if (!is_initialized_) {
+    return;
+  }
+
+  render_system_.Render(registry_, context_);
+  ui_manager_->Render(context_);
 }
 
 void TitleScene::OnStartGameClick() {
