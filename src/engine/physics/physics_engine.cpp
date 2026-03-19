@@ -15,6 +15,28 @@
 
 namespace engine::physics {
 
+namespace {
+
+const component::TilePhysics& GetTilePhysicsOrDefault(
+    const component::TileInfo* tile_info) {
+  static const component::TilePhysics kDefaultTilePhysics;
+  return tile_info ? tile_info->physics : kDefaultTilePhysics;
+}
+
+bool IsSolidTile(const component::TilePhysics& tile_physics) {
+  return tile_physics.collision == component::TileCollisionType::kSolid;
+}
+
+bool IsOneWayTile(const component::TilePhysics& tile_physics) {
+  return tile_physics.collision == component::TileCollisionType::kOneWay;
+}
+
+bool IsSlopeTile(const component::TilePhysics& tile_physics) {
+  return tile_physics.collision == component::TileCollisionType::kSlope;
+}
+
+}  // namespace
+
 void PhysicsEngine::RegisterComponent(component::PhysicsComponent* component) {
   ENGINE_LOG_ASSERT(component, "PhysicsComponent is null.");
   components_.push_back(component);
@@ -109,7 +131,7 @@ void PhysicsEngine::CheckTileTriggers() {
 
     auto world_aabb = cc->GetWorldAABB();
 
-    std::set<component::TileType> triggers_set;
+    std::set<std::string> triggers_set;
 
     for (auto* layer : collision_tile_layers_) {
       if (!layer) continue;
@@ -128,19 +150,23 @@ void PhysicsEngine::CheckTileTriggers() {
 
       for (int x = start_x; x < end_x; ++x) {
         for (int y = start_y; y < end_y; ++y) {
-          auto tile_type = layer->GetTileTypeAt({x, y});
-          if (tile_type == component::TileType::kHazard) {
-            triggers_set.insert(tile_type);
-          } else if (tile_type == component::TileType::kLadder) {
+          const auto* tile_info = layer->GetTileInfoAt({x, y});
+          if (!tile_info) {
+            continue;
+          }
+          if (!tile_info->trigger_tag.empty()) {
+            triggers_set.insert(tile_info->trigger_tag);
+          }
+          if (tile_info->physics.is_climbable) {
             pc->SetCollidedLadder();
           }
         }
       }
-      for (const auto& type : triggers_set) {
-        tile_trigger_events_.emplace_back(obj, type);
+      for (const auto& trigger_tag : triggers_set) {
+        tile_trigger_events_.emplace_back(obj, trigger_tag);
         ENGINE_LOG_TRACE(
-            "tile_trigger_events_ Add GameObject {} with TileType {}",
-            obj->GetName(), static_cast<int>(type));
+            "tile_trigger_events_ Add GameObject {} with trigger {}",
+            obj->GetName(), trigger_tag);
       }
     }
   }
@@ -223,22 +249,26 @@ void PhysicsEngine::ResolveTileCollisions(component::PhysicsComponent* pc,
 
       // Check top-right corner
       auto tile_y = static_cast<int>(floor(obj_pos.y / tile_size.y));
-      auto tile_type_top = layer->GetTileTypeAt({tile_x, tile_y});
+      const auto& tile_top =
+          GetTilePhysicsOrDefault(layer->GetTileInfoAt({tile_x, tile_y}));
 
       // Check bottom-right corner (with tolerance to handle edge cases)
       auto tile_y_bottom = static_cast<int>(
           floor((obj_pos.y + obj_size.y - tolerance) / tile_size.y));
-      auto tile_type_bottom = layer->GetTileTypeAt({tile_x, tile_y_bottom});
+      const auto& tile_bottom = GetTilePhysicsOrDefault(
+          layer->GetTileInfoAt({tile_x, tile_y_bottom}));
 
-      if (tile_type_top == component::TileType::kSolid ||
-          tile_type_bottom == component::TileType::kSolid) {
+      if (IsSolidTile(tile_top) || IsSolidTile(tile_bottom)) {
         new_obj_pos.x = tile_x * tile_size.x - obj_size.x;
         pc->velocity_.x = 0.0f;
         pc->SetCollidedRight();
       } else {
         auto width_right = new_obj_pos.x + obj_size.x - tile_x * tile_size.x;
-        auto height_right =
-            GetTileHeightAtWidth(width_right, tile_type_bottom, tile_size);
+        auto height_right = IsSlopeTile(tile_bottom)
+                                ? GetTileHeightAtWidth(width_right,
+                                                       tile_bottom.slope,
+                                                       tile_size)
+                                : 0.0f;
         if (height_right > 0.0f) {
           if (new_obj_pos.y >
               (tile_y_bottom + 1) * tile_size.y - obj_size.y - height_right) {
@@ -255,22 +285,26 @@ void PhysicsEngine::ResolveTileCollisions(component::PhysicsComponent* pc,
 
       // Check top-left corner
       auto tile_y = static_cast<int>(floor(obj_pos.y / tile_size.y));
-      auto tile_type_top = layer->GetTileTypeAt({tile_x, tile_y});
+      const auto& tile_top =
+          GetTilePhysicsOrDefault(layer->GetTileInfoAt({tile_x, tile_y}));
 
       // Check bottom-left corner (with tolerance)
       auto tile_y_bottom = static_cast<int>(
           floor((obj_pos.y + obj_size.y - tolerance) / tile_size.y));
-      auto tile_type_bottom = layer->GetTileTypeAt({tile_x, tile_y_bottom});
+      const auto& tile_bottom = GetTilePhysicsOrDefault(
+          layer->GetTileInfoAt({tile_x, tile_y_bottom}));
 
-      if (tile_type_top == component::TileType::kSolid ||
-          tile_type_bottom == component::TileType::kSolid) {
+      if (IsSolidTile(tile_top) || IsSolidTile(tile_bottom)) {
         new_obj_pos.x = (tile_x + 1) * tile_size.x;
         pc->velocity_.x = 0.0f;
         pc->SetCollidedLeft();
       } else {
         auto width_left = new_obj_pos.x - tile_x * tile_size.x;
-        auto height_left =
-            GetTileHeightAtWidth(width_left, tile_type_bottom, tile_size);
+        auto height_left = IsSlopeTile(tile_bottom)
+                               ? GetTileHeightAtWidth(width_left,
+                                                      tile_bottom.slope,
+                                                      tile_size)
+                               : 0.0f;
         if (height_left > 0.0f) {
           if (new_obj_pos.y >
               (tile_y_bottom + 1) * tile_size.y - obj_size.y - height_left) {
@@ -290,26 +324,26 @@ void PhysicsEngine::ResolveTileCollisions(component::PhysicsComponent* pc,
 
       // Check bottom-left corner
       auto tile_x = static_cast<int>(floor(obj_pos.x / tile_size.x));
-      auto tile_type_left = layer->GetTileTypeAt({tile_x, tile_y});
+        const auto& tile_left =
+          GetTilePhysicsOrDefault(layer->GetTileInfoAt({tile_x, tile_y}));
 
       // Check bottom-right corner (with tolerance)
       auto tile_x_right = static_cast<int>(
           floor((obj_pos.x + obj_size.x - tolerance) / tile_size.x));
-      auto tile_type_right = layer->GetTileTypeAt({tile_x_right, tile_y});
+        const auto& tile_right = GetTilePhysicsOrDefault(
+          layer->GetTileInfoAt({tile_x_right, tile_y}));
 
-      if (tile_type_left == component::TileType::kSolid ||
-          tile_type_right == component::TileType::kSolid ||
-          tile_type_left == component::TileType::kUnisolid ||
-          tile_type_right == component::TileType::kUnisolid) {
+        if (IsSolidTile(tile_left) || IsSolidTile(tile_right) ||
+          IsOneWayTile(tile_left) || IsOneWayTile(tile_right)) {
         new_obj_pos.y = tile_y * tile_size.y - obj_size.y;
         pc->velocity_.y = 0.0f;
         pc->SetCollidedBelow();
-      } else if (tile_type_left == component::TileType::kLadder &&
-                 tile_type_right == component::TileType::kLadder) {
-        auto tile_type_up_l = layer->GetTileTypeAt({tile_x, tile_y - 1});
-        auto tile_type_up_r = layer->GetTileTypeAt({tile_x_right, tile_y - 1});
-        if (tile_type_up_r != component::TileType::kLadder &&
-            tile_type_up_l != component::TileType::kLadder) {
+        } else if (tile_left.is_climbable && tile_right.is_climbable) {
+        const auto& tile_up_l =
+          GetTilePhysicsOrDefault(layer->GetTileInfoAt({tile_x, tile_y - 1}));
+        const auto& tile_up_r = GetTilePhysicsOrDefault(
+          layer->GetTileInfoAt({tile_x_right, tile_y - 1}));
+        if (!tile_up_r.is_climbable && !tile_up_l.is_climbable) {
           if (pc->IsUseGravity()) {
             pc->SetOnTopLadder();
             pc->SetCollidedBelow();
@@ -322,10 +356,16 @@ void PhysicsEngine::ResolveTileCollisions(component::PhysicsComponent* pc,
       } else {
         auto width_left = obj_pos.x - tile_x * tile_size.x;
         auto width_right = obj_pos.x + obj_size.x - tile_x_right * tile_size.x;
-        auto height_left =
-            GetTileHeightAtWidth(width_left, tile_type_left, tile_size);
-        auto height_right =
-            GetTileHeightAtWidth(width_right, tile_type_right, tile_size);
+        auto height_left = IsSlopeTile(tile_left)
+                               ? GetTileHeightAtWidth(width_left,
+                                                      tile_left.slope,
+                                                      tile_size)
+                               : 0.0f;
+        auto height_right = IsSlopeTile(tile_right)
+                                ? GetTileHeightAtWidth(width_right,
+                                                       tile_right.slope,
+                                                       tile_size)
+                                : 0.0f;
         auto height = glm::max(height_left, height_right);
         if (height > 0.0f) {
           if (new_obj_pos.y >
@@ -343,17 +383,18 @@ void PhysicsEngine::ResolveTileCollisions(component::PhysicsComponent* pc,
 
       // Check top-left corner
       auto tile_x = static_cast<int>(floor(obj_pos.x / tile_size.x));
-      auto tile_type_left = layer->GetTileTypeAt({tile_x, tile_y});
+        const auto& tile_left =
+          GetTilePhysicsOrDefault(layer->GetTileInfoAt({tile_x, tile_y}));
 
       // Check top-right corner (with tolerance)
       auto tile_x_right = static_cast<int>(
           floor((obj_pos.x + obj_size.x - tolerance) / tile_size.x));
-      auto tile_type_right = layer->GetTileTypeAt({tile_x_right, tile_y});
+        const auto& tile_right = GetTilePhysicsOrDefault(
+          layer->GetTileInfoAt({tile_x_right, tile_y}));
 
       // If either corner hits a solid tile, clamp Y position and stop Y
       // velocity
-      if (tile_type_left == component::TileType::kSolid ||
-          tile_type_right == component::TileType::kSolid) {
+        if (IsSolidTile(tile_left) || IsSolidTile(tile_right)) {
         new_obj_pos.y = (tile_y + 1) * tile_size.y;
         pc->velocity_.y = 0.0f;
         pc->SetCollidedAbove();
@@ -414,25 +455,11 @@ void PhysicsEngine::ResolveSolidObjectCollisions(
   }
 }
 
-float PhysicsEngine::GetTileHeightAtWidth(float width, component::TileType type,
-                                          glm::vec2 tile_size) {
+float PhysicsEngine::GetTileHeightAtWidth(
+    float width, const component::TileSlope& slope, glm::vec2 tile_size) {
   auto rel_x = glm::clamp(width / tile_size.x, 0.0f, 1.0f);
-  switch (type) {
-    case component::TileType::kSlope0_1:
-      return rel_x * tile_size.y;
-    case component::TileType::kSlope0_2:
-      return rel_x * tile_size.y * 0.5f;
-    case component::TileType::kSlope2_1:
-      return rel_x * tile_size.y * 0.5f + tile_size.y * 0.5f;
-    case component::TileType::kSlope1_0:
-      return (1.0f - rel_x) * tile_size.y;
-    case component::TileType::kSlope2_0:
-      return (1.0f - rel_x) * tile_size.y * 0.5f;
-    case component::TileType::kSlope1_2:
-      return (1.0f - rel_x) * tile_size.y * 0.5f + tile_size.y * 0.5f;
-    default:
-      return 0.0f;
-  }
+  auto height_ratio = glm::mix(slope.left_height, slope.right_height, rel_x);
+  return glm::clamp(height_ratio, 0.0f, 1.0f) * tile_size.y;
 }
 
 void PhysicsEngine::ApplyWorldBounds(component::PhysicsComponent* pc) {

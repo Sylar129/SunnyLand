@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 #include "engine/component/animation_component.h"
 #include "engine/component/collider_component.h"
@@ -113,7 +114,8 @@ void LevelLoader::LoadImageLayer(const nlohmann::json& layer_json,
 void LevelLoader::LoadTileLayer(const nlohmann::json& layer_json,
                                 Scene& scene) {
   std::vector<component::TileInfo> tiles;
-  tiles.reserve(map_size_.x * map_size_.y);
+  tiles.reserve(static_cast<size_t>(map_size_.x) *
+                static_cast<size_t>(map_size_.y));
 
   const auto& data = layer_json["data"];
 
@@ -205,7 +207,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
 
       auto tile_json = GetTileJsonByGid(gid);
 
-      if (tile_info.type == component::TileType::kSolid) {
+      if (tile_info.physics.collision == component::TileCollisionType::kSolid) {
         auto collider = std::make_unique<physics::AABBCollider>(src_size);
         game_object->AddComponent<component::ColliderComponent>(
             std::move(collider));
@@ -224,8 +226,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       auto tag = GetTileProperty<std::string>(tile_json, "tag");
       if (tag) {
         game_object->SetTag(tag.value());
-      } else if (tile_info.type == component::TileType::kHazard) {
-        game_object->SetTag("hazard");
+      } else if (!tile_info.trigger_tag.empty()) {
+        game_object->SetTag(tile_info.trigger_tag);
       }
 
       auto gravity = GetTileProperty<bool>(tile_json, "gravity");
@@ -348,8 +350,16 @@ component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
                               static_cast<float>(coord_y * tile_size_.y),
                               static_cast<float>(tile_size_.x),
                               static_cast<float>(tile_size_.y)};
-    auto tile_type = GetTileTypeById(tileset, local_id);
-    return {{texture_id, texture_rect}, tile_type};
+    const nlohmann::json* tile_json = nullptr;
+    if (tileset.contains("tiles")) {
+      for (const auto& tile : tileset["tiles"]) {
+        if (tile.value("id", -1) == local_id) {
+          tile_json = &tile;
+          break;
+        }
+      }
+    }
+    return ResolveTileInfo({texture_id, texture_rect}, tile_json);
   } else {
     if (!tileset.contains("tiles")) {
       ENGINE_LOG_ERROR("Tileset '{}' missing 'tiles' attribute.",
@@ -377,12 +387,32 @@ component::TileInfo LevelLoader::GetTileInfoByGid(int gid) const {
             static_cast<float>(tile_json.value("width", image_width)),
             static_cast<float>(tile_json.value("height", image_height))};
         render::Sprite sprite{texture_id, texture_rect};
-        auto tile_type = GetTileType(tile_json);
-        return component::TileInfo(sprite, tile_type);
+        return ResolveTileInfo(std::move(sprite), &tile_json);
       }
     }
   }
   return {};
+}
+
+component::TileInfo LevelLoader::ResolveTileInfo(
+    render::Sprite sprite, const nlohmann::json* tile_json) const {
+  component::TileInfo tile_info(std::move(sprite));
+  if (!tile_json) {
+    return tile_info;
+  }
+
+  tile_info.physics = GetTilePhysics(*tile_json);
+  if (auto trigger_tag =
+          GetTileProperty<std::string>(*tile_json, "trigger_tag");
+      trigger_tag) {
+    tile_info.trigger_tag = trigger_tag.value();
+  }
+
+  if (tile_info_resolver_) {
+    tile_info_resolver_(*tile_json, tile_info);
+  }
+
+  return tile_info;
 }
 
 std::string LevelLoader::ResolvePath(const std::string& relative_path,
@@ -392,58 +422,63 @@ std::string LevelLoader::ResolvePath(const std::string& relative_path,
   return final_path.string();
 }
 
-component::TileType LevelLoader::GetTileType(
+component::TilePhysics LevelLoader::GetTilePhysics(
     const nlohmann::json& tile_json) const {
-  if (tile_json.contains("properties")) {
-    for (const auto& property : tile_json["properties"]) {
-      if (property.value("name", "") == "solid") {
-        return property.value("value", false) ? component::TileType::kSolid
-                                              : component::TileType::kNormal;
-      } else if (property.value("name", "") == "unisolid") {
-        return property.value("value", false) ? component::TileType::kUnisolid
-                                              : component::TileType::kNormal;
-      } else if (property.contains("name") && property["name"] == "slope") {
-        auto slope_type = property.value("value", "");
-        if (slope_type == "0_1") {
-          return component::TileType::kSlope0_1;
-        } else if (slope_type == "1_0") {
-          return component::TileType::kSlope1_0;
-        } else if (slope_type == "0_2") {
-          return component::TileType::kSlope0_2;
-        } else if (slope_type == "2_0") {
-          return component::TileType::kSlope2_0;
-        } else if (slope_type == "2_1") {
-          return component::TileType::kSlope2_1;
-        } else if (slope_type == "1_2") {
-          return component::TileType::kSlope1_2;
-        } else {
-          ENGINE_LOG_ERROR("Unknown slope type: {}", slope_type);
-          return component::TileType::kNormal;
-        }
-      } else if (property.contains("name") && property["name"] == "hazard") {
-        auto is_hazard = property.value("value", false);
-        return is_hazard ? component::TileType::kHazard
-                         : component::TileType::kNormal;
-      } else if (property.contains("name") && property["name"] == "ladder") {
-        auto is_ladder = property.value("value", false);
-        return is_ladder ? component::TileType::kLadder
-                         : component::TileType::kNormal;
-      }
+  component::TilePhysics tile_physics;
+
+  if (auto collision = GetTileProperty<std::string>(tile_json, "collision");
+      collision) {
+    if (collision.value() == "solid") {
+      tile_physics.collision = component::TileCollisionType::kSolid;
+    } else if (collision.value() == "one_way" ||
+               collision.value() == "oneway") {
+      tile_physics.collision = component::TileCollisionType::kOneWay;
+    } else if (collision.value() != "none") {
+      ENGINE_LOG_WARN("Unknown tile collision type: {}", collision.value());
     }
   }
-  return component::TileType::kNormal;
+
+  if (auto slope_heights =
+          GetTileProperty<std::string>(tile_json, "slope_heights");
+      slope_heights) {
+    if (!ParseSlopeHeights(slope_heights.value(), tile_physics)) {
+      ENGINE_LOG_WARN("Invalid slope_heights format: {}",
+                      slope_heights.value());
+    }
+  }
+
+  if (auto climbable = GetTileProperty<bool>(tile_json, "climbable");
+      climbable && climbable.value()) {
+    tile_physics.is_climbable = true;
+  }
+
+  return tile_physics;
 }
 
-component::TileType LevelLoader::GetTileTypeById(
-    const nlohmann::json& tileset_json, int local_id) const {
-  if (tileset_json.contains("tiles")) {
-    for (const auto& tile : tileset_json["tiles"]) {
-      if (tile.value("id", -1) == local_id) {
-        return GetTileType(tile);
-      }
-    }
+bool LevelLoader::ParseSlopeHeights(
+    const std::string& slope_heights,
+    component::TilePhysics& tile_physics) const {
+  std::stringstream stream(slope_heights);
+  std::string left_height;
+  std::string right_height;
+
+  if (!std::getline(stream, left_height, ',') ||
+      !std::getline(stream, right_height, ',')) {
+    return false;
   }
-  return component::TileType::kNormal;
+
+  try {
+    tile_physics.collision = component::TileCollisionType::kSlope;
+    tile_physics.slope.left_height = std::stof(left_height);
+    tile_physics.slope.right_height = std::stof(right_height);
+  } catch (const std::exception&) {
+    return false;
+  }
+
+  return tile_physics.slope.left_height >= 0.0f &&
+         tile_physics.slope.left_height <= 1.0f &&
+         tile_physics.slope.right_height >= 0.0f &&
+         tile_physics.slope.right_height <= 1.0f;
 }
 
 std::optional<utils::Rect> LevelLoader::GetColliderRect(

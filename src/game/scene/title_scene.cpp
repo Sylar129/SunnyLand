@@ -15,6 +15,7 @@
 #include "engine/ui/ui_manager.h"
 #include "engine/ui/ui_panel.h"
 #include "game/data/session_data.h"
+#include "game/data/tile_info_resolver.h"
 #include "game/scene/game_scene.h"
 #include "game/scene/helps_scene.h"
 #include "utils/log.h"
@@ -39,7 +40,8 @@ void TitleScene::Init() {
   if (is_initialized_) {
     return;
   }
-  engine::scene::LevelLoader level_loader;
+  engine::scene::LevelLoader level_loader(
+      game::data::CreateSunnyLandTileInfoResolver());
   if (!level_loader.LoadLevel("assets/maps/level0.tmj", *this)) {
     GAME_LOG_ERROR("load title scene level failed!");
     return;
