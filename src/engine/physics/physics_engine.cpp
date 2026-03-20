@@ -8,9 +8,9 @@
 #include "engine/component/physics_component.h"
 #include "engine/component/tilelayer_component.h"
 #include "engine/component/transform_component.h"
-#include "engine/physics/collision.h"
 #include "glm/common.hpp"
 #include "utils/assert.h"
+#include "utils/collision.h"
 #include "utils/log.h"
 
 namespace engine::physics {
@@ -86,8 +86,7 @@ void PhysicsEngine::CheckObjectCollisions() {
       auto* cc_b = obj_b->GetComponent<component::ColliderComponent>();
       if (!cc_b || !cc_b->IsActive()) continue;
 
-      if (collision::CheckRectOverlap(cc_a->GetWorldAABB(),
-                                      cc_b->GetWorldAABB())) {
+      if (CheckRectOverlap(cc_a->GetWorldAABB(), cc_b->GetWorldAABB())) {
         if (obj_a->GetTag() != "solid" && obj_b->GetTag() == "solid") {
           ResolveSolidObjectCollisions(obj_a, obj_b);
         } else if (obj_a->GetTag() == "solid" && obj_b->GetTag() != "solid") {
