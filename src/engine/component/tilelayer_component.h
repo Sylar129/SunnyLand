@@ -50,11 +50,6 @@ class TileLayerComponent final : public Component {
     return glm::vec2(map_size_.x * tile_size_.x, map_size_.y * tile_size_.y);
   }
   const std::vector<TileInfo>& GetTiles() const { return tiles_; }
-  const glm::vec2& GetOffset() const { return offset_; }
-  bool IsHidden() const { return is_hidden_; }
-
-  void SetOffset(const glm::vec2& offset) { offset_ = offset; }
-  void SetHidden(bool hidden) { is_hidden_ = hidden; }
 
   void SetPhysicsEngine(physics::PhysicsEngine* physics_engine) {
     physics_engine_ = physics_engine;
@@ -71,8 +66,6 @@ class TileLayerComponent final : public Component {
   glm::ivec2 tile_size_;
   glm::ivec2 map_size_;
   std::vector<TileInfo> tiles_;
-  glm::vec2 offset_ = {0.0f, 0.0f};
-  bool is_hidden_ = false;
 };
 
 }  // namespace engine::component
