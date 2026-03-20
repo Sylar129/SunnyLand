@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <string>
-#include <utility>
 #include <vector>
 
 #include "engine/component/component.h"
@@ -24,34 +22,26 @@ class PhysicsEngine;
 
 namespace engine::component {
 
-enum class TileCollisionType {
-  kNone,
+enum class TileType {
+  kEmpty,
+  kNormal,
   kSolid,
-  kOneWay,
-  kSlope,
-};
-
-struct TileSlope {
-  float left_height = 0.0f;
-  float right_height = 0.0f;
-};
-
-struct TilePhysics {
-  TileCollisionType collision = TileCollisionType::kNone;
-  TileSlope slope;
-  bool is_climbable = false;
+  kUnisolid,
+  kSlope0_1,  ///< @brief Slope tile, height: left 0,   right 1
+  kSlope1_0,  ///< @brief Slope tile, height: left 1,   right 0
+  kSlope0_2,  ///< @brief Slope tile, height: left 0,   right 0.5
+  kSlope2_1,  ///< @brief Slope tile, height: left 0.5, right 1
+  kSlope1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
+  kSlope2_0,  ///< @brief Slope tile, height: left 0.5, right 0
+  kHazard,    ///< @brief damaging tile, e.g. spikes, lava, etc.
+  kLadder,    ///< @brief ladder tile that allows climbing
 };
 
 struct TileInfo {
   render::Sprite sprite;
-  TilePhysics physics;
-  std::string trigger_tag;
-  TileInfo(render::Sprite s = render::Sprite(), TilePhysics p = TilePhysics(),
-           std::string trigger = {})
-      : sprite(std::move(s)),
-        physics(std::move(p)),
-        trigger_tag(std::move(trigger)) {}
-  bool IsEmpty() const { return sprite.GetTextureId().empty(); }
+  TileType type;
+  TileInfo(render::Sprite s = render::Sprite(), TileType t = TileType::kEmpty)
+      : sprite(std::move(s)), type(t) {}
 };
 
 class TileLayerComponent final : public Component {
@@ -64,8 +54,10 @@ class TileLayerComponent final : public Component {
                      std::vector<TileInfo>&& tiles);
 
   const TileInfo* GetTileInfoAt(const glm::ivec2& pos) const;
-  const TileInfo* GetTileInfoAtWorldPos(const glm::vec2& world_pos) const;
-  const TilePhysics* GetTilePhysicsAt(const glm::ivec2& pos) const;
+
+  TileType GetTileTypeAt(const glm::ivec2& pos) const;
+
+  TileType GetTileTypeAtWorldPos(const glm::vec2& world_pos) const;
 
   glm::ivec2 GetTileSize() const { return tile_size_; }
   glm::ivec2 GetMapSize() const { return map_size_; }

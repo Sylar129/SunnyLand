@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "engine/object/game_object.h"
@@ -13,7 +12,7 @@
 namespace engine::component {
 class PhysicsComponent;
 class TileLayerComponent;
-struct TileSlope;
+enum class TileType;
 }  // namespace engine::component
 
 namespace engine::physics {
@@ -53,7 +52,7 @@ class PhysicsEngine {
   void ResolveSolidObjectCollisions(object::GameObject* move_obj,
                                     object::GameObject* solid_obj);
 
-  float GetTileHeightAtWidth(float width, const component::TileSlope& slope,
+  float GetTileHeightAtWidth(float width, component::TileType type,
                              glm::vec2 tile_size);
 
   void ApplyWorldBounds(component::PhysicsComponent* pc);
@@ -67,7 +66,8 @@ class PhysicsEngine {
       collision_pairs_;
   std::vector<component::TileLayerComponent*> collision_tile_layers_;
 
-  std::vector<std::pair<object::GameObject*, std::string>> tile_trigger_events_;
+  std::vector<std::pair<object::GameObject*, component::TileType>>
+      tile_trigger_events_;
 };
 
 }  // namespace engine::physics

@@ -28,7 +28,6 @@
 #include "game/component/ai_component.h"
 #include "game/component/player_component.h"
 #include "game/data/session_data.h"
-#include "game/data/tile_info_resolver.h"
 #include "game/scene/end_scene.h"
 #include "game/scene/menu_scene.h"
 #include "utils/assert.h"
@@ -90,8 +89,7 @@ void GameScene::HandleInput() {
 void GameScene::Clean() { Scene::Clean(); }
 
 void GameScene::InitLevel() {
-  engine::scene::LevelLoader level_loader(
-      game::data::CreateSunnyLandTileInfoResolver());
+  engine::scene::LevelLoader level_loader;
   auto level_path = game_session_->GetCurrentMapPath();
   if (!level_loader.LoadLevel(level_path, *this)) {
     GAME_LOG_ERROR("Load level '{}' failed!", level_path);
@@ -240,8 +238,8 @@ void GameScene::HandleTileTriggers() {
       context_.GetPhysicsEngine().getTileTriggerEvents();
   for (const auto& event : tile_trigger_events) {
     auto* obj = event.first;
-    const auto& trigger_tag = event.second;
-    if (trigger_tag == game::data::kHazardTileTrigger) {
+    auto tile_type = event.second;
+    if (tile_type == engine::component::TileType::kHazard) {
       if (obj->GetName() == "player") {
         HandlePlayerDamage(1);
         GAME_LOG_DEBUG("Player '{}' taking damage from hazard", obj->GetName());
