@@ -22,26 +22,11 @@ class PhysicsEngine;
 
 namespace engine::component {
 
-enum class TileType {
-  kEmpty,
-  kNormal,
-  kSolid,
-  kUnisolid,
-  kSlope0_1,  ///< @brief Slope tile, height: left 0,   right 1
-  kSlope1_0,  ///< @brief Slope tile, height: left 1,   right 0
-  kSlope0_2,  ///< @brief Slope tile, height: left 0,   right 0.5
-  kSlope2_1,  ///< @brief Slope tile, height: left 0.5, right 1
-  kSlope1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
-  kSlope2_0,  ///< @brief Slope tile, height: left 0.5, right 0
-  kHazard,    ///< @brief damaging tile, e.g. spikes, lava, etc.
-  kLadder,    ///< @brief ladder tile that allows climbing
-};
+using TileType = std::string;
 
 struct TileInfo {
   render::Sprite sprite;
   TileType type;
-  TileInfo(render::Sprite s = render::Sprite(), TileType t = TileType::kEmpty)
-      : sprite(std::move(s)), type(t) {}
 };
 
 class TileLayerComponent final : public Component {
@@ -65,11 +50,6 @@ class TileLayerComponent final : public Component {
     return glm::vec2(map_size_.x * tile_size_.x, map_size_.y * tile_size_.y);
   }
   const std::vector<TileInfo>& GetTiles() const { return tiles_; }
-  const glm::vec2& GetOffset() const { return offset_; }
-  bool IsHidden() const { return is_hidden_; }
-
-  void SetOffset(const glm::vec2& offset) { offset_ = offset; }
-  void SetHidden(bool hidden) { is_hidden_ = hidden; }
 
   void SetPhysicsEngine(physics::PhysicsEngine* physics_engine) {
     physics_engine_ = physics_engine;
@@ -86,8 +66,6 @@ class TileLayerComponent final : public Component {
   glm::ivec2 tile_size_;
   glm::ivec2 map_size_;
   std::vector<TileInfo> tiles_;
-  glm::vec2 offset_ = {0.0f, 0.0f};
-  bool is_hidden_ = false;
 };
 
 }  // namespace engine::component

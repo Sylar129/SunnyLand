@@ -15,7 +15,6 @@
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/object/game_object.h"
-#include "engine/physics/collider.h"
 #include "engine/render/animation.h"
 #include "engine/scene/scene.h"
 #include "nlohmann/json.hpp"
@@ -158,9 +157,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         game_object->AddComponent<component::TransformComponent>(
             position, glm::vec2(1.0f), rotation);
 
-        auto collider = std::make_unique<physics::AABBCollider>(dst_size);
-        auto* cc = game_object->AddComponent<component::ColliderComponent>(
-            std::move(collider));
+        auto* cc =
+            game_object->AddComponent<component::ColliderComponent>(dst_size);
         cc->SetTrigger(object.value("trigger", true));
         game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
@@ -205,17 +203,14 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
 
       auto tile_json = GetTileJsonByGid(gid);
 
-      if (tile_info.type == component::TileType::kSolid) {
-        auto collider = std::make_unique<physics::AABBCollider>(src_size);
-        game_object->AddComponent<component::ColliderComponent>(
-            std::move(collider));
+      if (tile_info.type == "solid") {
+        game_object->AddComponent<component::ColliderComponent>(src_size);
         game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
         game_object->SetTag("solid");
       } else if (auto rect = GetColliderRect(tile_json); rect) {
-        auto collider = std::make_unique<physics::AABBCollider>(rect->size);
-        auto* cc = game_object->AddComponent<component::ColliderComponent>(
-            std::move(collider));
+        auto* cc =
+            game_object->AddComponent<component::ColliderComponent>(rect->size);
         cc->SetOffset(rect->position);
         game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
@@ -224,7 +219,7 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       auto tag = GetTileProperty<std::string>(tile_json, "tag");
       if (tag) {
         game_object->SetTag(tag.value());
-      } else if (tile_info.type == component::TileType::kHazard) {
+      } else if (tile_info.type == "hazard") {
         game_object->SetTag("hazard");
       }
 
@@ -397,41 +392,37 @@ component::TileType LevelLoader::GetTileType(
   if (tile_json.contains("properties")) {
     for (const auto& property : tile_json["properties"]) {
       if (property.value("name", "") == "solid") {
-        return property.value("value", false) ? component::TileType::kSolid
-                                              : component::TileType::kNormal;
+        return property.value("value", false) ? "solid" : "normal";
       } else if (property.value("name", "") == "unisolid") {
-        return property.value("value", false) ? component::TileType::kUnisolid
-                                              : component::TileType::kNormal;
+        return property.value("value", false) ? "unisolid" : "normal";
       } else if (property.contains("name") && property["name"] == "slope") {
         auto slope_type = property.value("value", "");
         if (slope_type == "0_1") {
-          return component::TileType::kSlope0_1;
+          return "slope_0_1";
         } else if (slope_type == "1_0") {
-          return component::TileType::kSlope1_0;
+          return "slope_1_0";
         } else if (slope_type == "0_2") {
-          return component::TileType::kSlope0_2;
+          return "slope_0_2";
         } else if (slope_type == "2_0") {
-          return component::TileType::kSlope2_0;
+          return "slope_2_0";
         } else if (slope_type == "2_1") {
-          return component::TileType::kSlope2_1;
+          return "slope_2_1";
         } else if (slope_type == "1_2") {
-          return component::TileType::kSlope1_2;
+          return "slope_1_2";
         } else {
           ENGINE_LOG_ERROR("Unknown slope type: {}", slope_type);
-          return component::TileType::kNormal;
+          return "normal";
         }
       } else if (property.contains("name") && property["name"] == "hazard") {
         auto is_hazard = property.value("value", false);
-        return is_hazard ? component::TileType::kHazard
-                         : component::TileType::kNormal;
+        return is_hazard ? "hazard" : "normal";
       } else if (property.contains("name") && property["name"] == "ladder") {
         auto is_ladder = property.value("value", false);
-        return is_ladder ? component::TileType::kLadder
-                         : component::TileType::kNormal;
+        return is_ladder ? "ladder" : "normal";
       }
     }
   }
-  return component::TileType::kNormal;
+  return "normal";
 }
 
 component::TileType LevelLoader::GetTileTypeById(
@@ -443,7 +434,7 @@ component::TileType LevelLoader::GetTileTypeById(
       }
     }
   }
-  return component::TileType::kNormal;
+  return "normal";
 }
 
 std::optional<utils::Rect> LevelLoader::GetColliderRect(

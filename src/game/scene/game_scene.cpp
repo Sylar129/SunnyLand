@@ -239,7 +239,7 @@ void GameScene::HandleTileTriggers() {
   for (const auto& event : tile_trigger_events) {
     auto* obj = event.first;
     auto tile_type = event.second;
-    if (tile_type == engine::component::TileType::kHazard) {
+    if (tile_type == "hazard") {
       if (obj->GetName() == "player") {
         HandlePlayerDamage(1);
         GAME_LOG_DEBUG("Player '{}' taking damage from hazard", obj->GetName());

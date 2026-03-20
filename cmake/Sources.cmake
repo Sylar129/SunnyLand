@@ -31,9 +31,6 @@ set(TARGET_SOURCES
     src/engine/input/input_manager.h
     src/engine/object/game_object.cpp
     src/engine/object/game_object.h
-    src/engine/physics/collider.h
-    src/engine/physics/collision.cpp
-    src/engine/physics/collision.h
     src/engine/physics/physics_engine.cpp
     src/engine/physics/physics_engine.h
     src/engine/render/animation.cpp
@@ -121,6 +118,7 @@ set(TARGET_SOURCES
     src/game/scene/title_scene.h
     src/utils/alignment.h
     src/utils/assert.h
+    src/utils/collision.h
     src/utils/log.cpp
     src/utils/log.h
     src/utils/math.h

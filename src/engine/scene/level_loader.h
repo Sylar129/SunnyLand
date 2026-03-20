@@ -5,13 +5,13 @@
 #include <map>
 #include <string>
 
+#include "engine/component/tilelayer_component.h"
 #include "glm/vec2.hpp"
 #include "nlohmann/json.hpp"
 #include "utils/math.h"
 
 namespace engine::component {
 struct TileInfo;
-enum class TileType;
 class AnimationComponent;
 }  // namespace engine::component
 
