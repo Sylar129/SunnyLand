@@ -22,20 +22,7 @@ class PhysicsEngine;
 
 namespace engine::component {
 
-enum class TileType {
-  kEmpty,
-  kNormal,
-  kSolid,
-  kUnisolid,
-  kSlope0_1,  ///< @brief Slope tile, height: left 0,   right 1
-  kSlope1_0,  ///< @brief Slope tile, height: left 1,   right 0
-  kSlope0_2,  ///< @brief Slope tile, height: left 0,   right 0.5
-  kSlope2_1,  ///< @brief Slope tile, height: left 0.5, right 1
-  kSlope1_2,  ///< @brief Slope tile, height: left 1,   right 0.5
-  kSlope2_0,  ///< @brief Slope tile, height: left 0.5, right 0
-  kHazard,    ///< @brief damaging tile, e.g. spikes, lava, etc.
-  kLadder,    ///< @brief ladder tile that allows climbing
-};
+using TileType = std::string;
 
 struct TileInfo {
   render::Sprite sprite;

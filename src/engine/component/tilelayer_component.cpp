@@ -38,7 +38,7 @@ void TileLayerComponent::Render(core::Context& context) {
     for (int x = 0; x < map_size_.x; ++x) {
       size_t index = static_cast<size_t>(y) * map_size_.x + x;
 
-      if (index < tiles_.size() && tiles_[index].type != TileType::kEmpty) {
+      if (index < tiles_.size() && !tiles_[index].type.empty()) {
         const auto& tile_info = tiles_[index];
 
         glm::vec2 tile_left_top_pos = {
@@ -78,7 +78,7 @@ const TileInfo* TileLayerComponent::GetTileInfoAt(const glm::ivec2& pos) const {
 
 TileType TileLayerComponent::GetTileTypeAt(const glm::ivec2& pos) const {
   const TileInfo* info = GetTileInfoAt(pos);
-  return info ? info->type : TileType::kEmpty;
+  return info ? info->type : "";
 }
 
 TileType TileLayerComponent::GetTileTypeAtWorldPos(

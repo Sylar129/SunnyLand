@@ -4,6 +4,7 @@
 
 #include <vector>
 
+#include "engine/component/tilelayer_component.h"
 #include "engine/object/game_object.h"
 #include "glm/vec2.hpp"
 #include "utils/math.h"
@@ -12,7 +13,6 @@
 namespace engine::component {
 class PhysicsComponent;
 class TileLayerComponent;
-enum class TileType;
 }  // namespace engine::component
 
 namespace engine::physics {
