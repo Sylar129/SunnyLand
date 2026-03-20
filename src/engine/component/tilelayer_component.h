@@ -4,11 +4,11 @@
 
 #include <vector>
 
-#include "engine/render/sprite.h"
+#include "engine/render/texture.h"
 #include "glm/vec2.hpp"
 
 namespace engine::render {
-class Sprite;
+class Texture;
 }
 
 namespace engine::component {
@@ -16,7 +16,7 @@ namespace engine::component {
 using TileType = std::string;
 
 struct TileInfo {
-  render::Sprite sprite;
+  render::Texture sprite;
   TileType type;
 };
 

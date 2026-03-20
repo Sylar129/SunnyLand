@@ -28,7 +28,7 @@ void UIInteractive::SetState(std::unique_ptr<state::UIState> state) {
 }
 
 void UIInteractive::AddSprite(const std::string& name,
-                              std::unique_ptr<render::Sprite> sprite) {
+                              std::unique_ptr<render::Texture> sprite) {
   if (size_.x == 0.0f && size_.y == 0.0f) {
     size_ =
         context_.GetResourceManager().GetTextureSize(sprite->GetTextureId());

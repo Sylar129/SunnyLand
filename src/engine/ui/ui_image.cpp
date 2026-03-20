@@ -4,7 +4,7 @@
 
 #include "engine/core/context.h"
 #include "engine/render/renderer.h"
-#include "engine/render/sprite.h"
+#include "engine/render/texture.h"
 #include "utils/log.h"
 
 namespace engine::ui {

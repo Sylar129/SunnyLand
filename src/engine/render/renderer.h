@@ -4,8 +4,8 @@
 
 #include <optional>
 
+#include "engine/render/texture.h"
 #include "glm/glm.hpp"
-#include "sprite.h"
 #include "utils/math.h"
 #include "utils/non_copyable.h"
 
@@ -26,16 +26,16 @@ class Renderer final {
            resource::ResourceManager* resource_manager);
   DISABLE_COPY_AND_MOVE(Renderer);
 
-  void DrawSprite(const Camera& camera, const Sprite& sprite,
+  void DrawSprite(const Camera& camera, const Texture& sprite,
                   const glm::vec2& position,
                   const glm::vec2& scale = {1.0f, 1.0f}, double angle = 0.0f);
 
-  void DrawParallax(const Camera& camera, const Sprite& sprite,
+  void DrawParallax(const Camera& camera, const Texture& sprite,
                     const glm::vec2& position, const glm::vec2& scroll_factor,
                     const glm::bvec2& repeat = {true, true},
                     const glm::vec2& scale = {1.0f, 1.0f});
 
-  void DrawUISprite(const Sprite& sprite, const glm::vec2& position,
+  void DrawUISprite(const Texture& sprite, const glm::vec2& position,
                     const std::optional<glm::vec2>& size = std::nullopt);
 
   void DrawUIFilledRect(const utils::Rect& rect, const utils::FColor& color);
@@ -49,7 +49,7 @@ class Renderer final {
   SDL_Renderer* GetSDLRenderer() const { return renderer_; }
 
  private:
-  std::optional<SDL_FRect> GetSpriteSrcRect(const Sprite& sprite);
+  std::optional<SDL_FRect> GetSpriteSrcRect(const Texture& sprite);
   bool IsRectInViewport(const Camera& camera, const SDL_FRect& rect);
 
   SDL_Renderer* renderer_ = nullptr;

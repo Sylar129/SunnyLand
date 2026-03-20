@@ -4,7 +4,7 @@
 
 #include "SDL3/SDL.h"
 #include "engine/render/camera.h"
-#include "engine/render/sprite.h"
+#include "engine/render/texture.h"
 #include "engine/resource/resource_manager.h"
 #include "utils/assert.h"
 #include "utils/log.h"
@@ -28,7 +28,7 @@ Renderer::Renderer(SDL_Renderer* sdl_renderer,
   ENGINE_LOG_TRACE("Renderer construction successful.");
 }
 
-void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
+void Renderer::DrawSprite(const Camera& camera, const Texture& sprite,
                           const glm::vec2& position, const glm::vec2& scale,
                           double angle) {
   auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
@@ -71,7 +71,7 @@ void Renderer::DrawSprite(const Camera& camera, const Sprite& sprite,
   }
 }
 
-void Renderer::DrawParallax(const Camera& camera, const Sprite& sprite,
+void Renderer::DrawParallax(const Camera& camera, const Texture& sprite,
                             const glm::vec2& position,
                             const glm::vec2& scroll_factor,
                             const glm::bvec2& repeat, const glm::vec2& scale) {
@@ -133,7 +133,7 @@ void Renderer::DrawParallax(const Camera& camera, const Sprite& sprite,
   }
 }
 
-void Renderer::DrawUISprite(const Sprite& sprite, const glm::vec2& position,
+void Renderer::DrawUISprite(const Texture& sprite, const glm::vec2& position,
                             const std::optional<glm::vec2>& size) {
   auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
@@ -199,7 +199,7 @@ void Renderer::ClearScreen() {
 
 void Renderer::Present() { SDL_RenderPresent(renderer_); }
 
-std::optional<SDL_FRect> Renderer::GetSpriteSrcRect(const Sprite& sprite) {
+std::optional<SDL_FRect> Renderer::GetSpriteSrcRect(const Texture& sprite) {
   SDL_Texture* texture = resource_manager_->GetTexture(sprite.GetTextureId());
   if (!texture) {
     ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());

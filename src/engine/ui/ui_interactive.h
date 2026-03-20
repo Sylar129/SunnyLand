@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "engine/render/sprite.h"
+#include "engine/render/texture.h"
 #include "engine/ui/ui_element.h"
 #include "state/ui_state.h"
 
@@ -26,7 +26,7 @@ class UIInteractive : public UIElement {
   virtual void Clicked() {}
 
   void AddSprite(const std::string& name,
-                 std::unique_ptr<render::Sprite> sprite);
+                 std::unique_ptr<render::Texture> sprite);
   void SetSprite(const std::string& name);
   void AddSound(const std::string& id, const std::string& path);
   void PlaySound(const std::string& id);
@@ -43,8 +43,8 @@ class UIInteractive : public UIElement {
  protected:
   core::Context& context_;
   std::unique_ptr<state::UIState> state_;
-  std::unordered_map<std::string, std::unique_ptr<render::Sprite>> sprites_;
-  render::Sprite* current_sprite_ = nullptr;
+  std::unordered_map<std::string, std::unique_ptr<render::Texture>> sprites_;
+  render::Texture* current_sprite_ = nullptr;
   bool interactive_ = true;
 };
 

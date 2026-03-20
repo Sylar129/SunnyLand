@@ -9,16 +9,16 @@
 
 namespace engine::render {
 
-class Sprite final {
+class Texture final {
  public:
-  Sprite(const std::string& texture_id,
-         const std::optional<SDL_FRect>& source_rect = std::nullopt,
-         bool is_flipped = false)
+  Texture(const std::string& texture_id,
+          const std::optional<SDL_FRect>& source_rect = std::nullopt,
+          bool is_flipped = false)
       : texture_id_(texture_id),
         source_rect_(source_rect),
         is_flipped_(is_flipped) {}
 
-  Sprite() = default;
+  Texture() = default;
 
   const std::string& GetTextureId() const { return texture_id_; }
   const std::optional<SDL_FRect>& GetSourceRect() const { return source_rect_; }

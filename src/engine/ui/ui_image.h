@@ -7,7 +7,7 @@
 
 #include "SDL3/SDL_rect.h"
 
-#include "engine/render/sprite.h"
+#include "engine/render/texture.h"
 #include "engine/ui/ui_element.h"
 
 namespace engine::ui {
@@ -22,8 +22,8 @@ public:
 
   void Render(core::Context& context) override;
 
-  const render::Sprite& GetSprite() const { return sprite_; }
-  void SetSprite(const render::Sprite& sprite) { sprite_ = sprite; }
+  const render::Texture& GetSprite() const { return sprite_; }
+  void SetSprite(const render::Texture& sprite) { sprite_ = sprite; }
 
   const std::string& GetTextureId() const { return sprite_.GetTextureId(); }
   void SetTextureId(const std::string &texture_id) {
@@ -41,7 +41,7 @@ public:
   void SetFlipped(bool flipped) { sprite_.SetFlipped(flipped); }
 
 protected:
-  render::Sprite sprite_;
+  render::Texture sprite_;
 };
 
 }  // namespace engine::ui

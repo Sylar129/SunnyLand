@@ -27,9 +27,9 @@ set(TARGET_SOURCES
     src/engine/render/camera.h
     src/engine/render/renderer.cpp
     src/engine/render/renderer.h
-    src/engine/render/sprite.h
     src/engine/render/text_renderer.cpp
     src/engine/render/text_renderer.h
+    src/engine/render/texture.h
     src/engine/resource/audio_manager.cpp
     src/engine/resource/audio_manager.h
     src/engine/resource/font_manager.cpp

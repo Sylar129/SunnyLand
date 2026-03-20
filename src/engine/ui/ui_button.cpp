@@ -13,9 +13,9 @@ UIButton::UIButton(core::Context& context, const std::string& normal_sprite_id,
                    const glm::vec2& position, const glm::vec2& size,
                    std::function<void()> callback)
     : UIInteractive(context, position, size), callback_(std::move(callback)) {
-  AddSprite("normal", std::make_unique<render::Sprite>(normal_sprite_id));
-  AddSprite("hover", std::make_unique<render::Sprite>(hover_sprite_id));
-  AddSprite("pressed", std::make_unique<render::Sprite>(pressed_sprite_id));
+  AddSprite("normal", std::make_unique<render::Texture>(normal_sprite_id));
+  AddSprite("hover", std::make_unique<render::Texture>(hover_sprite_id));
+  AddSprite("pressed", std::make_unique<render::Texture>(pressed_sprite_id));
 
   SetState(std::make_unique<ui::state::UINormalState>(this));
 
