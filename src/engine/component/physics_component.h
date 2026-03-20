@@ -39,7 +39,6 @@ class PhysicsComponent final : public Component {
   void SetVelocityX(float vx) { velocity_.x = vx; }
   void SetVelocityY(float vy) { velocity_.y = vy; }
   const glm::vec2& GetVelocity() const { return velocity_; }
-  TransformComponent* GetTransform() const { return transform_; }
 
   using CollisionFlag = uint8_t;
   static constexpr CollisionFlag kCollidedBelow = 1 << 0;
@@ -70,7 +69,6 @@ class PhysicsComponent final : public Component {
   void Clean() override;
 
   physics::PhysicsEngine* physics_engine_ = nullptr;
-  TransformComponent* transform_ = nullptr;
 
   glm::vec2 velocity_ = {0.0f, 0.0f};
   glm::vec2 force_ = {0.0f, 0.0f};

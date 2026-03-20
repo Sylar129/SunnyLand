@@ -15,7 +15,7 @@
 namespace game::component {
 
 void AIComponent::Init() {
-  GAME_LOG_ASSERT(owner_, "PlayerComponent must have an owner GameObject");
+  GAME_LOG_ASSERT(owner_, "AIComponent must have an owner GameObject");
 
   transform_component_ =
       owner_->GetComponent<engine::component::TransformComponent>();

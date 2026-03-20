@@ -2,10 +2,7 @@
 
 #pragma once
 
-#include <memory>
-
 #include "engine/component/component.h"
-#include "utils/alignment.h"
 #include "utils/math.h"
 
 namespace engine::component {
@@ -18,21 +15,15 @@ class ColliderComponent final : public Component {
   friend class object::GameObject;
 
  public:
-  explicit ColliderComponent(
-      const glm::vec2& size,
-      utils::Alignment alignment = utils::Alignment::kNone,
-      bool is_trigger = false, bool is_active = true);
-
-  void UpdateOffset();
+  explicit ColliderComponent(const glm::vec2& size, bool is_trigger = false,
+                             bool is_active = true);
 
   const TransformComponent* GetTransform() const { return transform_; }
   const glm::vec2& GetOffset() const { return offset_; }
-  utils::Alignment GetAlignment() const { return alignment_; }
   utils::Rect GetWorldAABB() const;
   bool IsTrigger() const { return is_trigger_; }
   bool IsActive() const { return is_active_; }
 
-  void SetAlignment(utils::Alignment anchor);
   void SetOffset(const glm::vec2& offset) { offset_ = offset; }
   void SetTrigger(bool is_trigger) { is_trigger_ = is_trigger; }
   void SetActive(bool is_active) { is_active_ = is_active; }
@@ -45,7 +36,6 @@ class ColliderComponent final : public Component {
 
   glm::vec2 size_ = {0.0f, 0.0f};
   glm::vec2 offset_ = {0.0f, 0.0f};
-  utils::Alignment alignment_ = utils::Alignment::kNone;
 
   bool is_trigger_ = false;
   bool is_active_ = true;
