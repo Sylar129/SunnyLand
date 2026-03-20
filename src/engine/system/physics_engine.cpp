@@ -8,6 +8,6 @@
 
 namespace engine::physics {
 
-void PhysicsEngine::Update(float delta_time){}
+void PhysicsEngine::Update(float delta_time) {}
 
 }  // namespace engine::physics

@@ -2,12 +2,9 @@
 
 #pragma once
 
-
 #include "glm/vec2.hpp"
 #include "utils/math.h"
 #include "utils/non_copyable.h"
-
-
 
 namespace engine::physics {
 
