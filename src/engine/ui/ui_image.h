@@ -22,26 +22,26 @@ public:
 
   void Render(core::Context& context) override;
 
-  const render::Texture& GetSprite() const { return sprite_; }
-  void SetSprite(const render::Texture& sprite) { sprite_ = sprite; }
+  const render::Texture& GetTexture() const { return texture_; }
+  void SetTexture(const render::Texture& texture) { texture_ = texture; }
 
-  const std::string& GetTextureId() const { return sprite_.GetTextureId(); }
+  const std::string& GetTextureId() const { return texture_.GetTextureId(); }
   void SetTextureId(const std::string &texture_id) {
-    sprite_.SetTextureId(texture_id);
+    texture_.SetTextureId(texture_id);
   }
 
   const std::optional<SDL_FRect>& GetSourceRect() const {
-    return sprite_.GetSourceRect();
+    return texture_.GetSourceRect();
   }
   void SetSourceRect(const std::optional<SDL_FRect>& source_rect) {
-    sprite_.SetSourceRect(source_rect);
+    texture_.SetSourceRect(source_rect);
   }
 
-  bool IsFlipped() const { return sprite_.IsFlipped(); }
-  void SetFlipped(bool flipped) { sprite_.SetFlipped(flipped); }
+  bool IsFlipped() const { return texture_.IsFlipped(); }
+  void SetFlipped(bool flipped) { texture_.SetFlipped(flipped); }
 
 protected:
-  render::Texture sprite_;
+  render::Texture texture_;
 };
 
 }  // namespace engine::ui

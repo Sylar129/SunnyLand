@@ -11,7 +11,7 @@
 namespace engine::ui::state {
 
 void UINormalState::Enter() {
-  owner_->SetSprite("normal");
+  owner_->SetTexture("normal");
   ENGINE_LOG_DEBUG("Switched to normal state");
 }
 
