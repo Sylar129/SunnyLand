@@ -35,7 +35,6 @@ class Scene {
   virtual void HandleInput();
   virtual void Clean();
 
-  void SetName(const std::string& name) { scene_name_ = name; }
   const std::string& GetName() const { return scene_name_; }
   void SetInitialized(bool initialized) { is_initialized_ = initialized; }
   bool IsInitialized() const { return is_initialized_; }
