@@ -2,13 +2,8 @@
 
 #include "engine/scene/scene.h"
 
-#include <algorithm>
-#include <utility>
-
-#include "engine/component/tag_component.h"
 #include "engine/core/context.h"
 #include "engine/core/game_state.h"
-#include "engine/object/game_object.h"
 #include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
 #include "engine/scene/scene_manager.h"
@@ -70,11 +65,6 @@ void Scene::Clean() {
 
   is_initialized_ = false;
   ENGINE_LOG_TRACE("Scene '{}' clean finished", scene_name_);
-}
-
-object::GameObject Scene::AddGameObject() {
-  object::GameObject object(&registry_);
-  return object;
 }
 
 }  // namespace engine::scene

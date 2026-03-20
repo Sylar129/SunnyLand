@@ -6,42 +6,13 @@
 #include <string>
 #include <unordered_map>
 
-#include "engine/component/component.h"
-
 namespace engine::render {
 class Animation;
 }
-namespace engine::component {
-class SpriteComponent;
-}
 
 namespace engine::component {
 
-class AnimationComponent : public Component {
-  friend class object::GameObject;
-
- public:
-  AnimationComponent();
-  ~AnimationComponent() override;
-
-  void AddAnimation(std::unique_ptr<render::Animation> animation);
-  void PlayAnimation(const std::string& name);
-  void StopAnimation() { is_playing_ = false; }
-  void ResumeAnimation() { is_playing_ = true; }
-
-  std::string GetCurrentAnimationName() const;
-  bool IsPlaying() const { return is_playing_; }
-  bool IsAnimationFinished() const;
-  bool IsOneShotRemoval() const { return is_one_shot_removal_; }
-  void SetOneShotRemoval(bool is_one_shot_removal) {
-    is_one_shot_removal_ = is_one_shot_removal;
-  }
-
- protected:
-  void Init() override;
-  void Update(float, core::Context&) override;
-
- private:
+struct AnimationComponent {
   std::unordered_map<std::string, std::unique_ptr<render::Animation>>
       animations_;
   render::Animation* current_animation_ = nullptr;

@@ -18,10 +18,6 @@ class UIManager;
 
 }
 
-namespace engine::object {
-class GameObject;
-}
-
 namespace engine::scene {
 class SceneManager;
 
@@ -38,8 +34,6 @@ class Scene {
   virtual void Render();
   virtual void HandleInput();
   virtual void Clean();
-
-  object::GameObject AddGameObject();
 
   void SetName(const std::string& name) { scene_name_ = name; }
   const std::string& GetName() const { return scene_name_; }

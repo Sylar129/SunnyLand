@@ -4,11 +4,11 @@
 
 #include <string>
 
-namespace engine {
+namespace engine::component {
 
 struct TagComponent {
   std::string name;
   std::string tag;
 };
 
-}
+}  // namespace engine::component

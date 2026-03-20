@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "engine/component/tilelayer_component.h"
-#include "engine/object/game_object.h"
 #include "glm/vec2.hpp"
 #include "utils/math.h"
 #include "utils/non_copyable.h"
@@ -23,12 +22,6 @@ class PhysicsEngine {
 
   DISABLE_COPY_AND_MOVE(PhysicsEngine);
 
-  void RegisterComponent(component::PhysicsComponent* component);
-  void UnregisterComponent(component::PhysicsComponent* component);
-
-  void RegisterCollisionLayer(component::TileLayerComponent* layer);
-  void UnregisterCollisionLayer(component::TileLayerComponent* layer);
-
   void Update(float delta_time);
 
   void SetGravity(const glm::vec2& gravity) { gravity_ = gravity; }
@@ -42,9 +35,6 @@ class PhysicsEngine {
     return world_bounds_;
   }
 
-  const auto& GetCollisionPairs() const { return collision_pairs_; };
-  const auto& getTileTriggerEvents() const { return tile_trigger_events_; };
-
  private:
 
   float GetTileHeightAtWidth(float width, component::TileType type,
@@ -56,13 +46,6 @@ class PhysicsEngine {
   glm::vec2 gravity_ = {0.0f, 980.0f};
   float max_speed_ = 500.0f;
   std::optional<utils::Rect> world_bounds_;
-
-  std::vector<std::pair<object::GameObject*, object::GameObject*>>
-      collision_pairs_;
-  std::vector<component::TileLayerComponent*> collision_tile_layers_;
-
-  std::vector<std::pair<object::GameObject*, component::TileType>>
-      tile_trigger_events_;
 };
 
 }  // namespace engine::physics

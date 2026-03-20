@@ -1,23 +1,14 @@
 # Source files configuration
 
 set(TARGET_SOURCES
-    src/engine/component/animation_component.cpp
     src/engine/component/animation_component.h
-    src/engine/component/collider_component.cpp
     src/engine/component/collider_component.h
-    src/engine/component/component.h
-    src/engine/component/health_component.cpp
     src/engine/component/health_component.h
-    src/engine/component/parallax_component.cpp
     src/engine/component/parallax_component.h
-    src/engine/component/physics_component.cpp
     src/engine/component/physics_component.h
-    src/engine/component/sprite_component.cpp
     src/engine/component/sprite_component.h
     src/engine/component/tag_component.h
-    src/engine/component/tilelayer_component.cpp
     src/engine/component/tilelayer_component.h
-    src/engine/component/transform_component.cpp
     src/engine/component/transform_component.h
     src/engine/core/config.h
     src/engine/core/context.cpp
@@ -30,8 +21,6 @@ set(TARGET_SOURCES
     src/engine/core/time.h
     src/engine/input/input_manager.cpp
     src/engine/input/input_manager.h
-    src/engine/object/game_object.cpp
-    src/engine/object/game_object.h
     src/engine/physics/physics_engine.cpp
     src/engine/physics/physics_engine.h
     src/engine/render/animation.cpp
