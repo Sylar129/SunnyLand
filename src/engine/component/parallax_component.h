@@ -8,7 +8,7 @@
 namespace engine::component {
 
 struct ParallaxComponent final {
-  render::Texture sprite;
+  render::Texture texture;
   glm::vec2 scroll_factor;
   glm::bvec2 repeat;
   bool is_hidden = false;

@@ -12,7 +12,7 @@
 namespace engine::ui::state {
 
 void UIPressedState::Enter() {
-  owner_->SetSprite("pressed");
+  owner_->SetTexture("pressed");
   owner_->PlaySound("pressed");
   ENGINE_LOG_DEBUG("Switched to pressed state");
 }

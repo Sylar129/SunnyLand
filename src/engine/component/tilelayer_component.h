@@ -16,7 +16,7 @@ namespace engine::component {
 using TileType = std::string;
 
 struct TileInfo {
-  render::Texture sprite;
+  render::Texture texture;
   TileType type;
 };
 

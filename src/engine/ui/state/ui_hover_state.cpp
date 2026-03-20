@@ -12,7 +12,7 @@
 namespace engine::ui::state {
 
 void UIHoverState::Enter() {
-  owner_->SetSprite("hover");
+  owner_->SetTexture("hover");
   ENGINE_LOG_DEBUG("Switched to hover state");
 }
 

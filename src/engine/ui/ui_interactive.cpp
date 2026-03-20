@@ -27,20 +27,20 @@ void UIInteractive::SetState(std::unique_ptr<state::UIState> state) {
   state_->Enter();
 }
 
-void UIInteractive::AddSprite(const std::string& name,
-                              std::unique_ptr<render::Texture> sprite) {
+void UIInteractive::AddTexture(const std::string& name,
+                               std::unique_ptr<render::Texture> texture) {
   if (size_.x == 0.0f && size_.y == 0.0f) {
     size_ =
-        context_.GetResourceManager().GetTextureSize(sprite->GetTextureId());
+        context_.GetResourceManager().GetTextureSize(texture->GetTextureId());
   }
-  sprites_[name] = std::move(sprite);
+  textures_[name] = std::move(texture);
 }
 
-void UIInteractive::SetSprite(const std::string& name) {
-  if (sprites_.find(name) != sprites_.end()) {
-    current_sprite_ = sprites_[name].get();
+void UIInteractive::SetTexture(const std::string& name) {
+  if (textures_.find(name) != textures_.end()) {
+    current_texture_ = textures_[name].get();
   } else {
-    ENGINE_LOG_WARN("Sprite '{}' not found", name);
+    ENGINE_LOG_WARN("Texture '{}' not found", name);
   }
 }
 
@@ -69,8 +69,8 @@ bool UIInteractive::HandleInput(core::Context& context) {
 void UIInteractive::Render(core::Context& context) {
   if (!visible_) return;
 
-  context.GetRenderer().DrawUISprite(*current_sprite_, GetScreenPosition(),
-                                     size_);
+  context.GetRenderer().DrawUITexture(*current_texture_, GetScreenPosition(),
+                                      size_);
 
   UIElement::Render(context);
 }

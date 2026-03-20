@@ -28,26 +28,27 @@ Renderer::Renderer(SDL_Renderer* sdl_renderer,
   ENGINE_LOG_TRACE("Renderer construction successful.");
 }
 
-void Renderer::DrawSprite(const Camera& camera, const Texture& sprite,
-                          const glm::vec2& position, const glm::vec2& scale,
-                          double angle) {
-  auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
-  if (!texture) {
-    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+void Renderer::DrawTexture(const Camera& camera, const Texture& texture,
+                           const glm::vec2& position, const glm::vec2& scale,
+                           double angle) {
+  auto raw_texture = resource_manager_->GetTexture(texture.GetTextureId());
+  if (!raw_texture) {
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.",
+                     texture.GetTextureId());
     return;
   }
 
-  auto src_rect = GetSpriteSrcRect(sprite);
+  auto src_rect = GetTextureSrcRect(texture);
   if (!src_rect.has_value()) {
-    ENGINE_LOG_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                     sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture's source rectangle, ID: {}",
+                     texture.GetTextureId());
     return;
   }
 
   // Apply camera transformation
   glm::vec2 position_screen = camera.WorldToScreen(position);
 
-  // Calculate destination rectangle, note that position is the sprite's
+  // Calculate destination rectangle, note that position is the texture's
   // top-left coordinate
   float scaled_w = src_rect.value().w * scale.x;
   float scaled_h = src_rect.value().h * scale.y;
@@ -55,36 +56,37 @@ void Renderer::DrawSprite(const Camera& camera, const Texture& sprite,
                          scaled_h};
 
   if (!IsRectInViewport(camera,
-                        dest_rect)) {  // Viewport clipping: if sprite is
+                        dest_rect)) {  // Viewport clipping: if texture is
                                        // outside viewport, do not draw
-    // ENGINE_LOG_INFO("Sprite is outside viewport range, ID: {}",
-    //             sprite.GetTextureId());
+    // ENGINE_LOG_INFO("Texture is outside viewport range, ID: {}",
+    //             texture.GetTextureId());
     return;
   }
 
-  // Execute drawing (default rotation center is the sprite's center)
+  // Execute drawing (default rotation center is the texture's center)
   if (!SDL_RenderTextureRotated(
-          renderer_, texture, &src_rect.value(), &dest_rect, angle, nullptr,
-          sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
+          renderer_, raw_texture, &src_rect.value(), &dest_rect, angle, nullptr,
+          texture.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
     ENGINE_LOG_ERROR("Failed to render rotated texture (ID: {}): {}",
-                     sprite.GetTextureId(), SDL_GetError());
+                     texture.GetTextureId(), SDL_GetError());
   }
 }
 
-void Renderer::DrawParallax(const Camera& camera, const Texture& sprite,
+void Renderer::DrawParallax(const Camera& camera, const Texture& texture,
                             const glm::vec2& position,
                             const glm::vec2& scroll_factor,
                             const glm::bvec2& repeat, const glm::vec2& scale) {
-  auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
-  if (!texture) {
-    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+  auto raw_texture = resource_manager_->GetTexture(texture.GetTextureId());
+  if (!raw_texture) {
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.",
+                     texture.GetTextureId());
     return;
   }
 
-  auto src_rect = GetSpriteSrcRect(sprite);
+  auto src_rect = GetTextureSrcRect(texture);
   if (!src_rect.has_value()) {
-    ENGINE_LOG_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                     sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture's source rectangle, ID: {}",
+                     texture.GetTextureId());
     return;
   }
 
@@ -124,27 +126,28 @@ void Renderer::DrawParallax(const Camera& camera, const Texture& sprite,
   for (float y = start.y; y < stop.y; y += scaled_tex_h) {
     for (float x = start.x; x < stop.x; x += scaled_tex_w) {
       SDL_FRect dest_rect = {x, y, scaled_tex_w, scaled_tex_h};
-      if (!SDL_RenderTexture(renderer_, texture, nullptr, &dest_rect)) {
+      if (!SDL_RenderTexture(renderer_, raw_texture, nullptr, &dest_rect)) {
         ENGINE_LOG_ERROR("Failed to render parallax texture (ID: {}): {}",
-                         sprite.GetTextureId(), SDL_GetError());
+                         texture.GetTextureId(), SDL_GetError());
         return;
       }
     }
   }
 }
 
-void Renderer::DrawUISprite(const Texture& sprite, const glm::vec2& position,
-                            const std::optional<glm::vec2>& size) {
-  auto texture = resource_manager_->GetTexture(sprite.GetTextureId());
-  if (!texture) {
-    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+void Renderer::DrawUITexture(const Texture& texture, const glm::vec2& position,
+                             const std::optional<glm::vec2>& size) {
+  auto raw_texture = resource_manager_->GetTexture(texture.GetTextureId());
+  if (!raw_texture) {
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.",
+                     texture.GetTextureId());
     return;
   }
 
-  auto src_rect = GetSpriteSrcRect(sprite);
+  auto src_rect = GetTextureSrcRect(texture);
   if (!src_rect.has_value()) {
-    ENGINE_LOG_ERROR("Failed to get sprite's source rectangle, ID: {}",
-                     sprite.GetTextureId());
+    ENGINE_LOG_ERROR("Failed to get texture's source rectangle, ID: {}",
+                     texture.GetTextureId());
     return;
   }
 
@@ -161,10 +164,10 @@ void Renderer::DrawUISprite(const Texture& sprite, const glm::vec2& position,
 
   // Execute drawing (UI rotation is not considered)
   if (!SDL_RenderTextureRotated(
-          renderer_, texture, &src_rect.value(), &dest_rect, 0.0, nullptr,
-          sprite.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
-    ENGINE_LOG_ERROR("Failed to render UI Sprite (ID: {}): {}",
-                     sprite.GetTextureId(), SDL_GetError());
+          renderer_, raw_texture, &src_rect.value(), &dest_rect, 0.0, nullptr,
+          texture.IsFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE)) {
+    ENGINE_LOG_ERROR("Failed to render UI Texture (ID: {}): {}",
+                     texture.GetTextureId(), SDL_GetError());
   }
 }
 
@@ -199,27 +202,29 @@ void Renderer::ClearScreen() {
 
 void Renderer::Present() { SDL_RenderPresent(renderer_); }
 
-std::optional<SDL_FRect> Renderer::GetSpriteSrcRect(const Texture& sprite) {
-  SDL_Texture* texture = resource_manager_->GetTexture(sprite.GetTextureId());
-  if (!texture) {
-    ENGINE_LOG_ERROR("Failed to get texture for ID {}.", sprite.GetTextureId());
+std::optional<SDL_FRect> Renderer::GetTextureSrcRect(const Texture& texture) {
+  SDL_Texture* raw_texture =
+      resource_manager_->GetTexture(texture.GetTextureId());
+  if (!raw_texture) {
+    ENGINE_LOG_ERROR("Failed to get texture for ID {}.",
+                     texture.GetTextureId());
     return std::nullopt;
   }
 
-  auto src_rect = sprite.GetSourceRect();
-  if (src_rect.has_value()) {  // If Sprite has a specified rect, check if size
+  auto src_rect = texture.GetSourceRect();
+  if (src_rect.has_value()) {  // If Texture has a specified rect, check if size
                                // is valid
     if (src_rect.value().w <= 0 || src_rect.value().h <= 0) {
       ENGINE_LOG_ERROR("Source rectangle size is invalid, ID: {}",
-                       sprite.GetTextureId());
+                       texture.GetTextureId());
       return std::nullopt;
     }
     return src_rect;
   } else {  // Otherwise get texture size and return the entire texture size
     SDL_FRect result = {0, 0, 0, 0};
-    if (!SDL_GetTextureSize(texture, &result.w, &result.h)) {
+    if (!SDL_GetTextureSize(raw_texture, &result.w, &result.h)) {
       ENGINE_LOG_ERROR("Failed to get texture size, ID: {}",
-                       sprite.GetTextureId());
+                       texture.GetTextureId());
       return std::nullopt;
     }
     return result;

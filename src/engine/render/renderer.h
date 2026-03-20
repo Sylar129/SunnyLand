@@ -26,17 +26,17 @@ class Renderer final {
            resource::ResourceManager* resource_manager);
   DISABLE_COPY_AND_MOVE(Renderer);
 
-  void DrawSprite(const Camera& camera, const Texture& sprite,
-                  const glm::vec2& position,
-                  const glm::vec2& scale = {1.0f, 1.0f}, double angle = 0.0f);
+  void DrawTexture(const Camera& camera, const Texture& texture,
+                   const glm::vec2& position,
+                   const glm::vec2& scale = {1.0f, 1.0f}, double angle = 0);
 
-  void DrawParallax(const Camera& camera, const Texture& sprite,
+  void DrawParallax(const Camera& camera, const Texture& texture,
                     const glm::vec2& position, const glm::vec2& scroll_factor,
                     const glm::bvec2& repeat = {true, true},
                     const glm::vec2& scale = {1.0f, 1.0f});
 
-  void DrawUISprite(const Texture& sprite, const glm::vec2& position,
-                    const std::optional<glm::vec2>& size = std::nullopt);
+  void DrawUITexture(const Texture& texture, const glm::vec2& position,
+                     const std::optional<glm::vec2>& size = std::nullopt);
 
   void DrawUIFilledRect(const utils::Rect& rect, const utils::FColor& color);
 
@@ -49,7 +49,7 @@ class Renderer final {
   SDL_Renderer* GetSDLRenderer() const { return renderer_; }
 
  private:
-  std::optional<SDL_FRect> GetSpriteSrcRect(const Texture& sprite);
+  std::optional<SDL_FRect> GetTextureSrcRect(const Texture& sprite);
   bool IsRectInViewport(const Camera& camera, const SDL_FRect& rect);
 
   SDL_Renderer* renderer_ = nullptr;
