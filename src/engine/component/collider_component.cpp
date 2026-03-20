@@ -79,10 +79,6 @@ void ColliderComponent::UpdateOffset() {
   }
 }
 
-struct my_struct {
-  int f(const int &i) const { return i; }
-};
-
 utils::Rect ColliderComponent::GetWorldAABB() const {
   if (!transform_) {
     return {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
