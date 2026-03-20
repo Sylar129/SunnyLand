@@ -4,22 +4,18 @@
 
 #include "engine/component/transform_component.h"
 #include "engine/object/game_object.h"
-#include "engine/physics/collider.h"
 #include "utils/assert.h"
 #include "utils/log.h"
 
 namespace engine::component {
 
-ColliderComponent::ColliderComponent(
-    std::unique_ptr<physics::Collider> collider, utils::Alignment alignment,
-    bool is_trigger, bool is_active)
-    : collider_(std::move(collider)),
+ColliderComponent::ColliderComponent(const glm::vec2 &size,
+                                     utils::Alignment alignment,
+                                     bool is_trigger, bool is_active)
+    : size_(size),
       alignment_(alignment),
       is_trigger_(is_trigger),
-      is_active_(is_active) {
-  ENGINE_LOG_ASSERT(collider_,
-                    "Empty collider passed to ColliderComponent constructor!");
-}
+      is_active_(is_active) {}
 
 void ColliderComponent::Init() {
   ENGINE_LOG_ASSERT(owner_, "ColliderComponent has no owner GameObject!");
@@ -35,15 +31,13 @@ void ColliderComponent::Init() {
 
 void ColliderComponent::SetAlignment(utils::Alignment anchor) {
   alignment_ = anchor;
-  if (transform_ && collider_) {
+  if (transform_) {
     UpdateOffset();
   }
 }
 
 void ColliderComponent::UpdateOffset() {
-  if (!collider_) return;
-
-  auto collider_size = collider_->GetAABBSize();
+  auto collider_size = size_;
 
   if (collider_size.x <= 0.0f || collider_size.y <= 0.0f) {
     offset_ = {0.0f, 0.0f};
@@ -85,14 +79,18 @@ void ColliderComponent::UpdateOffset() {
   }
 }
 
+struct my_struct {
+  int f(const int &i) const { return i; }
+};
+
 utils::Rect ColliderComponent::GetWorldAABB() const {
-  if (!transform_ || !collider_) {
+  if (!transform_) {
     return {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
   }
+
   const glm::vec2 top_left_pos = transform_->GetPosition() + offset_;
-  const glm::vec2 base_size = collider_->GetAABBSize();
   const glm::vec2 scale = transform_->GetScale();
-  glm::vec2 scaled_size = base_size * scale;
+  glm::vec2 scaled_size = size_ * scale;
   return {top_left_pos, scaled_size};
 }
 

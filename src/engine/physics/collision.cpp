@@ -7,52 +7,6 @@
 
 namespace engine::physics::collision {
 
-bool CheckCollision(const component::ColliderComponent& a,
-                    const component::ColliderComponent& b) {
-  auto a_collider = a.GetCollider();
-  auto b_collider = b.GetCollider();
-  auto a_transform = a.GetTransform();
-  auto b_transform = b.GetTransform();
-
-  // Ensure required components are present before dereferencing.
-  if (!a_collider || !b_collider || !a_transform || !b_transform) {
-    return false;
-  }
-
-  auto a_size = a_collider->GetAABBSize() * a_transform->GetScale();
-  auto b_size = b_collider->GetAABBSize() * b_transform->GetScale();
-  auto a_pos = a_transform->GetPosition() + a.GetOffset();
-  auto b_pos = b_transform->GetPosition() + b.GetOffset();
-  if (!CheckAABBOverlap(a_pos, a_size, b_pos, b_size)) {
-    return false;
-  }
-
-  if (a_collider->GetType() == ColliderType::kAabb &&
-      b_collider->GetType() == ColliderType::kAabb) {
-    return true;
-  } else if (a_collider->GetType() == ColliderType::kCircle &&
-             b_collider->GetType() == ColliderType::kCircle) {
-    auto a_center = a_pos + 0.5f * a_size;
-    auto b_center = b_pos + 0.5f * b_size;
-    auto a_radius = 0.5f * a_size.x;
-    auto b_radius = 0.5f * b_size.x;
-    return CheckCircleOverlap(a_center, a_radius, b_center, b_radius);
-  } else if (a_collider->GetType() == ColliderType::kAabb &&
-             b_collider->GetType() == ColliderType::kCircle) {
-    auto b_center = b_pos + 0.5f * b_size;
-    auto b_radius = 0.5f * b_size.x;
-    auto nearest_point = glm::clamp(b_center, a_pos, a_pos + a_size);
-    return CheckPointInCircle(nearest_point, b_center, b_radius);
-  } else if (a_collider->GetType() == ColliderType::kCircle &&
-             b_collider->GetType() == ColliderType::kAabb) {
-    auto a_center = a_pos + 0.5f * a_size;
-    auto a_radius = 0.5f * a_size.x;
-    auto nearest_point = glm::clamp(a_center, b_pos, b_pos + b_size);
-    return CheckPointInCircle(nearest_point, a_center, a_radius);
-  }
-  return false;
-}
-
 bool CheckCircleOverlap(const glm::vec2& a_center, const float a_radius,
                         const glm::vec2& b_center, const float b_radius) {
   return (glm::length(a_center - b_center) < a_radius + b_radius);

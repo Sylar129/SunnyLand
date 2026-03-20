@@ -86,7 +86,8 @@ void PhysicsEngine::CheckObjectCollisions() {
       auto* cc_b = obj_b->GetComponent<component::ColliderComponent>();
       if (!cc_b || !cc_b->IsActive()) continue;
 
-      if (collision::CheckCollision(*cc_a, *cc_b)) {
+      if (collision::CheckRectOverlap(cc_a->GetWorldAABB(),
+                                      cc_b->GetWorldAABB())) {
         if (obj_a->GetTag() != "solid" && obj_b->GetTag() == "solid") {
           ResolveSolidObjectCollisions(obj_a, obj_b);
         } else if (obj_a->GetTag() == "solid" && obj_b->GetTag() != "solid") {

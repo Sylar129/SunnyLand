@@ -15,7 +15,6 @@
 #include "engine/component/transform_component.h"
 #include "engine/core/context.h"
 #include "engine/object/game_object.h"
-#include "engine/physics/collider.h"
 #include "engine/render/animation.h"
 #include "engine/scene/scene.h"
 #include "nlohmann/json.hpp"
@@ -158,9 +157,8 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
         game_object->AddComponent<component::TransformComponent>(
             position, glm::vec2(1.0f), rotation);
 
-        auto collider = std::make_unique<physics::AABBCollider>(dst_size);
-        auto* cc = game_object->AddComponent<component::ColliderComponent>(
-            std::move(collider));
+        auto* cc =
+            game_object->AddComponent<component::ColliderComponent>(dst_size);
         cc->SetTrigger(object.value("trigger", true));
         game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
@@ -206,16 +204,13 @@ void LevelLoader::LoadObjectLayer(const nlohmann::json& layer_json,
       auto tile_json = GetTileJsonByGid(gid);
 
       if (tile_info.type == component::TileType::kSolid) {
-        auto collider = std::make_unique<physics::AABBCollider>(src_size);
-        game_object->AddComponent<component::ColliderComponent>(
-            std::move(collider));
+        game_object->AddComponent<component::ColliderComponent>(src_size);
         game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);
         game_object->SetTag("solid");
       } else if (auto rect = GetColliderRect(tile_json); rect) {
-        auto collider = std::make_unique<physics::AABBCollider>(rect->size);
-        auto* cc = game_object->AddComponent<component::ColliderComponent>(
-            std::move(collider));
+        auto* cc =
+            game_object->AddComponent<component::ColliderComponent>(rect->size);
         cc->SetOffset(rect->position);
         game_object->AddComponent<component::PhysicsComponent>(
             &scene.GetContext().GetPhysicsEngine(), false);

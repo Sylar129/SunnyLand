@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "engine/component/component.h"
-#include "engine/physics/collider.h"
 #include "utils/alignment.h"
 #include "utils/math.h"
 
@@ -20,14 +19,13 @@ class ColliderComponent final : public Component {
 
  public:
   explicit ColliderComponent(
-      std::unique_ptr<physics::Collider> collider,
+      const glm::vec2& size,
       utils::Alignment alignment = utils::Alignment::kNone,
       bool is_trigger = false, bool is_active = true);
 
   void UpdateOffset();
 
   const TransformComponent* GetTransform() const { return transform_; }
-  const physics::Collider* GetCollider() const { return collider_.get(); }
   const glm::vec2& GetOffset() const { return offset_; }
   utils::Alignment GetAlignment() const { return alignment_; }
   utils::Rect GetWorldAABB() const;
@@ -45,7 +43,7 @@ class ColliderComponent final : public Component {
 
   TransformComponent* transform_ = nullptr;
 
-  std::unique_ptr<physics::Collider> collider_;
+  glm::vec2 size_ = {0.0f, 0.0f};
   glm::vec2 offset_ = {0.0f, 0.0f};
   utils::Alignment alignment_ = utils::Alignment::kNone;
 

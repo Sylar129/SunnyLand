@@ -40,8 +40,6 @@ enum class TileType {
 struct TileInfo {
   render::Sprite sprite;
   TileType type;
-  TileInfo(render::Sprite s = render::Sprite(), TileType t = TileType::kEmpty)
-      : sprite(std::move(s)), type(t) {}
 };
 
 class TileLayerComponent final : public Component {

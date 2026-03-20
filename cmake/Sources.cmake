@@ -31,7 +31,6 @@ set(TARGET_SOURCES
     src/engine/input/input_manager.h
     src/engine/object/game_object.cpp
     src/engine/object/game_object.h
-    src/engine/physics/collider.h
     src/engine/physics/collision.cpp
     src/engine/physics/collision.h
     src/engine/physics/physics_engine.cpp
