@@ -2,92 +2,42 @@
 
 #pragma once
 
-#include <memory>
 #include <string>
-#include <type_traits>
-#include <typeindex>
-#include <unordered_map>
 #include <utility>
 
-#include "engine/component/component.h"
-#include "utils/log.h"
-#include "utils/non_copyable.h"
+#include "entt/entt.hpp"
 
 namespace engine::object {
 
 class GameObject final {
  public:
-  GameObject(const std::string& name, const std::string& tag = "");
-  DISABLE_COPY_AND_MOVE(GameObject);
-
-  void SetName(const std::string& name) { name_ = name; }
-  const std::string& GetName() const { return name_; }
-  void SetTag(const std::string& tag) { tag_ = tag; }
-  const std::string& GetTag() const { return tag_; }
-  void SetNeedRemove(bool need_remove) { need_remove_ = need_remove; }
-  bool IsNeedRemove() const { return need_remove_; }
+  GameObject(entt::registry* registry);
 
   template <typename T, typename... Args>
-  T* AddComponent(Args&&... args) {
-    static_assert(std::is_base_of_v<component::Component, T>,
-                  "T has to be the subclass of Component");
-    auto type_index = std::type_index(typeid(T));
-    if (HasComponent<T>()) {
-      return GetComponent<T>();
-    }
-
-    auto new_component = std::make_unique<T>(std::forward<Args>(args)...);
-    T* ptr = new_component.get();
-    new_component->SetOwner(this);
-    components_[type_index] = std::move(new_component);
-    ptr->Init();
-    ENGINE_LOG_DEBUG("GameObject::addComponent: {} added component {}", name_,
-                     typeid(T).name());
-    return ptr;
+  T& AddComponent(Args&&... args) {
+    return registry_->emplace<T>(handle_, std::forward<Args>(args)...);
   }
 
   template <typename T>
-  T* GetComponent() const {
-    static_assert(std::is_base_of_v<component::Component, T>,
-                  "T has to be the subclass of Component");
-    auto type_index = std::type_index(typeid(T));
-    auto it = components_.find(type_index);
-    if (it != components_.end()) {
-      return static_cast<T*>(it->second.get());
-    }
-    return nullptr;
+  T& GetComponent() const {
+    return registry_->get<T>(handle_);
   }
 
   template <typename T>
   bool HasComponent() const {
-    static_assert(std::is_base_of_v<component::Component, T>,
-                  "T has to be the subclass of Component");
-    return components_.contains(std::type_index(typeid(T)));
+    return registry_->any_of<T>(handle_);
   }
 
   template <typename T>
   void RemoveComponent() {
-    static_assert(std::is_base_of_v<component::Component, T>,
-                  "T has to be the subclass of Component");
-    auto type_index = std::type_index(typeid(T));
-    auto it = components_.find(type_index);
-    if (it != components_.end()) {
-      it->second->Clean();
-      components_.erase(it);
-    }
+    registry_->remove<T>(handle_);
   }
 
-  void HandleInput(core::Context& context);
-  void Update(float delta_time, core::Context& context);
-  void Render(core::Context& context);
-  void Clean();
+  std::string GetName() const;
 
  private:
-  std::string name_;
-  std::string tag_;
-  std::unordered_map<std::type_index, std::unique_ptr<component::Component>>
-      components_;
-  bool need_remove_ = false;
+  entt::registry* registry_;
+  entt::entity handle_{};
 };
 
 }  // namespace engine::object

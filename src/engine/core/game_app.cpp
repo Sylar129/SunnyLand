@@ -9,7 +9,6 @@
 #include "engine/input/input_manager.h"
 #include "engine/render/renderer.h"
 #include "engine/scene/scene_manager.h"
-#include "game/scene/title_scene.h"
 #include "utils/assert.h"
 #include "utils/log.h"
 
@@ -61,10 +60,6 @@ bool GameApp::InitContext() {
 bool GameApp::InitSceneManager() {
   scene_manager_ = std::make_unique<scene::SceneManager>(*context_);
   ENGINE_LOG_ASSERT(scene_manager_, "Failed to Init SceneManager!");
-
-  auto scene =
-      std::make_unique<game::scene::TitleScene>(*context_, *scene_manager_);
-  scene_manager_->RequestPushScene(std::move(scene));
 
   ENGINE_LOG_TRACE("Init SceneManager successfully.");
   return true;

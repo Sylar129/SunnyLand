@@ -25,20 +25,16 @@ ParallaxComponent::ParallaxComponent(const std::string& texture_id,
 void ParallaxComponent::Init() {
   ENGINE_LOG_ASSERT(owner_, "ParallaxComponent: owner is nullptr");
 
-  transform_ = owner_->GetComponent<TransformComponent>();
-  if (!transform_) {
-    ENGINE_LOG_ERROR("ParallaxComponent: can't find TransformComponent");
-    return;
-  }
 }
 
 void ParallaxComponent::Render(core::Context& context) {
-  if (is_hidden_ || !transform_) {
+  if (is_hidden_) {
     return;
   }
-  context.GetRenderer().DrawParallax(context.GetCamera(), sprite_,
-                                     transform_->GetPosition(), scroll_factor_,
-                                     repeat_, transform_->GetScale());
+  context.GetRenderer().DrawParallax(
+      context.GetCamera(), sprite_,
+      owner_->GetComponent<TransformComponent>().GetPosition(), scroll_factor_,
+      repeat_, owner_->GetComponent<TransformComponent>().GetScale());
 }
 
 }  // namespace engine::component

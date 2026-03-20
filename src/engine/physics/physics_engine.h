@@ -46,11 +46,6 @@ class PhysicsEngine {
   const auto& getTileTriggerEvents() const { return tile_trigger_events_; };
 
  private:
-  void CheckObjectCollisions();
-  void CheckTileTriggers();
-  void ResolveTileCollisions(component::PhysicsComponent* pc, float delta_time);
-  void ResolveSolidObjectCollisions(object::GameObject* move_obj,
-                                    object::GameObject* solid_obj);
 
   float GetTileHeightAtWidth(float width, component::TileType type,
                              glm::vec2 tile_size);

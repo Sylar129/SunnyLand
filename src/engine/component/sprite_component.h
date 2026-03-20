@@ -59,7 +59,6 @@ class SpriteComponent final : public Component {
   void Render(core::Context& context) override;
 
   resource::ResourceManager& resource_manager_;
-  TransformComponent* transform_ = nullptr;
 
   render::Sprite sprite_;
   utils::Alignment alignment_ = utils::Alignment::kNone;

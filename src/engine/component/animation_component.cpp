@@ -10,21 +10,17 @@
 
 namespace engine::component {
 
+AnimationComponent::AnimationComponent() = default;
+
 AnimationComponent::~AnimationComponent() = default;
 
 void AnimationComponent::Init() {
   ENGINE_LOG_ASSERT(owner_,
                     "AnimationComponent must have an owner GameObject!");
-
-  sprite_component_ = owner_->GetComponent<SpriteComponent>();
-  ENGINE_LOG_ASSERT(
-      sprite_component_,
-      "AnimationComponent requires a SpriteComponent on the same GameObject!");
 }
 
 void AnimationComponent::Update(float delta_time, core::Context&) {
-  if (!is_playing_ || !current_animation_ || !sprite_component_ ||
-      current_animation_->IsEmpty()) {
+  if (!is_playing_ || !current_animation_ || current_animation_->IsEmpty()) {
     ENGINE_LOG_TRACE(
         "AnimationComponent on GameObject '{}' is not playing or has no "
         "animation.",
@@ -36,15 +32,13 @@ void AnimationComponent::Update(float delta_time, core::Context&) {
 
   const auto& current_frame = current_animation_->GetFrame(animation_timer_);
 
-  sprite_component_->SetSourceRect(current_frame.source_rect);
+  owner_->GetComponent<SpriteComponent>().SetSourceRect(
+      current_frame.source_rect);
 
   if (!current_animation_->IsLooping() &&
       animation_timer_ >= current_animation_->GetTotalDuration()) {
     is_playing_ = false;
     animation_timer_ = current_animation_->GetTotalDuration();
-    if (is_one_shot_removal_) {
-      owner_->SetNeedRemove(true);
-    }
   }
 }
 
@@ -73,9 +67,10 @@ void AnimationComponent::PlayAnimation(const std::string& name) {
   animation_timer_ = 0.0f;
   is_playing_ = true;
 
-  if (sprite_component_ && !current_animation_->IsEmpty()) {
+  if (!current_animation_->IsEmpty()) {
     const auto& first_frame = current_animation_->GetFrame(0.0f);
-    sprite_component_->SetSourceRect(first_frame.source_rect);
+    owner_->GetComponent<SpriteComponent>().SetSourceRect(
+        first_frame.source_rect);
     ENGINE_LOG_DEBUG("GameObject '{}' started playing animation '{}'",
                      owner_->GetName(), name);
   }

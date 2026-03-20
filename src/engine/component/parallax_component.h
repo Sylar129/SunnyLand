@@ -34,8 +34,6 @@ class ParallaxComponent final : public Component {
   void Render(core::Context& context) override;
 
  private:
-  TransformComponent* transform_ = nullptr;
-
   render::Sprite sprite_;
   glm::vec2 scroll_factor_;
   glm::bvec2 repeat_;

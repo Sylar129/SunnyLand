@@ -15,21 +15,12 @@ ColliderComponent::ColliderComponent(const glm::vec2 &size, bool is_trigger,
 
 void ColliderComponent::Init() {
   ENGINE_LOG_ASSERT(owner_, "ColliderComponent has no owner GameObject!");
-
-  transform_ = owner_->GetComponent<TransformComponent>();
-  if (!transform_) {
-    ENGINE_LOG_ERROR("ColliderComponent: No TransformComponent!");
-    return;
-  }
 }
 
 utils::Rect ColliderComponent::GetWorldAABB() const {
-  if (!transform_) {
-    return {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
-  }
-
-  const glm::vec2 top_left_pos = transform_->GetPosition() + offset_;
-  const glm::vec2 scale = transform_->GetScale();
+  auto& transform_component = owner_->GetComponent<TransformComponent>();
+  const glm::vec2 top_left_pos = transform_component.GetPosition() + offset_;
+  const glm::vec2 scale = transform_component.GetScale();
   glm::vec2 scaled_size = size_ * scale;
   return {top_left_pos, scaled_size};
 }

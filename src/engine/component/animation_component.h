@@ -21,7 +21,7 @@ class AnimationComponent : public Component {
   friend class object::GameObject;
 
  public:
-  AnimationComponent() = default;
+  AnimationComponent();
   ~AnimationComponent() override;
 
   void AddAnimation(std::unique_ptr<render::Animation> animation);
@@ -44,7 +44,6 @@ class AnimationComponent : public Component {
  private:
   std::unordered_map<std::string, std::unique_ptr<render::Animation>>
       animations_;
-  SpriteComponent* sprite_component_ = nullptr;
   render::Animation* current_animation_ = nullptr;
 
   float animation_timer_ = 0.0f;

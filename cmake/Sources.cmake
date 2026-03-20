@@ -14,6 +14,7 @@ set(TARGET_SOURCES
     src/engine/component/physics_component.h
     src/engine/component/sprite_component.cpp
     src/engine/component/sprite_component.h
+    src/engine/component/tag_component.h
     src/engine/component/tilelayer_component.cpp
     src/engine/component/tilelayer_component.h
     src/engine/component/transform_component.cpp
@@ -50,8 +51,6 @@ set(TARGET_SOURCES
     src/engine/resource/resource_manager.h
     src/engine/resource/texture_manager.cpp
     src/engine/resource/texture_manager.h
-    src/engine/scene/level_loader.cpp
-    src/engine/scene/level_loader.h
     src/engine/scene/scene_manager.cpp
     src/engine/scene/scene_manager.h
     src/engine/scene/scene.cpp
@@ -77,45 +76,6 @@ set(TARGET_SOURCES
     src/engine/ui/ui_manager.h
     src/engine/ui/ui_panel.cpp
     src/engine/ui/ui_panel.h
-    src/game/component/ai/ai_behavior.h
-    src/game/component/ai/jump_behavior.cpp
-    src/game/component/ai/jump_behavior.h
-    src/game/component/ai/patrol_behavior.cpp
-    src/game/component/ai/patrol_behavior.h
-    src/game/component/ai/updown_behavior.cpp
-    src/game/component/ai/updown_behavior.h
-    src/game/component/ai_component.cpp
-    src/game/component/ai_component.h
-    src/game/component/state/climb_state.cpp
-    src/game/component/state/climb_state.h
-    src/game/component/state/dead_state.cpp
-    src/game/component/state/dead_state.h
-    src/game/component/state/fall_state.cpp
-    src/game/component/state/fall_state.h
-    src/game/component/state/hurt_state.cpp
-    src/game/component/state/hurt_state.h
-    src/game/component/state/idle_state.cpp
-    src/game/component/state/idle_state.h
-    src/game/component/state/jump_state.cpp
-    src/game/component/state/jump_state.h
-    src/game/component/state/player_state.cpp
-    src/game/component/state/player_state.h
-    src/game/component/state/walk_state.cpp
-    src/game/component/state/walk_state.h
-    src/game/component/player_component.cpp
-    src/game/component/player_component.h
-    src/game/data/session_data.cpp
-    src/game/data/session_data.h
-    src/game/scene/end_scene.cpp
-    src/game/scene/end_scene.h
-    src/game/scene/game_scene.cpp
-    src/game/scene/game_scene.h
-    src/game/scene/helps_scene.cpp
-    src/game/scene/helps_scene.h
-    src/game/scene/menu_scene.cpp
-    src/game/scene/menu_scene.h
-    src/game/scene/title_scene.cpp
-    src/game/scene/title_scene.h
     src/utils/alignment.h
     src/utils/assert.h
     src/utils/collision.h

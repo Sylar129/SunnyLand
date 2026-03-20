@@ -18,7 +18,6 @@ class ColliderComponent final : public Component {
   explicit ColliderComponent(const glm::vec2& size, bool is_trigger = false,
                              bool is_active = true);
 
-  const TransformComponent* GetTransform() const { return transform_; }
   const glm::vec2& GetOffset() const { return offset_; }
   utils::Rect GetWorldAABB() const;
   bool IsTrigger() const { return is_trigger_; }
@@ -31,8 +30,6 @@ class ColliderComponent final : public Component {
  private:
   void Init() override;
   void Update(float, core::Context&) override {}
-
-  TransformComponent* transform_ = nullptr;
 
   glm::vec2 size_ = {0.0f, 0.0f};
   glm::vec2 offset_ = {0.0f, 0.0f};

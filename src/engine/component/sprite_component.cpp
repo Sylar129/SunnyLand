@@ -36,14 +36,6 @@ SpriteComponent::SpriteComponent(render::Sprite&& sprite,
 void SpriteComponent::Init() {
   ENGINE_LOG_ASSERT(owner_,
                     "SpriteComponent does not have an owner GameObject!");
-  transform_ = owner_->GetComponent<TransformComponent>();
-  if (!transform_) {
-    ENGINE_LOG_WARN(
-        "The SpriteComponent in GameObject '{}' does not have a "
-        "TransformComponent ",
-        owner_->GetName());
-    return;
-  }
 
   UpdateSpriteSize();
   UpdateOffset();
@@ -59,7 +51,7 @@ void SpriteComponent::UpdateOffset() {
     offset_ = {0.0f, 0.0f};
     return;
   }
-  auto scale = transform_->GetScale();
+  auto scale = owner_->GetComponent<TransformComponent>().GetScale();
   switch (alignment_) {
     case utils::Alignment::kTopLeft:
       offset_ = glm::vec2{0.0f, 0.0f} * scale;
@@ -96,13 +88,16 @@ void SpriteComponent::UpdateOffset() {
 }
 
 void SpriteComponent::Render(core::Context& context) {
-  if (is_hidden_ || !transform_) {
+  if (is_hidden_) {
     return;
   }
 
-  const glm::vec2& pos = transform_->GetPosition() + offset_;
-  const glm::vec2& scale = transform_->GetScale();
-  float rotation_degrees = transform_->GetRotation();
+  const glm::vec2& pos =
+      owner_->GetComponent<TransformComponent>().GetPosition() + offset_;
+  const glm::vec2& scale =
+      owner_->GetComponent<TransformComponent>().GetScale();
+  float rotation_degrees =
+      owner_->GetComponent<TransformComponent>().GetRotation();
 
   context.GetRenderer().DrawSprite(context.GetCamera(), sprite_, pos, scale,
                                    rotation_degrees);

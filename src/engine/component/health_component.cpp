@@ -29,9 +29,6 @@ bool HealthComponent::TakeDamage(int damage_amount) {
   }
 
   if (is_invincible_) {
-    ENGINE_LOG_DEBUG(
-        "GameObject '{}' is currently invincible and cannot take damage.",
-        owner_->GetName());
     return false;
   }
   current_health_ -= damage_amount;
@@ -39,9 +36,6 @@ bool HealthComponent::TakeDamage(int damage_amount) {
   if (IsAlive() && invincibility_duration_ > 0.0f) {
     SetInvincible(invincibility_duration_);
   }
-  ENGINE_LOG_DEBUG("GameObject '{}' took {} damage, current health: {}/{}.",
-                   owner_->GetName(), damage_amount, current_health_,
-                   max_health_);
   return true;
 }
 
@@ -52,9 +46,6 @@ int HealthComponent::Heal(int heal_amount) {
 
   current_health_ += heal_amount;
   current_health_ = std::min(max_health_, current_health_);
-  ENGINE_LOG_DEBUG("GameObject '{}' healed {} health, current health: {}/{}.",
-                   owner_->GetName(), heal_amount, current_health_,
-                   max_health_);
   return current_health_;
 }
 
@@ -62,13 +53,9 @@ void HealthComponent::SetInvincible(float duration) {
   if (duration > 0.0f) {
     is_invincible_ = true;
     invincibility_timer_ = duration;
-    ENGINE_LOG_DEBUG("GameObject '{}' is now invincible for {} seconds.",
-                     owner_->GetName(), duration);
   } else {
     is_invincible_ = false;
     invincibility_timer_ = 0.0f;
-    ENGINE_LOG_DEBUG("GameObject '{}' is no longer invincible.",
-                     owner_->GetName());
   }
 }
 
