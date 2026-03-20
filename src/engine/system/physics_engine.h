@@ -2,17 +2,12 @@
 
 #pragma once
 
-#include <vector>
 
-#include "engine/component/tilelayer_component.h"
 #include "glm/vec2.hpp"
 #include "utils/math.h"
 #include "utils/non_copyable.h"
 
-namespace engine::component {
-class PhysicsComponent;
-class TileLayerComponent;
-}  // namespace engine::component
+
 
 namespace engine::physics {
 
@@ -36,13 +31,6 @@ class PhysicsEngine {
   }
 
  private:
-
-  float GetTileHeightAtWidth(float width, component::TileType type,
-                             glm::vec2 tile_size);
-
-  void ApplyWorldBounds(component::PhysicsComponent* pc);
-
-  std::vector<component::PhysicsComponent*> components_;
   glm::vec2 gravity_ = {0.0f, 980.0f};
   float max_speed_ = 500.0f;
   std::optional<utils::Rect> world_bounds_;

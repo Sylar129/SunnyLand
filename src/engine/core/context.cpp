@@ -9,12 +9,12 @@
 #include "engine/core/game_state.h"
 #include "engine/core/time.h"
 #include "engine/input/input_manager.h"
-#include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
 #include "engine/render/renderer.h"
 #include "engine/render/text_renderer.h"
 #include "engine/resource/audio_manager.h"
 #include "engine/resource/resource_manager.h"
+#include "engine/system/physics_engine.h"
 #include "utils/log.h"
 
 namespace engine::core {

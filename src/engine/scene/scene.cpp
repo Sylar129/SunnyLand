@@ -4,9 +4,9 @@
 
 #include "engine/core/context.h"
 #include "engine/core/game_state.h"
-#include "engine/physics/physics_engine.h"
 #include "engine/render/camera.h"
 #include "engine/scene/scene_manager.h"
+#include "engine/system/physics_engine.h"
 #include "engine/ui/ui_manager.h"
 #include "utils/log.h"
 

@@ -21,8 +21,6 @@ set(TARGET_SOURCES
     src/engine/core/time.h
     src/engine/input/input_manager.cpp
     src/engine/input/input_manager.h
-    src/engine/physics/physics_engine.cpp
-    src/engine/physics/physics_engine.h
     src/engine/render/animation.cpp
     src/engine/render/animation.h
     src/engine/render/camera.cpp
@@ -44,6 +42,8 @@ set(TARGET_SOURCES
     src/engine/scene/scene_manager.h
     src/engine/scene/scene.cpp
     src/engine/scene/scene.h
+    src/engine/system/physics_engine.cpp
+    src/engine/system/physics_engine.h
     src/engine/ui/state/ui_hover_state.cpp
     src/engine/ui/state/ui_hover_state.h
     src/engine/ui/state/ui_normal_state.cpp
