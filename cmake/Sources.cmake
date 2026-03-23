@@ -48,6 +48,9 @@ set(TARGET_SOURCES
     src/engine/resource/font_manager.h
     src/engine/resource/resource_manager.cpp
     src/engine/resource/resource_manager.h
+    src/engine/resource/tiled_parser.cpp
+    src/engine/resource/tiled_parser.h
+    src/engine/resource/tiled_types.h
     src/engine/resource/texture_manager.cpp
     src/engine/resource/texture_manager.h
     src/engine/scene/level_loader.cpp

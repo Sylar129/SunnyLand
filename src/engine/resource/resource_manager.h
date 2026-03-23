@@ -4,8 +4,9 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
-#include "glm/glm.hpp"
+#include "glm/vec2.hpp"
 #include "utils/non_copyable.h"
 
 struct SDL_Renderer;
@@ -17,6 +18,8 @@ namespace engine::resource {
 
 class TextureManager;
 class FontManager;
+class TiledParser;
+struct TiledMap;
 
 class ResourceManager final {
  public:
@@ -37,9 +40,16 @@ class ResourceManager final {
   void UnloadFont(const std::string& file_path, int point_size);
   void ClearFonts();
 
+  std::shared_ptr<const TiledMap> LoadTiledMap(const std::string& file_path);
+  std::shared_ptr<const TiledMap> GetTiledMap(const std::string& file_path);
+  void UnloadTiledMap(const std::string& file_path);
+  void ClearTiledMaps();
+
  private:
   std::unique_ptr<TextureManager> texture_manager_;
   std::unique_ptr<FontManager> font_manager_;
+  std::unique_ptr<TiledParser> tiled_parser_;
+  std::unordered_map<std::string, std::shared_ptr<const TiledMap>> tiled_maps_;
 };
 
 }  // namespace engine::resource
